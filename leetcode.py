@@ -3,12 +3,9 @@
 
 """
 # E: Linked List Cycle
+# KEY: slow and fast runner, slow moves 1 and fast moves 2 each times
 class Solution(object):
     def hasCycle(self, head):
-        """
-        :type head: ListNode
-        :rtype: bool
-        """
         if head is None or head.next is None:
             return False
         slow = fast = head
