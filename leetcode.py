@@ -507,3 +507,468 @@ class Solution:
 
 
 # Reverse Linked List II
+'''
+Reverse a linked list from position m to n. Do it in-place and in one pass
+For example:
+Given 1->2->3->4->5->NULL, m = 2 and n = 4,
+
+return 1->4->3->2->5->NULL.
+
+'''
+
+
+
+class Solution(object):
+    def reverseBetween(self, head, m, n):
+        dummy = ListNode(0)
+        dummy.next = head
+        prev, curr = dummy, head
+        while m > 1:
+            prev, curr = curr, curr.next
+            m -= 1
+            n -= 1
+        rev, tail = self.reverse(curr, n-m+1)
+        prev.next = rev
+        curr.next = tail
+        return dummy.next
+
+    def reverse(self, head, count):
+        prev, curr = None, head
+        while count > 0:
+            curr.next, prev, curr = prev, curr, curr.next
+            count -= 1
+        return prev, curr
+
+
+class Solution(object):
+    def reverseBetween(self, head, m, n):
+        """
+        :type head: ListNode
+        :type m: int
+        :type n: int
+        :rtype: ListNode
+        """
+        if not head or m == n:
+            return head
+
+        dumy = ListNode(0)
+        dumy.next = head
+        pre = dumy
+
+
+        # find the start node to be reversed
+        for _ in xrange(m-1):
+            pre = pre.next
+
+
+        start, tail = pre.next, pre.next
+
+        end = None
+        for _ in xrange(n-m):
+            node = start
+            start = start.next
+            node.next = end
+            end = node
+
+        pre.next = start
+        tail.next = start.next
+        start.next = end
+
+        return dumy.next
+
+
+
+
+# Partition List
+'''
+Given a LL and a value x, Partition it such that
+all nodes less than x come before nodes greater than
+ or euqla to x
+
+ Should preserve the original relative order of node in two partitions
+
+ For example,
+Given 1->4->3->2->5->2 and x = 3,
+return 1->2->2->4->3->5.
+'''
+class Solution(object):
+    def partition(self, head, x):
+        """
+        :type head: ListNode
+        :type x: int
+        :rtype: ListNode
+        """
+        h1 = l1 = ListNode(0)
+        h2 = l2 = ListNode(0)
+        while head:
+            if head.val < x:
+                l1.next = head
+                l1 = l1.next
+            else:
+                l2.next = head
+                l2 = l2.next
+            head = head.next
+        l2.next = None
+        l1.next = h2.next
+        return h1.next
+
+
+# Rempve Duplicates from sorted list II
+'''
+Given a sorted LL, delete all the nodes that have duplicate numbers, leaving
+ only distinct numbers, leaving only distinct numbers from the original
+ list
+
+For example,
+Given 1->2->3->3->4->4->5, return 1->2->5.
+Given 1->1->1->2->3, return 2->3.
+
+'''
+
+class Solution(object):
+    def deleteDuplicates(self, head):
+        """
+        :type head: ListNode
+        :rtype: ListNode
+        """
+        dummy = ListNode(0)
+        dummy.next = head
+        pre = dummy
+        cur = head
+        while cur!= None:
+            while cur.next!=None and cur.next.val == cur.val:
+                cur = cur.next
+            if pre.next == cur:
+                pre=pre.next
+            else:
+                pre.next = cur.next
+            cur = cur.next
+        return dummy.next
+
+
+class Solution(object):
+    def deleteDuplicates(self, head):
+        """
+        :type head: ListNode
+        :rtype: ListNode
+        """
+        # key point: each node has different id, so when we do pre.next=cur we are actually comparing their ids
+        # the general idea is to detect if pre.next is equal to cur, if not means there are duplicates, assign cur.next to pre.next
+        # only move pre to the next position when pre.next is equal to cur
+
+        #special case:[1,1,2,2] [1,1,2,3] [1,2,2,3] [1,2,3,3]
+
+        dummy=ListNode(0)
+        pre=dummy
+        pre.next=head
+        cur=head
+        while cur!=None:
+            while cur.next!=None and cur.val==cur.next.val:
+                cur=cur.next
+            if pre.next!=cur:
+                pre.next=cur.next
+            else:
+                pre=pre.next
+            cur=cur.next
+
+        return dummy.next
+
+
+# add two numbers I
+
+'''
+given two non-empty LL representing two non=negative integers. THe digits are stored in
+Reverse
+order and each of their ndoes contains a single digit.
+
+Add the two numbers and return it as a LL
+You may assume the two numbers do not contain any leading zero, except the number 0 itself.
+
+Input: (2 -> 4 -> 3) + (5 -> 6 -> 4)
+Output: 7 -> 0 -> 8
+
+
+'''
+class Solution(object):
+    def addTwoNumbers(self, l1, l2):
+        carry = 0
+        root = n = ListNode(0)
+        while l1 or l2 or carry:
+            v1 = v2 = 0
+            if l1:
+                v1 = l1.val
+                l1 = l1.next
+            if l2:
+                v2 = l2.val
+                l2 = l2.next
+            carry, val = divmod(v1+v2+carry, 10)
+            n.next = ListNode(val)
+            n = n.next
+        return root.next
+
+class Solution(object):
+    def addTwoNumbers(self, l1, l2):
+        '''
+            6/29/17: Solution 1
+        '''
+        # Solution 1 (99.75%):
+        dummy = ListNode(0)
+        curr = dummy
+        adv = 0
+        while l1 is not None or l2 is not None or adv != 0:
+            val = adv
+            if l1 is not None:
+                val += l1.val
+                l1 = l1.next
+            if l2 is not None:
+                val += l2.val
+                l2 = l2.next
+            curr.next = ListNode(val % 10)
+            curr = curr.next
+            adv = val / 10
+        return dummy.next
+
+
+# Add two Numbers II
+'''
+Given two non-empty linked list representing two non-negatiefv integers.
+The most significant digit comes first and each of their nodes contain a single digit. Add
+the two numbers and return it as a linked list
+
+
+ASSUME the two numbers do not contain leading zero.
+
+FOLLOW-UP: what if reversing the lists is not allowed?
+'''
+class Solution(object):
+    def addTwoNumbers(self, l1, l2):
+        """
+        :type l1: ListNode
+        :type l2: ListNode
+        :rtype: ListNode
+        """
+        s1, s2 = [], []
+        while l1:
+        	s1.append(l1.val)
+        	l1 = l1.next
+        while l2:
+        	s2.append(l2.val)
+        	l2 = l2.next
+        r = 0
+        res = None
+        while s1 or s2:
+        	t1 = t2 = 0
+        	if s1: t1 = s1.pop()
+        	if s2: t2 = s2.pop()
+        	t = t1+t2+r
+
+        	r = t//10
+        	temp = res
+        	res = ListNode(t%10)
+        	res.next = temp
+        if r != 0:
+        	temp = res
+        	res = ListNode(r)
+        	res.next = temp
+        return res
+
+
+class Solution(object):
+    def addTwoNumbers(self, l1, l2):
+        """
+        :type l1: ListNode
+        :type l2: ListNode
+        :rtype: ListNode
+        """
+        n1 = n2 = 0
+        while l1:
+            n1 = n1*10 + l1.val
+            l1 = l1.next
+        while l2:
+            n2 = n2*10 + l2.val
+            l2 = l2.next
+        total = str(n1 + n2)
+        dummy = ListNode(0)
+        tmp = dummy
+        for char in total:
+            tmp.next = ListNode(char)
+            tmp = tmp.next
+        return dummy.next
+
+
+
+# Odd Even Linked List
+
+'''
+Given a singly LL, group all odd nodes together followed by the even nodes.
+We are talking about the node number an not eh value in the nodes.
+
+try to do it in-place.
+
+The program should run in O(1) space complexity and O(n )time complexity
+
+Example:
+Given 1->2->3->4->5->NULL,
+return 1->3->5->2->4->NULL.
+
+'''
+class Solution(object):
+    def oddEvenList(self, head):
+        """
+        :type head: ListNode
+        :rtype: ListNode
+        """
+        if head is None: return
+        odd = head
+        even = head.next
+        evenhead = even
+        while even is not None and even.next:
+            odd.next = even.next
+            even.next = odd.next.next
+            odd = odd.next
+            even = even.next
+        odd.next = evenhead
+        return head
+
+
+
+class Solution(object):
+    def oddEvenList(self, head):
+        """
+        :type head: ListNode
+        :rtype: ListNode
+        """
+
+        # 这道题甚至不用判断奇数还是偶数，通过测试简单样例可以得知，只是奇书位置的所有节点向前移动
+
+        # 如果head为空，直接返回head
+        if not head:
+                return head
+        # 设 isOdd 为 true
+        isOdd = True
+        # 设 cur 指向 head
+        cur = head
+        # 设 odd_head , even_head,odd_cur,even_cur
+        odd_head,even_head = ListNode(0),ListNode(0)
+        odd_cur = odd_head
+        even_cur = even_head
+        # 通过 cur 遍历 该链表：
+        while cur:
+        #         如果 isOdd:
+                if isOdd:
+        #                 将当前的节点接到odd_cur
+                        odd_cur.next = cur
+        #                 odd_cur后移一位
+                        odd_cur = odd_cur.next
+        #                 isOdd = false
+                        isOdd = False
+        #         否则：
+                else:
+        #                 将当前的节点接到even_cur
+                        even_cur.next = cur
+        #                 even_cur后移一位
+                        even_cur = even_cur.next
+        #                 isOdd = true
+                        isOdd = True
+                cur = cur.next
+        # 将两个链表拼接起来
+        even_cur.next = None
+        # if even_head.next:
+        if even_head.next:
+        #         odd_cur.next 指向 even_head.next
+                odd_cur.next = even_head.next
+        # 返回 odd_head.next
+        return odd_head.next
+
+
+
+# Remove Nth NOde from end of List
+'''
+GIven a LL, remove the nth node from the end of list and return its head
+
+For example,
+   Given linked list: 1->2->3->4->5, and n = 2.
+   After removing the second node from the end, the linked list becomes 1->2->3->5.
+
+Note:
+Given n will always be valid.
+Try to do this in one pass
+
+https://leetcode.com/articles/remove-nth-node-end-list/
+
+Approach #1: two  pass
+
+approach #2: one pass, using two pointers.
+
+'''
+
+
+# approach-2
+class Solution(object):
+    def removeNthFromEnd(self, head, n):
+        slow,fast = head,head
+        for _ in range(n):
+            fast = fast.next
+        if fast is None:
+            return head.next
+        while fast.next:
+            slow = slow.next
+            fast = fast.next
+        slow.next = slow.next.next
+        return head
+
+
+
+
+
+# Swap Nodes in Paris
+'''
+Given a LL, swap every two adjacent noes an return its head
+
+Should use only O(1) space. May NOT modify values in the list, only nodes itself can be changed.
+'''
+
+class Solution(object):
+    def swapPairs(self, head):
+        """
+        :type head: ListNode
+        :rtype: ListNode
+        """
+
+
+        dummy=ListNode(0)
+        pre=dummy
+        pre.next=head
+
+        while pre.next and pre.next.next:
+            a=pre.next
+            b=a.next
+            pre.next, a.next, b.next = b, b.next, a
+            pre=a
+        return dummy.next
+
+
+class Solution(object):
+    def swapPairs(self, head):
+        """
+        :type head: ListNode
+        :rtype: ListNode
+        """
+
+        current=ListNode(-1)
+        current.next=head
+        # current=dummy
+        while current.next and current.next.next:
+            tmp=current.next.val
+            current.next.val=current.next.next.val
+            current.next.next.val=tmp
+            current=current.next.next
+        return head
+
+
+
+# Reverse Noes in k-Group
+
+
+
+# Merge k sorted lists
