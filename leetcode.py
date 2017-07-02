@@ -972,3 +972,88 @@ class Solution(object):
 
 
 # Merge k sorted lists
+
+
+
+
+
+
+
+'''
+Array
+
+
+
+'''
+
+
+# Missing Number
+
+
+
+# two Sum
+
+# Move Zeroer
+
+
+# Two Sum II- input is sorted
+
+
+# Majority Element
+
+
+#Rotate array
+
+
+# Remove uplicates from sorted array
+
+
+# Remove Element
+
+
+# Array Partition I
+
+# Can Place Flowers
+
+# Contains Duplicate
+
+
+# Search Insert Position
+
+
+
+# Find All Numbers Disappeared in an Array
+
+
+# Plus One
+
+# Max Consecutive Ones
+
+# Shortest Unsorted Continuous Subarray
+
+
+# Third Maximum Number
+
+# Maximum Distance in arrays
+
+# Shortest Word Distance
+
+# best time to buy and sell stock Ii
+
+# Best time to Buy and Sell Stock
+
+# Reshape the matrix
+
+# maximum Subarray
+
+# Pascal's Triangle Ii
+
+# Pascal's Triangle
+
+# Maximum Product of three Numbers
+
+# K-diff Pairs in an array
+
+# Contains Duplciate Ii
+
+# Merge Sorted Array
