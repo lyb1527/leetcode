@@ -1630,7 +1630,83 @@ class Solution(object):
 
 
 # Maximum Product of three Numbers
+'''
+Given an integer array, find three numbers whose product is maxium and outpu the maxium
 
+Input: [1,2,3]
+Output: 6
+Example 2:
+Input: [1,2,3,4]
+Output: 24
+
+https://leetcode.com/articles/maximmum-product-of-three-numbers/
+Solution
+Approach #1 Brute Force [Time Limit Exceeded]
+TC: O(N^3), consider every triplet from the nums of length n
+SC: O(1), constant extra space used
+
+Approach #2 Using Sorting [Accepted]
+sort the given nums in ascending order and find out the product of last three numbers.
+NOTE, this product will be maximum only if all numbers in numbers are position.
+However, given the question, negative elements could also exist as well.
+It also is possible that two negative numbers lying at the left extreme end ,
+thrid number in the triplet being considered is the largest positiove number in the nums array.
+
+Thus, either the product nums[0] * nums[1] * nums{1}
+OR
+nums[n - 3]*nums[n - 2]*nums[n-1]
+
+TC: O(nlogn), sorting the nums takes O(nlogn)
+SC: O(logn), sorting takes O(logn) space
+
+
+
+Approach #3 Single Scan [Accepted]   O(n) & O(1)
+
+NOt necessarily need to sort array to find max product
+
+We could find the required 2 smallest values, min1 and majorityElement2
+and the three largest values, max1, max2, max3 in the nums array, by iterating over the nums array only
+once.
+At the end, we can find out the larger value out of min*min2*max1
+and max1*max2*max3 to find the max product
+
+Time complexity : O(n). Only one iteration over the numsnums array of length nn is required.
+
+Space complexity : O(1). Constant extra space is used.
+
+
+
+
+'''
+
+def maximumProduct(nums):
+    """
+    :type nums: List[int]
+    :rtype: int
+    """
+    max1 = -1000
+    max2 = -1000
+    max3 = -1000
+    min1 = 1000
+    min2 = 1000
+    for n in nums:
+        if n >max1:
+            max1,max2,max3 = n,max1,max2
+        elif n >max2:
+            max2,max3 = n,max2
+        elif n >max3:
+            max3 = n
+        if n < min1:
+            min1,min2 = n,min1
+        elif n < min2:
+            min2 = n
+    #print(max1, max2, max3, min1, min2)
+    return max(max1*max2*max3, max1*min1*min2)
+
+
+nums = [1, 3, 4, 5, 6, 7, 8]
+maximumProduct(nums)
 # K-diff Pairs in an array
 
 # Contains Duplciate Ii
@@ -1701,3 +1777,82 @@ class Solution(object):
                 j -= 1
 
         return False
+
+
+
+
+
+
+# Sort Colors
+'''
+Given an array with n objects colored red, white, blue, sort them so that objects of the same color are a
+adjacent, with the colors in order, red white, an blue
+
+use integers, 0, 1, 2 to represent red, white, blue rspectively.
+
+
+'''
+
+# O(n)       O(1)
+class Solution(object):
+    def sortColors(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: void Do not return anything, modify nums in-place instead.
+        """
+        if not nums: return
+        i, j = 0, 0
+        for k in xrange(len(nums)):
+            v = nums[k]
+            nums[k] = 2
+            if v < 2:
+                nums[j] = 1
+                j += 1
+            if v == 0:
+                nums[i] = 0
+                i += 1
+
+def sortColors(nums):
+    """
+    :type nums: List[int]
+    :rtype: void Do not return anything, modify nums in-place instead.
+    """
+    if not nums: return
+    i, j = 0, 0
+    for k in range(len(nums)):
+        v = nums[k]
+        nums[k] = 2
+        if v < 2:
+            nums[j] = 1
+            j += 1
+        if v == 0:
+            nums[i] = 0
+            i += 1
+
+a = [1, 2, 0, 0, 1, 2, 2, 1]
+sortColors(a)
+
+class Solution(object):
+    def sortColors(self, nums):
+        """
+
+        """
+        if not nums:
+            return []
+
+        n = len(nums)
+
+        cur = 0
+        lo,hi = 0,n-1
+
+        while cur <= hi:
+
+            if nums[cur] == 0:
+                nums[cur],nums[lo] = nums[lo],nums[cur]
+                lo += 1
+
+            if nums[cur] == 2:
+                nums[cur],nums[hi] = nums[hi],nums[cur]
+                hi -= 1
+
+            else: cur += 1
