@@ -1856,3 +1856,108 @@ class Solution(object):
                 hi -= 1
 
             else: cur += 1
+
+
+
+# Unique Paths
+class Solution(object):
+    def uniquePaths(self, m, n):
+        """
+        :type m: int
+        :type n: int
+        :rtype: int
+        """
+
+        #   [[1] * n] * m
+        board = [[1] * n for i in range(m)]
+
+        for i in range(1, m):
+            for j in range(1,n):
+                board[i][j] = board[i-1][j] + board[i][j-1]
+        return board[-1][-1]
+
+
+# Unique Paths - II
+
+
+class Solution(object):
+    def uniquePathsWithObstacles(self, g):
+        """
+        :type obstacleGrid: List[List[int]]
+        :rtype: int
+        """
+        if len(g) == 0 or len(g[0]) == 0 or g[0][0] == 1:
+            return 0
+        m, n = len(g), len(g[0])
+        f = [[0] * n for _ in range(m)]
+        f[0][0] = 1
+        for i in range(m):
+            for j in range(n):
+                if g[i][j] == 1:
+                    continue
+                if i != 0:
+                    f[i][j] = f[i - 1][j]
+                if j != 0 :
+                    f[i][j] += f[i][j - 1]
+        return f[m-1][n-1]
+
+
+# optimize space
+class Solution(object):
+    def uniquePathsWithObstacles(self, obstacleGrid):
+        """
+        :type obstacleGrid: List[List[int]]
+        :rtype: int
+        """
+        m = len(obstacleGrid)
+        n = len(obstacleGrid[0])
+        dp = [0] * (n + 1)
+        dp[0] = 1
+
+        for i in range(m):
+            for j in range(n):
+                if obstacleGrid[i][j] == 0:
+                    if j > 0:
+                        dp[j] += dp[j- 1]
+                else:
+                    dp[j] = 0
+        return dp[n - 1]
+
+# 3sum
+'''
+Given an array S of n integers, find all unique triplets that gives the sum of zero
+NOTE: no duplicate triplets
+
+Note: The solution set must not contain duplicate triplets.
+
+For example, given array S = [-1, 0, 1, 2, -1, -4],
+
+A solution set is:
+[
+  [-1, 0, 1],
+  [-1, -1, 2]
+]
+'''
+
+        nums.sort()
+        res = []
+        length = len(nums)
+        for i in range(0, length - 2):
+            if i and nums[i] == nums[i - 1]:
+                continue
+            target = nums[i] * -1
+            left, right = i + 1, length - 1
+            while left < right:
+                if nums[left] + nums[right] == target:
+                    res.append([nums[i], nums[left], nums[right]])
+                    right -= 1
+                    left += 1
+                    while left < right and nums[left] == nums[left - 1]:
+                           left += 1
+                    while left < right and nums[right] == nums[right + 1]:
+                        right -= 1
+                elif nums[left] + nums[right] > target:
+                    right -= 1
+                else:
+                    left += 1
+        return res
