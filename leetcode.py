@@ -1,7 +1,3464 @@
-"""
-###########Linked List#########
+'''
+
+Have to learn the probelm solving patterns by heart and apply them to similar probelms
+
+checkpoint 0:
+Get familiar with basic tricks such as two-pointers and bit manipulation from CICS or other books
+
+EASY problems: usually they have trivial brute force solutions . Need to learn how to apply the tricks to improve brute force
+solutions
+
+CHECKPOINT 1:
+
+If randomly oepn a few easy question for each DS, you can pinpoint the optimal
+solutions and implement them in a few minutes, may move onto the next CHECKPOINT
+, checkpoint 1 .
+
+STUDY GUIDE:
+1. sort the problems by acceptance rate escending
+2. try solving problems without hints at least with brute force solutions
+3. Study how the top solutions apply the tricks to improve performanceself.
+4.
+'''
+
+
+
+'''
+
+
+TREE----------Acceptance
+
+
+
+'''
+
+# 1. Merge two binary trees
+
+'''
+If two nodes overlap, sum is new node. If not , not NULL node is new
+
+'''
+
+class Solution(object):
+    def mergeTrees(self, t1, t2):
+        """
+        :type t1: TreeNode
+        :type t2: TreeNode
+        :rtype: TreeNode
+        """
+        if not t1 or not t2:
+            return None
+
+        t1.val += t2.val
+        t1.left = self.mergeTrees(t1.left, t2.left)
+        t1.right = self.mergeTrees(t1.right, t2.right)
+
+        return t1
+
+class Solution(object):
+    def mergeTrees(selfs, t1, t2):
+        if not t1: return t2
+        st = []
+        st.append((t1, t2))
+        while st:
+            a, b = st.pop()
+            if not a or not b:
+                continue
+            a.val += b.val
+            if not a.left:
+                a.left = b.left
+            else:
+                st.append((a.left, b.left))
+            if not a.right:
+                a.right = b.right
+            else:
+                st.append((a.right, b.right))
+        return t1
+
+
+# Average Of Levels in Binary Tree
+'''
+return the average of nodes on each level in the form of an array
+'''
+class Solution(object):
+    def averageOfLevels(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[float]
+        """
+        if not root:    return []
+        res = []
+        level = [root]
+        while level:
+            n = 0.0
+            count = 0
+            temp = []
+            for node in level:
+                n += node.val
+                count += 1
+                if node.left:
+                    temp.append(node.left)
+                if node.right:
+                    temp.append(node.right)
+            res.append(n / count)
+            level = temp
+        return res
+
+
+class Solution(object):
+    def averageOfLevels(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[float]
+        """
+        queue = [root]
+        res = []
+        while queue:
+            length = len(queue)
+            sum = 0
+            for i in xrange(length):
+                node = queue.pop(0)
+                sum += node.val
+                if node.left:
+                    queue.append(node.left)
+                if node.right:
+                    queue.append(node.right)
+            res.append(sum/float(length))
+
+        return res
+
+
+
+
+
+# Find Bottom left Tree Value
+
+'''
+Given a BT, find the leftmost value in the last row of a tree
+'''
+class Solution(object):
+    def findBottomLeftValue(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+        """
+        candidates = [root]
+        while candidates:
+            new_candidates = []
+            for root in candidates:
+                if root.left:
+                    new_candidates.append(root.left)
+                if root.right:
+                    new_candidates.append(root.right)
+            if not new_candidates:
+                return candidates[0].val
+            candidates = new_candidates
+
+
+
+class Solution(object):
+    def findBottomLeftValue(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+        """
+        queue = []
+        queue.append(root)
+        last = None
+        while queue:
+            s = queue.pop(0)
+            last = s
+            if s.right:
+                queue.append(s.right)
+            if s.left:
+                queue.append(s.left)
+
+        return s.val
+
+
+
+
+# Find max in each level
+
+
+class Solution(object):
+    def largestValues(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[int]
+        """
+        if root is None:
+            return []
+        result = []
+        pq = [root]
+        while pq:
+            new_pq = []
+            res = max(node.val for node in pq)
+            result.append(res)
+            for node in pq:
+                if node.left is not None:
+                    new_pq.append(node.left)
+                if node.right is not None:
+                    new_pq.append(node.right)
+            pq = new_pq
+
+        return result
+
+# Maximum Depth Of Bianry Tree
+
+
+class Solution(object):
+    def maxDepth(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+
+        if not root:
+            return 0
+
+        return 1 + max(self.maxDepth(root.left), self.maxDepth(root.right))
+        """
+
+        if not root:
+            return 0
+
+        depth = 0
+        queue = [root]
+        while queue:
+            level = []
+            for node in queue:
+                if node.left:
+                    level.append(node.left)
+                if node.right:
+                    level.append(node.right)
+            queue = level
+            depth += 1
+        return depth
+
+
+
+class Solution(object):
+    def maxDepth(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+        """
+        if not root:
+            return 0
+
+        return 1 + max(self.maxDepth(root.left), self.maxDepth(root.right))
+
+
+
+# Most Frequent Subtree Sum
+'''
+Given root of a tree, find the most frequent substree sum.
+
+The subtree sum of a node is efined as the sum of all the node values forme by the subtree rooted at that node.
+including the noe itself
+
+It there is a tie, return all the values with the highest frequency in any orer
+'''
+
+'''
+给定一棵二叉树，求其最频繁子树和。即所有子树的和中，出现次数最多的数字。如果存在多个次数一样的子树和，则全部返回。
+
+注意：你可以假设任意子树和均为32位带符号整数。
+
+解题思路：
+树的遍历 + 计数
+'''
+
+
+class Solution(object):
+    def findFrequentTreeSum(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[int]
+        """
+        dic = {}
+        self.subSum(root, dic)
+        m = 0
+        res = set()
+        #print dic
+        for k in dic:
+            if dic[k] > m:
+                m = dic[k]
+                res = set()
+                res.add(k)
+            if dic[k] == m:
+                res.add(k)
+        return list(res)
+
+
+
+    def subSum(self, root, dic):
+        if not root:
+            return 0
+        s = 0
+        if root.left:
+            s += self.subSum(root.left, dic)
+        if root.right:
+            s += self.subSum(root.right, dic)
+        s += root.val
+        if s not in dic:
+            dic[s] = 1
+        else:
+            dic[s] += 1
+        return s
+
+
+class Solution(object):
+    def findFrequentTreeSum(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[int]
+        """
+        if not root:
+            return []
+
+        self._map = {}
+        self.max_count = 0
+
+        self.findFrequentTreeSumHelper(root)
+
+        res = []
+        for k in self._map:
+            if self._map[k] == self.max_count:
+                res.append(k)
+
+        return res
+
+
+    def findFrequentTreeSumHelper(self, root):
+        if not root:
+            return 0
+
+        left = self.findFrequentTreeSumHelper(root.left)
+        right = self.findFrequentTreeSumHelper(root.right)
+
+        _sum = root.val + left + right
+        count = self._map.get(_sum, 0) + 1
+        self._map[_sum] = count
+
+        self.max_count = max(count, self.max_count)
+
+        return _sum
+
+
+# Constructing String from binary Tree
+'''Construct a string consistis of parenthesis an integers from a binary tree with preorder traversing way
+'''
+
+class Solution(object):
+    def tree2str(self, t):
+        """
+        :type t: TreeNode
+        :rtype: str
+        """
+        if t == None:
+            return ''
+        if t.left == None and t.right == None:
+            return str(t.val)
+        if t.right == None:
+            return str(t.val) + '(' + self.tree2str(t.left) + ')'
+        return str(t.val) + '(' + self.tree2str(t.left) + ')' + '(' + self.tree2str(t.right) + ')'
+
+
+
+
+# Invert  Binary Tree
+'''
+
+翻转一棵二叉树。
+'''
+
+'''
+
+Complexity Analysis
+
+Since each node in the tree is visited only once, the time complexity is O(n)O(n),
+ where n is the number of nodes in the tree. We cannot do better than that,
+ since at the very least we have to visit each node to invert it.
+
+Because of recursion, O(h)O(h) function calls will be placed on the stack in the worst case,
+ where hh is the height of the tree. Because h\in O(n)h∈O(n), the space complexity is O(n)O(n).
+
+
+'''
+
+class Solution(object):
+    def invertTree(self, root):
+        """
+        :type root: TreeNode
+        :rtype: TreeNode
+        """
+        if not root:
+            return None
+
+        left = self.invertTree(root.left)
+        right = self.invertTree(root.right)
+
+        root.left = right
+        root.right = left
+
+        return root
+
+class Solution(object):
+    def invertTree(self, root):
+        """
+        :type root: TreeNode
+        :rtype: TreeNode
+        """
+        if not root:
+            return root
+        elif not (root.left or root.right):
+            return root
+        layer = [root]
+        while layer:
+            nxt = []
+            for node in layer:
+                node.left,node.right = node.right,node.left
+                if node.left:
+                    nxt.append(node.left)
+                if node.right:
+                    nxt.append(node.right)
+            layer= nxt
+        return root
+
+'''
+
+Since each node in the tree is visited / added to the queue only once, the time complexity is O(n)O(n), where nn is the number of nodes in the tree.
+
+Space complexity is O(n)O(n), since in the worst case, the queue will contain all nodes in one level of the binary tree. For a full binary tree, the leaf level has \lceil \frac{n}{2}\rceil=O(n)⌈
+​2
+​
+​n
+​​ ⌉=O(n) leaves.
+'''
+
+
+class Solution(object):
+    def invertTree(self, root):
+        """
+        :type root: TreeNode
+        :rtype: TreeNode
+        """
+        if not root: return root
+        queue = [root]
+        while len(queue) > 0:
+            tmp = []
+            for node in queue:
+                node.left, node.right = node.right, node.left
+                if node.left:
+                    tmp.append(node.left)
+                if node.right:
+                    tmp.append(node.right)
+            queue = tmp
+        return root
+
+
+
+# Kill Process
+'''
+给定n个进程，进程ID为PID，父进程ID为PPID。
+
+当杀死一个进程时，其子进程也会被杀死。
+
+给定进程列表和其对应的父进程列表，以及被杀死的进程ID，求所有被杀死的进程ID。
+
+注意：
+
+给定被杀死的进程ID一定在进程列表之中
+n >= 1
+解题思路：
+树的层次遍历
+
+利用孩子表示法建立进程树
+
+然后从被杀死的进程号开始，执行层次遍历。
+
+'''
+class Solution(object):
+    def killProcess(self, pid, ppid, kill):
+        """
+        :type pid: List[int]
+        :type ppid: List[int]
+        :type kill: int
+        :rtype: List[int]
+        """
+        dic = collections.defaultdict(set)
+        for child, parent in zip(pid, ppid):
+            dic[parent].add(child)
+        queue = [kill]
+        victims = []
+        while queue:
+            first = queue.pop(0)
+            victims.append(first)
+            for child in dic[first]:
+                queue.append(child)
+        return victims
+
+
+# Add One Row to Tree
+
+
+
+
+# Binary Tree Tilt
+
+'''
+the tilt of a tree node is defined as the absolute difference between the sum of all left subtree noe and
+the sum of all right subtree node values. Null node has tilt 0.
+
+The tilt of the whole tree is defined as the sum of all nodes' tilt
+'''
+
+
+#R
+'''
+
+recursion
+
+给定二叉树，计算二叉树的“倾斜值”（tilt）
+
+二叉树节点的倾斜值是指其左右子树和的差的绝对值。空节点的倾斜值为0。
+
+注意：
+
+节点和不超过32位整数范围
+倾斜值不超过32位整数范围
+解题思路：
+遍历二叉树 + 递归求二叉树子树和
+
+'''
+
+
+public class Solution {
+    int tilt=0;
+    public int findTilt(TreeNode root) {
+        traverse(root);
+        return tilt;
+    }
+    public int traverse(TreeNode root)
+    {
+        if(root==null )
+            return 0;
+        int left=traverse(root.left);
+        int right=traverse(root.right);
+        tilt+=Math.abs(left-right);
+        return left+right+root.val;
+    }
+}
+
+'''
+Time complexity : O(n)O(n). where nn is the number of nodes. Each node is visited once.
+Space complexity : O(n)O(n). In worst case when the tree is skewed depth of tree will be nn. In average case depth will be lognlogn
+'''
+class Solution(object):
+    def findTilt(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+        """
+        if not root: return 0
+        return abs(self.subSum(root.left)-self.subSum(root.right)) + self.findTilt(root.left) + self.findTilt(root.right)
+
+    def subSum(self, node):
+        if not node: return 0
+        return node.val + self.subSum(node.left) + self.subSum(node.right)
+
+
+
+
+# Sum Of Left Leaves
+
+'''
+Find the sum of all left leaves
+'''
+
+class Solution(object):
+    def sumOfLeftLeaves(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+        """
+        if not root:
+            return 0
+        stack = [root]
+        res =0
+        while stack:
+            curr = stack.pop()
+
+
+            if not curr.left :
+                res += 0
+            if curr.left:
+                if not curr.left.right and not curr.left.left:
+                    res += curr.left.val
+                stack+=[curr.left]
+            if curr.right:
+                stack +=[curr.right]
+
+
+        return res
+
+
+class Solution(object):
+    def sumOfLeftLeaves(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+        """
+
+        """
+        """
+        if not root:
+            return 0
+
+        nodes = [root]
+        result = 0
+
+        while nodes:
+            next_nodes = []
+
+            for node in nodes:
+                if node.left:
+                    next_nodes.append(node.left)
+                    # node not null
+                    if not node.left.left and not node.left.right:
+                        result += node.left.val
+
+                if node.right:
+                    next_nodes.append(node.right)
+
+            nodes = next_nodes
+
+        return result
+
+
+# Same Tree
+'''
+write a func to check if they are the same
+
+SAME: when have structure the same and nodes same values
+
+'''
+
+class Solution(object):
+    def isSameTree(self, p, q):
+        """
+        :type p: TreeNode
+        :type q: TreeNode
+        :rtype: bool
+        """
+        if p == q:
+            return True
+
+        if p is None or q is None:
+            return False
+
+        return p.val == q.val \
+            and self.isSameTree(p.left, q.left) \
+            and self.isSameTree(p.right, q.right)
+
+
+class Solution(object):
+    def isSameTree(self, p, q):
+        """
+        :type p: TreeNode
+        :type q: TreeNode
+        :rtype: bool
+        """
+        queue = [(p, q)]
+        while queue:
+            node1, node2 = queue.pop(0)
+            if not node1 and not node2:
+                continue
+            elif None in [node1, node2]:
+                return False
+            else:
+                if node1.val != node2.val:
+                    return False
+                queue.append((node1.left, node2.left))
+                queue.append((node1.right, node2.right))
+        return True
+
+# BFS
+class Solution(object):
+    def bfs(self, root):
+        res = [root.val]
+        l = [root]
+        while l:
+            for i in l:
+                tmp = l.pop()
+                if tmp.left:
+                    l.append(tmp.left)
+                    res.append(tmp.left.val)
+                else:
+                    res.append('t')
+                if tmp.right:
+                    l.append(tmp.right)
+                    res.append(tmp.right.val)
+                else:
+                    res.append('t')
+        return res
+
+    def isSameTree(self, p, q):
+        """
+        :type p: TreeNode
+        :type q: TreeNode
+        :rtype: bool
+        """
+        if not p and not q:
+            return True
+        if not p or not q or p.val != q.val:
+            return False
+        res1 = self.bfs(p)
+        res2 = self.bfs(q)
+        return res1 == res2
+
+# Binary Tree Inorder Traversal
+
+
+
+# BInary Tree Preorder Traversal
+
+
+# Binary Tree Upside Down
+class Solution:
+    # @param {TreeNode} root the root of binary tree
+    # @return {TreeNode} the new root
+    def upsideDownBinaryTree(self, root):
+        # Write your code here
+        if root is None or root.left is None:
+            return root
+
+        new_root = self.upsideDownBinaryTree(root.left)
+        root.left.left = root.right
+        root.left.right = root
+        root.right = None
+        root.left = None
+        return new_root
+
+
+# Kth Smallest element in a BST
+'''
+find the kth smallest element in BST
+
+
+What if the BST is modified (insert/delete operations) often and you need to
+ find the kth smallest frequently? How would you optimize the kthSmallest routine?
+左子树中所有元素的值均小于根节点的值
+
+右子树中所有元素的值均大于根节点的值
+
+因此采用中序遍历（左 -> 根 -> 右）即可以递增顺序访问BST中的节点，从而得到第k小的元素，时间复杂度O(k)
+
+'''
+class Solution(object):
+    def kthSmallest(self, root, k):
+        """
+        :type root: TreeNode
+        :type k: int
+        :rtype: int
+        """
+        stack = []
+        while root or stack:
+            while root:
+                stack.append(root)
+                root = root.left
+
+            root = stack.pop()
+            k -= 1
+            if k==0:
+                return root.val
+            root = root.right
+
+        return -1
+
+class Solution(object):
+    def kthSmallest(self, root, k):
+        res = []
+        while k:
+            while root:
+                res.append(root)
+                root = root.left
+            node = res.pop()
+            if k == 1:
+                return node.val
+            k -= 1
+            root = node.right
+        return -1
+
+'''
+For the follow up question, I think we could add a variable to the TreeNode to
+ record the size of the left subtree. When insert or delete a node in the left
+ subtree, we increase or decrease it by 1. So we could know whether the kth
+  smallest element is in the left subtree or in the right subtree by compare
+   the size with k.
+'''
+
+
+
+
+
+
+
+# Diameter of binary tree
+'''
+compute the length of the diameter of the tree
+
+the diameter of BT is the lenght of the longest path between any two nodes in a tree
+the path may or may not pass thorugh the root
+
+NOTE :the length of path is represented by number of EDGES betwen them
+
+给定一棵二叉树，计算任意两节点之间的边数的最大值。
+
+给定一棵二叉树，计算任意两节点之间的边数的最大值。
+
+
+解题思路：
+解法I 计算子树深度
+'''
+
+class Solution(object):
+
+    def diameterOfBinaryTree(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+        """
+        self.ans = 0
+        self.traverse(root)
+        return self.ans
+
+
+    def traverse(self, root):
+        if not root: return 0
+        left = self.traverse(root.left)
+        right = self.traverse(root.right)
+        self.ans = max(self.ans, left + right)
+        return max(left, right) + 1
+
+
+
+from collections import defaultdict
+
+class Solution(object):
+    def diameterOfBinaryTree(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+        """
+        if not root:
+            return 0
+        table, stack = defaultdict(set), [root]
+        while stack:
+            cur = stack.pop()
+            if cur not in table:
+                table[cur] = set()
+            if cur.left:
+                table[cur].add(cur.left)
+                table[cur.left].add(cur)
+                stack.append(cur.left)
+            if cur.right:
+                table[cur].add(cur.right)
+                table[cur.right].add(cur)
+                stack.append(cur.right)
+        cnt = 0
+        while len(table) > 2:
+            leaves = [node for node in table if len(table[node]) == 1]
+            for leaf in leaves:
+                table[table.pop(leaf).pop()].remove(leaf)
+            cnt += 2
+        return cnt + len(table) - 1
+
+#解法II 遍历二叉树 + 计算子树深度
+
+# Definition for a binary tree node.
+# class TreeNode(object):
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
+class Solution(object):
+    def depth(self, root):
+        if not root: return 0
+        return 1 + max(self.depth(root.left), self.depth(root.right))
+
+    def traverse(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+        """
+        if not root: return 0
+        return max(self.depth(root.left) + 1 + self.depth(root.right), \
+                           self.traverse(root.left), \
+                           self.traverse(root.right))
+
+    def diameterOfBinaryTree(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+        """
+        return max(self.traverse(root) - 1, 0)
+
+
+
+# House Robber III
+'''
+如果两个有边直接相连的房间在同一晚上都失窃，就会自动联络警察。
+
+判断盗贼在不惊动警察的情况下最多可以偷到的金钱数目。
+
+测试用例如题目描述。
+
+解题思路：
+解法I 深度优先搜索（DFS）
+
+深度优先遍历二叉树，每次遍历返回两个值：分别表示偷窃或者不偷窃当前节点可以获得的最大收益。
+'''
+
+class Solution(object):
+    def rob(self, root):
+        res = self.helper(root)
+        return max(res)
+    def helper(self, root):
+        res =[0,0]
+        if not root: return res
+        left = self.helper(root.left)
+        right = self.helper(root.right)
+        res[0] = root.val + left[1] + right[1]
+        res[1] = max(left) + max(right)
+        return res
+
+
+
+# Serialize and Deserialize binary tree
+'''
+ a binary tree can be serialized to a string and this string can be deserialized
+  to the original tree structure.
+'''
+
+class Codec:
+
+    def serialize(self, root):
+        """Encodes a tree to a single string.
+
+        :type root: TreeNode
+        :rtype: str
+        """
+        serialize_str = ''
+        if not root:
+            return serialize_str
+
+        queue = collections.deque([root])
+        while queue:
+            front = queue.popleft()
+            if serialize_str:
+                serialize_str += ','
+            if front:
+                serialize_str += str(front.val)
+                queue.extend([front.left, front.right])
+            else:
+                serialize_str += '#'
+
+        return serialize_str
+
+    def deserialize(self, data):
+        """Decodes your encoded data to tree.
+
+        :type data: str
+        :rtype: TreeNode
+        """
+        if not data:
+            return
+
+        node_vals = data.split(',')
+        idx = 0
+        root = TreeNode(int(node_vals[idx]))
+        queue = collections.deque([root])
+        while queue:
+            front = queue.popleft()
+            idx += 1
+            if node_vals[idx] != '#':
+                front.left = TreeNode(int(node_vals[idx]))
+                queue.append(front.left)
+
+            idx += 1
+            if node_vals[idx] != '#':
+                front.right = TreeNode(int(node_vals[idx]))
+                queue.append(front.right)
+
+        return root
+
+
+class Codec:
+
+    def serialize(self, root):
+        """Encodes a tree to a single string.
+
+        :type root: TreeNode
+        :rtype: str
+        """
+
+        queue, res = [root], []
+        while queue:
+            curr = queue.pop()
+            if not curr:
+                res += ['x']
+            else:
+                res += [str(curr.val)]
+                queue += [curr.right, curr.left]
+
+        return ' '.join(res)
+
+    def deserialize(self, data):
+        """Decodes your encoded data to tree.
+
+        :type data: str
+        :rtype: TreeNode
+        """
+
+        vals = data.split()
+        return self.helper(vals)
+
+    def helper(self, vals):
+        if not vals:
+            return None
+        val = vals.pop(0)
+        if val == 'x':
+            return None
+        root = TreeNode(int(val))
+        root.left = self.helper(vals)
+        root.right = self.helper(vals)
+        return root
+
+
+
+class Codec:
+    def serialize(self, root):
+
+        if not root:
+            return ''
+
+        queue = [root]
+        arr = [str(root.val)]
+        while queue:
+            node = queue.pop(0)
+            if node.left:
+                arr.append(str(node.left.val))
+                queue.append(node.left)
+            else:
+                arr.append('x')
+            if node.right:
+                arr.append(str(node.right.val))
+                queue.append(node.right)
+            else:
+                arr.append('x')
+
+        return '#'.join(arr)
+
+
+    def deserialize(self, data):
+
+        if not data:
+            return None
+        arr = data.split('#')
+        root = TreeNode(int(arr.pop(0)))
+        queue = [root]
+        while arr and queue:
+            node = queue.pop(0)
+            l = arr.pop(0)
+            if l != 'x':
+                node.left = TreeNode(int(l))
+                queue.append(node.left)
+            r = arr.pop(0)
+            if r != 'x':
+                node.right = TreeNode(int(r))
+                queue.append(node.right)
+        return root
+
+
+
+# Convert Sorted List to BST
+
+class Solution(object):
+    def sortedArrayToBST(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: TreeNode
+        """
+        if not nums:
+            return None
+
+        mid = len(nums) // 2
+
+        root = TreeNode(nums[mid])
+        root.left = self.sortedArrayToBST(nums[:mid])
+        root.right = self.sortedArrayToBST(nums[mid+1:])
+
+        return root
+
+
+
+
+# Convert Univalue Subtree
+
+
+
+
+# Binary Serach Tree Iterator
+class BSTIterator(object):
+    def __init__(self, root):
+        self.stack = []
+        self.pushLeft(root)
+
+    # @return a boolean, whether we have a next smallest number
+    def hasNext(self):
+        return self.stack
+
+    # @return an integer, the next smallest number
+    def next(self):
+        top = self.stack.pop()
+        self.pushLeft(top.right)
+        return top.val
+
+    def pushLeft(self, node):
+        while node:
+            self.stack.append(node)
+            node = node.left
+
+
+# Subtree of Another Tree
+'''
+Given two non-empty BST s and t, check whether t has the same structure and node values with a subtree of s.
+Given tree s:
+
+     3
+    / \
+   4   5
+  / \
+ 1   2
+Given tree t:
+   4
+  / \
+ 1   2
+'''
+
+'''
+Complexity Analysis: preorder Traversal
+
+
+Time complexity : O(m^2+n^2+m*n). A total of nn nodes of the tree ss and mm nodes of tree tt are traversed. Assuming string concatenation takes O(k)O(k) time for strings of length kk and indexOf takes O(m*n)O(m∗n).
+
+Space complexity : O(max(m,n)). The depth of the recursion tree can go upto nn for tree tt and mm for tree ss in worst case.
+'''
+class Solution(object):
+    def isSubtree(self, s, t):
+        """
+        :type s: TreeNode
+        :type t: TreeNode
+        :rtype: bool
+        """
+        preorder_s = self.preorderString(s)
+        preorder_t = self.preorderString(t)
+        print(preorder_s)
+
+        return preorder_s.find(preorder_t) != -1
+
+
+    def preorderString(self, tree):
+        out = ""
+        stack = [tree]
+        while stack:
+            curr = stack.pop()
+            if curr:
+                out = ",".join([out, str(curr.val)])
+                stack.append(curr.left)
+                stack.append(curr.right)
+            else:
+                out = out + "!"
+        return out
+
+
+
+class Solution(object):
+    def isSubtree(self, s, t):
+        """
+        :type s: TreeNode
+        :type t: TreeNode
+        :rtype: bool
+        """
+        if self.sameTree(s, t):
+            return True
+        if not s:
+            return False
+        return self.isSubtree(s.left, t) or self.isSubtree(s.right, t)
+
+    def sameTree(self, root1, root2):
+        if root1 and root2:
+            return root1.val == root2.val and self.sameTree(root1.left, root2.left) and self.sameTree(root1.right, root2.right)
+        return root1 is root2
+
+
+'''
+Complexity Analysis
+
+Time complexity : O(m*n). In worst case(skewed tree) traverse function takes O(m*n)O(m∗n) time.
+
+Space complexity : O(n). The depth of the recursion tree can go upto nn. nn refers to the number of nodes in ss.
+
+
+
+'''
+class Solution(object):
+    def isSubtree(self, s, t):
+        """
+        :type s: TreeNode
+        :type t: TreeNode
+        :rtype: bool
+        """
+        if not s or not t:
+            return not s and not t
+        if self.check(s, t): return True
+        return self.isSubtree(s.left, t) or self.isSubtree(s.right, t)
+
+    def check(self, s, t):
+        if not s or not t: return not s and not t
+        if s.val != t.val: return False
+        return self.check(s.left, t.left) and self.check(s.right, t.right)
+
+
+# Unique Binary Search Tree
+'''
+Given n, how many structurally unique BSTs that sotre values 1...n?
+
+Given n = 3, there are a total of 5 unique BST's.
+
+   1         3     3      2      1
+    \       /     /      / \      \
+     3     2     1      1   3      2
+    /     /       \                 \
+   2     1         2                 3
+
+'''
+class Solution(object):
+    def numTrees(self, n):
+        """
+        :type n: int
+        :rtype: int
+        """
+        dp = [1, 1, 2]
+        if n <= 2:
+            return dp[n]
+        else:
+            dp += [0 for i in range(n-2)]
+            for i in range(3, n + 1):
+                for j in range(1, i+1):
+                    dp[i] += dp[j-1] * dp[i-j]
+            return dp[n]
+
+
+# Binary Tree Lonest Consecutive Sequence
+
+
+# Binary Tree Right Sie View
+'''
+给定一棵二叉树，假设你站在它的右侧，自顶向下地返回你可以观察到的节点的值。
+
+例如，给定上面的二叉树，你应该返回[1, 3, 4]。
+
+解题思路：
+二叉树的层次遍历，每层按照从右向左的顺序依次访问节点
+'''
+class Solution(object):
+    def rightSideView(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[int]
+        """
+        ans = []
+        if root is None:
+            return ans
+        queue = [root]
+        while queue:
+            size = len(queue)
+            for r in range(size):
+                top = queue.pop(0)
+                if r == 0:
+                    ans.append(top.val)
+
+                # append right first, so pop will get the first!
+                if top.right:
+                    queue.append(top.right)
+                if top.left:
+                    queue.append(top.left)
+        return ans
+
+
+
+class Solution(object):
+    def rightSideView(self, root):
+        if not root: return []
+        ans = []
+        self.rightView(root, ans, 0)
+        return ans
+
+    def rightView(self, root, ans, level):
+        if not root: return
+        if level == len(ans):
+            ans.append(root.val)
+        self.rightView(root.right, ans, level+1)
+        self.rightView(root.left, ans, level+1)
+
+
+# Binary Tree PostOrder Traversal
+
+# Left, Right, Root
+class Solution(object):
+    def postorderTraversal(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[int]
+        """
+        if not root:
+            return []
+        res = []
+        stack = []
+        stack.append(root)
+        while stack:
+            curr = stack[-1]
+            while curr.left:
+                tmp = curr.left
+                stack.append(curr.left)
+                curr.left = None
+                curr = tmp
+            if curr.right:
+                stack.append(curr.right)
+                curr.right = None
+            else:
+                res.append(curr.val)
+                stack.pop()
+        return res
+
+class Solution(object):
+    def postorderTraversal(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[int]
+        """
+        if not root: return []
+
+        output = []
+        stack = [root]
+
+        while stack:
+            tmp = stack.pop()
+            if tmp.left:
+                stack.append(tmp.left)
+
+            if tmp.right:
+                stack.append(tmp.right)
+
+            output.insert(0,tmp.val)
+
+        return output
+
+# Binary Tree level Order Traversal II
+
+'''
+Given a BT, return the bottom-up level order traversal of its nodes' values
+
+from left to right, level by level from leaf to root
+'''
+
+class Solution(object):
+    def levelOrderBottom(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[List[int]]
+        """
+        if not root:
+            return []
+
+        result = []
+        queue = [(root, 0)]
+
+        while queue:
+            node, dep = queue.pop(0)
+
+            if len(result) == dep:
+                result.append([])
+            result[dep].append(node.val)
+
+            if node.left:
+                queue.append((node.left, dep + 1))
+            if node.right:
+                queue.append((node.right, dep + 1))
+
+        return result[::-1]
+
+
+class Solution(object):
+    def levelOrderBottom(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[List[int]]
+        """
+        if root == None:
+            return []
+        queue = [root]
+        result = []
+        while queue:
+            newq = []
+            newr = []
+            for item in queue:
+                newr.append(item.val)
+                if item.left:
+                    newq.append(item.left)
+                if item.right:
+                    newq.append(item.right)
+            queue = newq
+            result.append(newr)
+        return result[::-1]
+
+
+
+# Path Sum III
+'''
+Given a BT in which each node contains an integer value
+
+Find the number of paths that sum to a given value
+
+path does NOT need start or end at root or a leaf, but it must go gownwards
+(travelling only from parent nodes to child nodes)
+root = [10,5,-3,3,2,null,11,3,-2,null,1], sum = 8
+
+      10
+     /  \
+    5   -3
+   / \    \
+  3   2   11
+ / \   \
+3  -2   1
+
+Return 3. The paths that sum to 8 are:
+
+1.  5 -> 3
+2.  5 -> 2 -> 1
+3. -3 -> 11
+
+'''
+
+# 78 ms , DFS
+class Solution(object):
+    def pathSum(self, root, sum):
+        """
+        :type root: TreeNode
+        :type sum: int
+        :rtype: int
+        """
+        sumDict = dict()
+        sumDict[0] = 1
+        return self.dfs(root, 0, sum, sumDict)
+
+    def dfs(self, root, sum, target, sumDict):
+        if not root:
+            return 0
+        sum += root.val
+        count = sumDict.get(sum - target, 0)
+        sumDict[sum] = sumDict.get(sum, 0) + 1
+        count += self.dfs(root.left, sum, target, sumDict)
+        count += self.dfs(root.right, sum, target, sumDict)
+        sumDict[sum] -= 1
+        return count
+
+
+class Solution(object):
+    def pathSum(self, root, sum):
+        """
+        :type root: TreeNode
+        :type sum: int
+        :rtype: int
+        """
+        self.sum = sum
+        self.result = 0
+        if not root:
+            return 0
+        self.dfs(root, [])
+        return self.result
+
+    def dfs(self, node, vl):
+        if node:
+            vl = [i+node.val for i in vl] + [node.val]
+            self.result += vl.count(self.sum)
+            self.dfs(node.left, vl)
+            self.dfs(node.right, vl)
+
+
+class Solution(object):
+    def _sum(self, root, target):
+        if not root:
+            return 0
+        result = 0
+        if root.val == target:
+            result += 1
+        result += self._sum(root.left, target - root.val)
+        result += self._sum(root.right, target - root.val)
+        return result
+
+
+    def pathSum(self, root, sum):
+        if not root:
+            return 0
+        result = self._sum(root, sum)
+        result += self.pathSum(root.left, sum)
+        result += self.pathSum(root.right, sum)
+        return result
+
+
+
+
+
+
+# Binary Tree Longest consecutive Sequence II
+
+
+
+# Binary Tree level order Traversal
+class Solution(object):
+    def levelOrder(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[List[int]]
+        """
+        self.results = []
+        if not root:
+            return self.results
+        q = [root]
+        while q:
+            new_q = []
+            self.results.append([n.val for n in q])
+            for node in q:
+                if node.left:
+                    new_q.append(node.left)
+                if node.right:
+                    new_q.append(node.right)
+            q = new_q
+        return self.results
+
+# Closet Binary Seasrch Teee Value
+???????????????
+
+
+# Lowest Common Ancestor of a binary search tree
+'''
+find LCA of two given nodes in BST
+
+ ___2__          ___8__
+   /      \        /      \
+   0      _4       7       9
+         /  \
+         3   5
+For example, the lowest common ancestor (LCA) of nodes 2 and 8 is 6. Another
+example is LCA of nodes 2 and 4 is 2, since a node can be a descendant of itself according to the LCA definition.
+
+
+记当前节点为node，从根节点root出发
+
+若p与q分别位于node的两侧，或其中之一的值与node相同，则node为LCA
+
+否则，若p的值＜node的值，则LCA位于node的左子树
+
+否则，LCA位于node的右子树
+'''
+class Solution(object):
+    def lowestCommonAncestor(self, root, p, q):
+        """
+        :type root: TreeNode
+        :type p: TreeNode
+        :type q: TreeNode
+        :rtype: TreeNode
+        """
+
+        current = root
+        if not current:
+            return current
+        cmin = min(p.val, q.val)
+        cmax = max(p.val, q.val)
+        while current.val < cmin or current.val > cmax:
+            if current.val < cmin:
+                current = current.right
+            else:
+                current = current.left
+        return current
+
+class Solution(object):
+    def lowestCommonAncestor(self, root, p, q):
+        """
+        :type root: TreeNode
+        :type p: TreeNode
+        :type q: TreeNode
+        :rtype: TreeNode
+        """
+        while root:
+            if root.val > p.val and root.val > q.val:
+                root = root.left
+            elif root.val < p.val and root.val < q.val:
+                root = root.right
+            else:
+                return root
+
+class Solution(object):
+    def lowestCommonAncestor(self, root, p, q):
+        """
+        :type root: TreeNode
+        :type p: TreeNode
+        :type q: TreeNode
+        :rtype: TreeNode
+        """
+        if p.val < root.val and q.val < root.val:
+            return self.lowestCommonAncestor(root.left, p, q)
+        elif p.val > root.val and q.val > root.val:
+            return self.lowestCommonAncestor(root.right, p, q)
+        else:
+            return root
+
+# closest Binary Search Tree value II
+
+
+# Symmetic Tree
+'''
+Given BT, check whether it is a a mirror of itself.
+For example, this binary tree [1,2,2,3,4,4,3] is symmetric:
+
+    1
+   / \
+  2   2
+ / \ / \
+3  4 4  3
+'''
 
 """
+Two trees are a mirror reflection of each other if:
+
+1. Their two roots have the same value.
+2. The right subtree of each tree is a mirror reflection of the left subtree of the other tree.
+"""
+
+# Approach 1: recursive
+'''
+TC: Because we traverse the entire input tree once, the total run time is
+ O(n), where nn is the total number of nodes in the tree.
+
+
+SC: ee. In the worst case, the tree is linear and the height is in O(n)O(n).
+ Therefore, space complexity due to recursive calls on the stack is O(n)O(n) in the worst cas
+'''
+
+class Solution(object):
+    def isSymmetric(self, root):
+        """
+        :type root: TreeNode
+        :rtype: bool
+        """
+        return self.isMir(root, root)
+
+    def isMir(self, node1, node2):
+        if node1 is None and node2 is None:
+            return True
+        if node1 is None or node2 is None:
+            return False
+        return (node1.val == node2.val) and self.isMir(node1.left, node2.right) and self.isMir(node1.right, node2.left)
+
+
+
+# Approach 2: iterative
+
+'''
+e total run time is O(n)O(n), where nn is the total number of nodes in the tree.
+
+There is additional space required for the search queue. In the worst case, we
+ have to insert O(n)O(n) nodes in the queue. Therefore, space complexity is O(n)O(n).
+'''
+
+class Solution(object):
+    def isSymmetric(self, root):
+        """
+        :type root: TreeNode
+        :rtype: bool
+        """
+        if root is None:
+            return True
+        stack = [(root.left, root.right)]
+        while stack:
+            left, right = stack.pop()
+            if left is None and right is None:
+                continue
+            if left is None or right is None:
+                return False
+            if left.val == right.val:
+                stack.append((left.left, right.right))
+                stack.append((left.right, right.left))
+            else:
+                return False
+        return True
+
+# Find mode In Binary Search Teee
+'''
+给定一棵包含重复元素的二叉树。寻找其中的所有众数。
+
+注意：二叉树可能包含多个众数，以任意顺序返回即可。
+
+'''
+
+class Solution(object):
+    def findMode(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[int]
+        """
+        from collections import Counter
+
+        if not root:
+            return []
+        stack = [root]
+        c = Counter()
+
+        while stack:
+            tmp = stack.pop()
+            c[tmp.val] += 1
+
+            if tmp.right:
+                stack.append(tmp.right)
+            if tmp.left:
+                stack.append(tmp.left)
+
+        mode = max(c.values())
+
+        return [key for key in c if c[key] == mode]
+
+
+# Binary Tree Paths
+'''
+GIven a BT, return all root to leaf paths
+
+给定一棵二叉树，返回所有“根到叶子”的路径。
+'''
+class Solution(object):
+    def binaryTreePaths(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[str]
+        """
+
+        if not root:
+            return []
+
+        res = []
+        stack = [[root, ""]]
+
+        while stack:
+            node, lstr = stack.pop()
+
+            if not node.left and not node.right:
+                res.append(lstr + str(node.val))
+            if node.left:
+                stack.append([node.left, lstr + str(node.val) + "->"])
+            if node.right:
+                stack.append([node.right, lstr + str(node.val) + "->"])
+        return res
+
+class Solution(object):
+    def binaryTreePaths(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[str]
+        """
+        if not root:
+            return []
+
+        self.result = []
+        self.helper(root, '')
+
+        return self.result
+
+    def helper(self, root, cur):
+        cur += str(root.val)
+        if not root.left and not root.right:
+            self.result.append(cur)
+            return
+
+        if root.left:
+            self.helper(root.left, cur + '->')
+
+        if root.right:
+            self.helper(root.right, cur + '->')
+
+
+# Balance Binary Tree
+'''
+
+Given a BT, etermine if it is hgiehgt balanced.
+
+Is balanced if depth of two substrees of every node never differ by more than 1
+'''
+class Solution:
+    """
+    @param root: The root of binary tree.
+    @return: True if this Binary tree is Balanced, or false.
+    """
+    def isBalanced(self, root):
+        balanced, _ = self.validate(root)
+        return balanced
+
+    def validate(self, root):
+        if root is None:
+            return True, 0
+
+        balanced, leftHeight = self.validate(root.left)
+        if not balanced:
+            return False, 0
+        balanced, rightHeight = self.validate(root.right)
+        if not balanced:
+            return False, 0
+
+        return abs(leftHeight - rightHeight) <= 1, max(leftHeight, rightHeight) + 1
+
+
+
+# Populating next Right Pointers in Each Node
+??????????????
+'''
+
+'''
+
+
+
+# Delete node in a BSET
+'''
+
+Basically, the deletion can be divided into two stages:
+
+1. Search for a node to remove.
+2. If the node is found, delete the node.
+
+Note: Time complexity should be O(height of tree).
+'''
+
+
+class Solution(object):
+    def deleteNode(self, root, key):
+        """
+        :type root: TreeNode
+        :type key: int
+        :rtype: TreeNode
+        """
+        pre, cur = None, root
+        while cur and cur.val != key:
+            pre = cur
+            if key < cur.val:
+                cur = cur.left
+            elif key > cur.val:
+                cur = cur.right
+        if not cur: return root
+
+        ncur = cur.right
+        if cur.left:
+            ncur = cur.left
+            self.maxChild(cur.left).right = cur.right
+
+        if not pre: return ncur
+
+        if pre.left == cur:
+            pre.left = ncur
+        else:
+            pre.right = ncur
+        return root
+
+    def maxChild(self, root):
+        while root.right:
+            root = root.right
+        return root
+
+
+
+# Sum Root to Leaf Numbers
+'''
+
+sum for all numbers from paths from root to leaves
+
+'''
+
+class Solution(object):
+    def sumNumbers(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+        """
+        if not root: return 0
+        self.ans = 0
+        self.helper(root, 0)
+        return self.ans
+
+    def helper(self, root, sumAbove):
+        tmp = root.val + 10 * sumAbove
+        if not root.left and not root.right:
+            self.ans += tmp
+            return
+        if root.left: left = self.helper(root.left, tmp)
+        if root.right: right = self.helper(root.right, tmp)
+
+
+class Solution(object):
+    def sumNumbers(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+        """
+        if not root: return 0
+
+        return self.helper(root,0)
+
+    def helper(self,root,s):
+        if not root: return 0
+
+        if root and not root.left and not root.right:
+            return s*10 + root.val
+
+        return self.helper(root.left,s*10+root.val) + \
+        self.helper(root.right,s*10+root.val)
+
+
+
+class Solution(object):
+    def sumNumbers(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+        """
+        self.sum = 0
+        self.recur(root, 0)
+        return self.sum
+
+    def recur(self, node, val):
+        if not node:
+            return
+        val = val * 10 + node.val
+        if not node.left and not node.right:
+            self.sum += val
+        self.recur(node.left, val)
+        self.recur(node.right, val)
+
+
+# Flatten Binary Tree To Linked List
+
+'''
+ each node's right child points to the next node of a pre-order traversal.
+
+Given
+
+         1
+        / \
+       2   5
+      / \   \
+     3   4   6
+The flattened tree should look like:
+   1
+    \
+     2
+      \
+       3
+        \
+         4
+          \
+           5
+            \
+             6
+'''
+class Solution(object):
+	def __init__(self):
+	    self.prev = None
+
+	def flatten(self, root):
+	    if not root:
+	        return None
+	    self.flatten(root.right)
+	    self.flatten(root.left)
+
+	    root.right = self.prev
+	    root.left = None
+	    self.prev = root
+
+class Solution(object):
+    def flatten(self, root):
+        """
+        :type root: TreeNode
+        :rtype: void Do not return anything, modify root in-place instead.
+        """
+
+        stack = [root]
+        prev = None
+        while stack:
+            node = stack.pop()
+            if not node:
+                continue
+            if node.right:
+                stack.append(node.right)
+            if node.left:
+                stack.append(node.left)
+            if prev:
+                prev.right = node
+                prev.left = None
+            prev = node
+
+class Solution(object):
+    def flatten(self, root):
+        """
+        :type root: TreeNode
+        :rtype: void Do not return anything, modify root in-place instead.
+        """
+        if not root:
+            return
+        right = root.right
+        if root.left:
+            # Flatten left subtree
+            self.flatten(root.left)
+            # Find the tail of left subtree
+            tail = root.left
+            while tail.right:
+                tail = tail.right
+            # left <-- None, right <-- left, tail's right <- right
+            root.left, root.right, tail.right = None, root.left, right
+        # Flatten right subtree
+        self.flatten(right)
+
+
+# Binary Tree zigzag level order travesral
+'''
+return zigzag level order travesral of nodes values
+from left to right, then right to left for the next level
+'''
+
+class Solution(object):
+    def zigzagLevelOrder(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[List[int]]
+        """
+        if root == None:
+            return []
+        result = []
+        curLevel = [root]
+        direction = "L"
+        while(curLevel):
+            nextLevel = []
+            curR = []
+            for node in curLevel:
+                curR.append(node.val)
+                if node.left:
+                    nextLevel.append(node.left)
+                if node.right:
+                    nextLevel.append(node.right)
+            if direction == "L":
+                result.append(curR)
+                direction = "R"
+            else:
+                result.append(curR[::-1])
+                direction = "L"
+            curLevel = nextLevel
+        return result
+
+class Solution(object):
+    def zigzagLevelOrder(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[List[int]]
+        """
+        if not root: return []
+        res, queue, temp,flag = [],[root],[],1
+        while queue:
+            for _ in range(len(queue)):
+                stack = queue.pop(0)
+                temp +=[stack.val]
+                if stack.left:
+                    queue.append(stack.left)
+                if stack.right:
+                    queue.append(stack.right)
+            res += [temp[::flag]]
+            temp =[]
+            flag *= -1
+        return res
+
+
+class Solution:
+    """
+    @param root: The root of binary tree.
+    @return: A list of list of integer include
+             the zig zag level order traversal of its nodes' values
+    """
+    def zigzagLevelOrder(self, root):
+        self.results = []
+        self.preorder(root, 0, self.results)
+        return self.results
+
+    def preorder(self, root, level, res):
+        if root:
+            if len(res) < level+1: res.append([])
+            if level % 2 == 0:
+                res[level].append(root.val)
+            else:
+                res[level].insert(0, root.val)
+            self.preorder(root.left, level+1, res)
+            self.preorder(root.right, level+1, res)
+
+
+# Path Sum
+'''
+Given a BT and sum, values along root to leaf == target
+
+'''
+class Solution(object):
+    def hasPathSum(self, root, sum):
+
+        if not root:
+            return False
+        if root.left is None and root.right is None:
+            return sum == root.val
+        return self.hasPathSum(root.left, sum - root.val) or self.hasPathSum(root.right, sum - root.val)
+
+
+class Solution(object):
+    def hasPathSum(self, root, sum):
+
+        #DFS深度搜索
+        if not root:
+            return False
+        stack = []
+        stack.append((root,root.val))
+        while stack:
+            curNode,curSum = stack.pop()
+            if not curNode.left and not curNode.right and curSum == sum:
+                return True
+            if curNode.left:
+                stack.append((curNode.left,curSum+curNode.left.val))
+            if curNode.right:
+                stack.append((curNode.right,curSum+curNode.right.val))
+        return False
+
+
+class Solution(object):
+    def hasPathSum(self, root, sum):
+        """
+        :type root: TreeNode
+        :type sum: int
+        :rtype: bool
+        """
+        if root is None:
+            return False
+        if sum == root.val and root.left is None and root.right is None:
+            return True
+        left = self.hasPathSum(root.left, sum - root.val)
+        right = self.hasPathSum(root.right, sum - root.val)
+        return left or right
+
+# Populating Next Right Pointers in Each Node II
+
+
+
+# Path Sum II
+'''
+find all root-to-leaf paths where each path equal target
+'''
+
+class Solution(object):
+    def pathSum(self, root, target):
+        """
+        :type root: TreeNode
+        :type sum: int
+        :rtype: List[List[int]]
+        """
+        res = []
+        if not root:
+            return res
+        self.backtrack(root, [], target, res)
+        return res
+
+    def backtrack(self, root, path, target, res):
+        if not root.left and not root.right:
+            if root.val + sum(path) == target:
+                res.append(path+[root.val])
+            return
+
+        if root.left:
+            self.backtrack(root.left, path+[root.val], target, res)
+        if root.right:
+            self.backtrack(root.right, path+[root.val], target, res)
+
+class Solution(object):
+    def dfs(self, root, target, path, res):
+        if root.left is None and root.right is None:
+            if root.val == target:
+                res.append(path + [target])
+        else:
+            path.append(root.val)
+            if root.left:
+                self.dfs(root.left, target - root.val, path, res)
+            if root.right:
+                self.dfs(root.right, target - root.val, path, res)
+            path.pop()
+
+    def pathSum(self, root, sum):
+        """
+        :type root: TreeNode
+        :type sum: int
+        :rtype: List[List[int]]
+        """
+        res = []
+        if root != None:
+            self.dfs(root, sum, [], res)
+        return res
+
+
+# Minimum Depth of Binary Tree
+'''
+
+
+'''
+
+class Solution(object):
+    def minDepth(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+        """
+        if not root:
+            return 0
+        Queue = [root]
+
+        depth = 0
+        while Queue:
+            depth += 1
+            for i in xrange(len(Queue)):
+                node = Queue.pop(0)
+                if not node.left and not node.right:
+                    return depth
+                if node.left:
+                    Queue.append(node.left)
+                if node.right:
+                    Queue.append(node.right)
+        return depth
+
+
+class Solution:
+    # @param root, a tree node
+    # @return an integer
+    def minDepth(self, root):
+        if root == None:
+            return 0
+        if root.left==None or root.right==None:
+            return self.minDepth(root.left)+self.minDepth(root.right)+1
+        return min(self.minDepth(root.right),self.minDepth(root.left))+1
+
+
+
+
+# Construct Binary Tree from Inorder and postorder traversal
+
+class Solution(object):
+    def buildTree(self, inorder, postorder):
+        """
+        :type inorder: List[int]
+        :type postorder: List[int]
+        :rtype: TreeNode
+        """
+        i,j=0,0
+        stack=[]
+        cur=None
+        while j<len(postorder):
+            if stack and stack[-1].val==postorder[j]:
+                stack[-1].right=cur
+                cur=stack.pop()
+                j+=1
+            else:
+                stack.append(TreeNode(inorder[i]))
+                stack[-1].left=cur
+                cur=None
+                i+=1
+        return cur
+
+
+
+class Solution(object):
+    def buildTree(self, inorder, postorder):
+        """
+        :type inorder: List[int]
+        :type postorder: List[int]
+        :rtype: TreeNode
+        """
+        if len(inorder) == 0:
+            return None
+        mid = inorder.index(postorder.pop(-1))
+        root = TreeNode(inorder[mid])
+        root.right = self.buildTree(inorder[mid+1:], postorder)
+        root.left = self.buildTree(inorder[:mid], postorder)
+        return root
+
+
+
+
+# Construct Binary tree from preoder an inorder traversal
+
+
+class Solution(object):
+    def buildTree(self, preorder, inorder):
+        """
+        :type preorder: List[int]
+        :type inorder: List[int]
+        :rtype: TreeNode
+        """
+        if len(inorder) == 0:
+            return None
+        ind = inorder.index(preorder.pop(0))
+        root = TreeNode(inorder[ind])
+        root.left = self.buildTree(preorder, inorder[0:ind])
+        root.right = self.buildTree(preorder, inorder[ind+1:])
+        return root
+
+class Solution(object):
+    def buildTree(self, preorder, inorder):
+        """
+        :type preorder: List[int]
+        :type inorder: List[int]
+        :rtype: TreeNode
+        """
+
+        if len(preorder) == 0:
+            return None
+
+        head = TreeNode(preorder[0])
+        stack = [head]
+        i = 1
+        j = 0
+
+        while i < len(preorder):
+            temp = None
+            t = TreeNode(preorder[i])
+            while stack and stack[-1].val == inorder[j]:
+                temp = stack.pop()
+                j += 1
+            if temp:
+                temp.right = t
+            else:
+                stack[-1].left = t
+            stack.append(t)
+            i += 1
+
+        return head
+
+
+# Unique Binary Search Trees II
+'''
+Unique BST I: how many are there?
+
+This Questions:  return all  unique BST's shown below.
+
+'''
+
+
+class Solution(object):
+    def generateTrees(self, n):
+        """
+        :type n: int
+        :rtype: List[TreeNode]
+        """
+        #res = []
+        if n == 0:
+            return []
+        return self.buildBST(1,n)
+
+    def buildBST(self,lo,hi):
+        if lo > hi:
+            return [None]
+        res = []
+        for i in range(lo,hi+1):
+            #root = TreeNode(i)
+            left = self.buildBST(lo,i-1)
+            right = self.buildBST(i+1,hi)
+            for j in left:
+                for k in right:
+                    root = TreeNode(i)
+                    root.left = j
+                    root.right = k
+                    res.append(root)
+        return res
+
+
+# Largest BST Subtree
+
+# BOundary of Binary Tree
+
+
+
+# Recover Binary Search Tree
+'''
+Two elements of a BST are swapped by mistake
+
+Recover the tree without changing its structure
+
+#A solution using O(n) space is pretty straight forward.
+Could you devise a constant space solution?
+'''
+class Solution(object):
+    def recoverTree(self, root):
+        """
+        :type root: TreeNode
+        :rtype: void Do not return anything, modify root in-place instead.
+        """
+        swap = []
+        pre, cur = None, root
+        stack = []
+        while stack or cur:
+            while cur:
+                stack.append(cur)
+                cur = cur.left
+
+            cur = stack.pop()
+            if pre and pre.val >= cur.val:
+                if not swap:
+                    swap.append(pre)
+                    swap.append(cur)
+                else:
+                    swap[1] = cur
+            pre = cur
+            cur = cur.right
+        if len(swap) == 2:
+            swap[0].val, swap[1].val = swap[1].val, swap[0].val
+
+
+
+
+
+
+# Lowest Common Ancestor of a binary Tree
+'''
+Given binary tree, find LCA of two given noes in the tree
+
+allow a node to be a descendant of itself
+
+'''
+class Solution(object):
+    def lowestCommonAncestor(self, root, p, q):
+        """
+        :type root: TreeNode
+        :type p: TreeNode
+        :type q: TreeNode
+        :rtype: TreeNode
+        """
+        if not root:
+            return None
+        if root == p or root == q:
+            return root
+
+        # divide
+        left = self.lowestCommonAncestor(root.left, p, q)
+        right = self.lowestCommonAncestor(root.right, p, q)
+
+        # conquer
+        if left != None and right != None:
+            return root
+        if left != None:
+            return left
+        else:
+            return right
+
+class Solution(object):
+    def lowestCommonAncestor(self, root, p, q):
+        """
+        :type root: TreeNode
+        :type p: TreeNode
+        :type q: TreeNode
+        :rtype: TreeNode
+        """
+
+        stack = [root]
+        parent = {root: None}
+        while p not in parent or q not in parent:
+            node = stack.pop()
+            if node.left:
+                parent[node.left] = node
+                stack.append(node.left)
+            if node.right:
+                parent[node.right] = node
+                stack.append(node.right)
+        ancestors = set()
+        while p:
+            ancestors.add(p)
+            p = parent[p]
+        while q not in ancestors:
+            q = parent[q]
+        return q
+
+
+
+
+
+# Count Complete Tree Nodes
+'''
+Given a complete binary tree, count the number of nodes
+
+Complete BT: each level, except the last, is completely filled.
+all the nodes in the last level are as far left as possible.
+
+can have between 1 and 2^h nodes inclusive at the last level h
+'''
+class Solution(object):
+    def countNodes(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+        """
+        if not root:
+            return 0
+        leftDepth = self.getDepth(root.left)
+        rightDepth = self.getDepth(root.right)
+        if leftDepth == rightDepth:
+            return pow(2, leftDepth) + self.countNodes(root.right)
+        else:
+            return pow(2, rightDepth) + self.countNodes(root.left)
+
+    def getDepth(self, root):
+        if not root:
+            return 0
+        return 1 + self.getDepth(root.left)
+
+
+class Solution(object):
+    def countNodes(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+        """
+        h = self.height(root)
+        nodes = 0
+        while root:
+            if self.height(root.right) == h - 1:
+                nodes += 2 ** h  # left half (2 ** h - 1) and the root (1)
+                root = root.right
+            else:
+                nodes += 2 ** (h - 1)
+                root = root.left
+            h -= 1
+        return nodes
+
+    def height(self, root):
+        return -1 if not root else 1 + self.height(root.left)
+
+
+
+# Binary Tree Maximum Path Sum - HARD
+'''
+Find the maximum path sum
+
+A path is defined as any sequence of of nodes from some starting
+to any node int he tree. Path must have at least one node and does not need to go through the root
+
+'''
+
+class Solution(object):
+    def maxPathSum(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+        """
+        self.maxm = root.val
+        self.solve(root)
+        return self.maxm
+
+    def solve(self, root):
+        if not root: return 0
+        le = self.solve(root.left)
+        ri = self.solve(root.right)
+        lmax = max(0, le) + max(0, ri) + root.val
+        if lmax > self.maxm:
+            self.maxm = lmax
+        return root.val + max(0, le,ri)
+
+
+class Solution(object):
+    def __init__(self):
+        self.path_sum = []
+
+    def maxPathSum(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+        """
+        if not root:
+            return 0
+
+        self._max_path_sum(root)
+        return max(self.path_sum)
+
+    def _max_path_sum(self, root):
+        if not root:
+            return False
+        left = self._max_path_sum(root.left)
+        right = self._max_path_sum(root.right)
+
+        if not left or left + root.val < root.val:
+            left = 0
+        if not right or right + root.val < root.val:
+            right = 0
+
+        path_sum = root.val + left +right
+        self.path_sum.append(path_sum)
+        return left + root.val if left > right else right + root.val
+
+
+
+
+
+# Validate Binary Search Tree
+'''
+
+'''
+
+# divide and conquer
+import sys
+class Solution:
+    # @param {TreeNode} root
+    # @return {boolean}
+    def isValidBST(self, root):
+        return self._isValidBST(root, -sys.maxint, sys.maxint)
+
+    def _isValidBST(self, root, lb, ub):
+        if not root:
+            return True
+        if root.val >= ub or root.val <= lb:
+            return False
+        return self._isValidBST(root.left, lb, root.val) and self._isValidBST(root.right, root.val, ub)
+
+
+class Solution(object):
+    def isValidBST(self, root):
+        """
+        :type root: TreeNode
+        :rtype: bool
+        """
+        if root is None:
+            return True
+
+        pre = None
+        stack = []
+        cur = root
+        while stack or cur:
+            while cur:
+                stack.append(cur)
+                cur = cur.left
+            cur = stack.pop()
+            if cur.val <= pre:
+                return False
+            pre = cur.val
+            cur = cur.right
+        return True
+
+###############################################################################
+                                    '''Array'''
+###############################################################################
+
+# Array Partition I
+'''
+给定一个长度为2n的整数数组，将数组分成n组，求每组数的最小值之和的最大值。
+
+注意：
+
+n是正整数，范围[1, 10000]
+所有整数范围为[-10000, 10000]
+
+'''
+'''
+Sorting based solution
+
+For an optimized solution, begin with an example arr = [4,3,1,2]
+Sort this array. arr = [1,2,3,4]
+Now note that 1 needs to be a paired with a larger number. What is the number
+ we would like to sacrifice? Clearly the smallest possible.
+This gives the insight: sort and pair adjacent numbers.
+Sorting takes Nlg(N) and space lg(N).
+'''
+class Solution(object):
+    def arrayPairSum(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        nums.sort()
+        s_so_far = 0
+        for i in range(0, len(nums)-1, 2):
+            s_so_far += nums[i]
+        return s_so_far
+
+# Reshape the Matrix
+'''
+给定二维矩阵nums，将其转化为r行c列的新矩阵。若无法完成转化，返回原矩阵。
+
+Input:
+nums =
+[[1,2],
+ [3,4]]
+r = 1, c = 4
+Output:
+[[1,2,3,4]]
+Explanation:
+The row-traversing of nums is [1,2,3,4]. The new reshaped matrix is a 1 * 4 matrix,
+ fill it row by row by using the previous list.
+
+ https://leetcode.com/problems/reshape-the-matrix/#/solution
+'''
+
+
+'''
+
+'''
+class Solution(object):
+    def matrixReshape(self, nums, r, c):
+        """
+        :type nums: List[List[int]]
+        :type r: int
+        :type c: int
+        :rtype: List[List[int]]
+        """
+        if r*c != len(nums)*len(nums[0]):
+            return nums
+
+        data = []
+        for nn in nums:
+            for n in nn:
+                data.append(n)
+
+        res = []
+        index = 0
+        for ri in range(r):
+            item = []
+            for ci in range(c):
+                item.append(data[index])
+                index += 1
+            res.append(item)
+        return res
+
+
+'''
+Time complexity : O(m*n). We traverse the entire matrix of size m*nm∗n once
+ only. Here, mm and nn refers to the number of rows and columns in the given matrix.
+
+Space complexity : O(m*n). The resultant matrix of size m*nm∗n is used.
+
+'''
+class Solution(object):
+    def matrixReshape(self, nums, r, c):
+        """
+        :type nums: List[List[int]]
+        :type r: int
+        :type c: int
+        :rtype: List[List[int]]
+        """
+        numRows = len(nums)
+        numColumns = len(nums[0])
+
+        if r * c != numRows * numColumns:
+            return nums
+        ret = []
+        n = 0
+        for i in range(r):
+            ret += [[]]
+            for j in range(c):
+                ret[i] += [nums[n / numColumns][n % numColumns]]
+                n += 1
+
+        return ret
+"""
+The element nums[i][j]nums[i][j] of numsnums array is represented in the form of
+a one dimensional array by using the index in the form: nums[n*i + j]nums[n∗i+j],
+where mm is the number of columns in the given matrix. Looking at the same in the
+ reverse order, while putting the elements in the elements in the resultant matrix,
+  we can make use of a countcount variable which gets incremented for every element
+  traversed as if we are putting the elements in a 1-D resultant array. But, to convert
+   the countcount back into 2-D matrix indices with a column count of cc, we can obtain
+    the indices as res[count/c][count\%c]res[count/c][count%c] where count/ccount/c is
+     the row number and count\%ccount%c is the coloumn number. Thus, we can save the
+      extra checking required at each step.
+"""
+
+
+class Solution(object):
+    def matrixReshape(self, nums, r, c):
+        """
+        :type nums: List[List[int]]
+        :type r: int
+        :type c: int
+        :rtype: List[List[int]]
+        """
+        h, w = len(nums), len(nums[0])
+        if h * w != r * c: return nums
+        ans = []
+        for x in range(r):
+            row = []
+            for y in range(c):
+                row.append(nums[(x * c + y) / w][(x * c + y) % w])
+            ans.append(row)
+        return ans
+
+
+
+# Wiggle Sort
+'''
+given an unsorted array, reorder it in place such at
+nums[0] <= nums[1] >= nums[2] <= nums[3]....
+'''
+
+class Solution(object):
+    """
+    @param {int[]} nums a list of integer
+    @return nothing, modify nums in-place instead
+    """
+    def wiggleSort(self, nums):
+        # Write your code here
+        n = len(nums)
+        for i in xrange(1, n):
+            #                                             first number,
+            if i % 2 == 1 and nums[i] < nums[i - 1] or i % 2 == 0 and nums[i] > nums[i - 1]:
+                nums[i], nums[i - 1] = nums[i- 1], nums[i]
+
+
+# Find all duoplicates in an array
+
+#Find all the elements that appear twice in this array.
+'''
+O(1) space not including the input and output variables
+
+The idea is we do a linear pass using the input array itself as a hash to store
+ which numbers have been seen before. We do this by making elements at certain
+ indexes negative. See the full explanation here
+
+http://www.geeksforgeeks.org/find-duplicates-in-on-time-and-constant-extra-space/
+'''
+class Solution(object):
+    def findDuplicates(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: List[int]
+        """
+        res = []
+        for x in nums:
+            # -1 , zero-based indexing
+            if nums[abs(x)-1] < 0:
+                res.append(abs(x))
+            else:
+                nums[abs(x)-1] *= -1
+        return res
+
+
+class Solution(object):
+    def findDuplicates(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: List[int]
+        """
+        seen = set()
+        res = []
+        for num in nums:
+            if num in seen:
+                res.append(num)
+            else:
+                seen.add(num)
+        return res
+
+
+
+# Range Addition
+
+
+
+# Max Consecutive Ones
+'''
+Input: [1,1,0,1,1,1]
+Output: 3
+Explanation: The first two digits or the last three digits are consecutive 1s.
+    The maximum number of consecutive 1s is 3.
+
+'''
+
+class Solution(object):
+    def findMaxConsecutiveOnes(self, nums):
+
+        curLength = 0
+        maxLength = 0
+        for n in nums:
+            if n == 1:
+                curLength += 1
+                if curLength > maxLength:
+                    maxLength = curLength
+            else:
+                curLength = 0
+
+        return maxLength
+
+
+
+# Lonely Pixel I
+'''
+给定一个包含字符'W'（白色）和'B'（黑色）的像素矩阵picture。
+
+求所有同行同列有且仅有一个'B'像素的像素个数。
+Input:
+[['W', 'W', 'B'],
+ ['W', 'B', 'W'],
+ ['B', 'W', 'W']]
+
+Output: 3
+Explanation: All the three 'B's are black lonely pixels.
+'''
+
+
+'''
+利用数组rows，cols分别记录某行、某列'B'像素的个数。
+
+然后遍历一次picture即可。
+'''
+class Solution(object):
+    def findLonelyPixel(self, picture):
+        """
+        :type picture: List[List[str]]
+        :rtype: int
+        """
+        w, h = len(picture), len(picture[0])
+        rows, cols = [0] * w, [0] * h
+        for x in range(w):
+            for y in range(h):
+                if picture[x][y] == 'B':
+                    rows[x] += 1
+                    cols[y] += 1
+        ans = 0
+        for x in range(w):
+            for y in range(h):
+                if picture[x][y] == 'B':
+                    if rows[x] == 1:
+                        if cols[y] == 1:
+                            ans += 1
+        return ans
+
+# Shortest Word Distance
+
+
+# Find all Numbers Disappered in an array
+'''
+interger where  1<= a[i] < n, n is size of array
+'''
+class Solution(object):
+    def findDisappearedNumbers(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: List[int]
+        """
+        nums = [0] + nums
+        for i in range(len(nums)):
+            index = abs(nums[i])
+            nums[index] = -abs(nums[index])
+
+        return [i for i in range(len(nums)) if nums[i] > 0]
+
+
+class Solution(object):
+    def findDisappearedNumbers(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: List[int]
+        """
+        for num in nums:
+            idx = abs(num) - 1
+            nums[idx] = -abs(nums[idx])
+
+        return [i+1 for i in range(len(nums)) if nums[i] > 0]
+
+
+# Teemo Attacking
+'''
+给定一组递增的时间起点timeSeries，以及一个时间段duration，timeSeries中的每个起点st对应的终点ed = st + duration。
+
+求各时间段覆盖的时间总长度。
+
+'''
+
+#一趟遍历即可，
+
+class Solution(object):
+    def findPoisonedDuration(self, timeSeries, duration):
+        """
+        :type timeSeries: List[int]
+        :type duration: int
+        :rtype: int
+        """
+        now = ans = 0
+        for st in timeSeries:
+            ans += min(duration, st + duration - now)
+            now = st + duration
+        return ans
+
+
+
+
+# Shortest Word Distance III
+
+
+# Array nesting
+'''
+
+'''
+
+
+# Move zeroes
+'''
+给定一个数组nums，编写函数将数组内所有0元素移至数组末尾，并保持非0元素相对顺序不变。
+
+例如，给定nums = [0, 1, 0, 3, 12]，调用函数完毕后， nums应该是 [1, 3, 12, 0, 0]。
+
+注意：
+
+你应该“就地”完成此操作，不要复制数组。
+最小化操作总数。
+
+'''
+
+
+'''
+算法步骤：
+
+使用两个"指针"x和y，初始令y = 0
+
+利用x遍历数组nums：
+
+若nums[x]非0，则交换nums[x]与nums[y]，并令y+1
+'''
+class Solution(object):
+    def moveZeroes(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: void Do not return anything, modify nums in-place instead.
+        """
+        y = 0
+        for x in range(len(nums)):
+            if nums[x] != 0 :
+                nums[x], nums[y] = nums[y], nums[x]
+                y += 1
+
+
+
+
+# Product of Array Except self
+'''
+
+'''
+
+'''
+首先想到的思路是计算全部数字的乘积，然后分别除以num数组中的每一个数（需要排除数字0）。然而，题目要求不能使用除法。
+
+下面的解法非常巧妙，参考LeetCode Dicuss
+
+链接地址：https://leetcode.com/discuss/46104/simple-java-solution-in-o-n-without-extra-space
+
+由于output[i] = (x0 * x1 * ... * xi-1) * (xi+1 * .... * xn-1)
+
+因此执行两趟循环：
+
+第一趟正向遍历数组，计算x0 ~ xi-1的乘积
+
+第二趟反向遍历数组，计算xi+1 ~ xn-1的乘积
+'''
+class Solution:
+    # @param {integer[]} nums
+    # @return {integer[]}
+    def productExceptSelf(self, nums):
+        size = len(nums)
+        output = [1] * size
+        left = 1
+        for x in range(size - 1):
+            left *= nums[x]
+            output[x + 1] *= left
+        right = 1
+        for x in range(size - 1, 0, -1):
+            right *= nums[x]
+            output[x - 1] *= right
+        return output
+
+
+# Two Sum - input array is sorted
+'''
+Given an array of integers that is already sorted in ascending order,
+ find two numbers such that they add up to a specific target number.
+Please note that your returned answers (both index1 and index2) are not zero-based.
+
+'''
+class Solution(object):
+    def twoSum(self, numbers, target):
+        """
+        :type numbers: List[int]
+        :type target: int
+        :rtype: List[int]
+        """
+        l, r = 0, len(numbers)-1
+        while l < r:
+            s = numbers[l] + numbers[r]
+            if s == target:
+                return [l+1, r+1]
+            elif s < target:
+                l += 1
+            else:
+                r -= 1
+
+# dictionary
+def twoSum2(self, numbers, target):
+    dic = {}
+    for i, num in enumerate(numbers):
+        if target-num in dic:
+            return [dic[target-num]+1, i+1]
+        dic[num] = i
+
+# binary search
+def twoSum(self, numbers, target):
+    for i in xrange(len(numbers)):
+        l, r = i+1, len(numbers)-1
+        tmp = target - numbers[i]
+        while l <= r:
+            mid = l + (r-l)//2
+            if numbers[mid] == tmp:
+                return [i+1, mid+1]
+            elif numbers[mid] < tmp:
+                l = mid+1
+            else:
+                r = mid-1
+
+
+# Best time to Buy and Sell Stock II
+'''
+FInd max profit, may complete as many as transactions as you like
+ie. buy one and sell one share multiple times a day.
+https://leetcode.com/problems/best-time-to-buy-and-sell-stock-ii/#/solution
+'''
+
+
+'''
+directly keep on adding the difference between the consecutive numbers of the
+array if the second number is larger than the first one, and at the total sum we obtain will be the maximum profit.
+'''
+class Solution(object):
+    def maxProfit(self, prices):
+        """
+        :type prices: List[int]
+        :rtype: int
+        """
+        if not prices:
+            return 0
+        total = 0
+        for i in range(len(prices)-1):
+            if prices[i+1] > prices[i]:
+                total+= prices[i+1] - prices[i]
+
+        return total
+
+# Majority Element
+'''
+majority is the lement more than half
+'''
+class Solution(object):
+    def majorityElement(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+
+        dic = {}
+        for num in nums:
+            if num not in dic:
+                dic[num] = 1
+            if dic[num] > len(nums)//2:
+                return num
+            else:
+                dic[num] += 1
+
+
+
+# Contains Duplicates
+'''
+ return true if any value appears at least twice in the array,
+  and it should return false if every element is distinct.
+'''
+class Solution(object):
+    def containsDuplicate(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: bool
+        """
+        dic = {}
+        for i in nums:
+            if i in dic:
+                dic[i] += 1
+            else:
+                dic[i] = 1
+
+        for i in nums:
+            if dic[i] >= 2:
+                return True
+
+        return False
+
+class Solution(object):
+    def containsDuplicate(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: bool
+        """
+        return len(nums) != len(set(nums))
+
+
+# maximum product of three numbers
+
+def maximumProduct(nums):
+    """
+    :type nums: List[int]
+    :rtype: int
+    """
+    max1 = -1000
+    max2 = -1000
+    max3 = -1000
+    min1 = 1000
+    min2 = 1000
+    for n in nums:
+        if n >max1:
+            max1,max2,max3 = n,max1,max2
+        elif n >max2:
+            max2,max3 = n,max2
+        elif n >max3:
+            max3 = n
+        if n < min1:
+            min1,min2 = n,min1
+        elif n < min2:
+            min2 = n
+    #print(max1, max2, max3, min1, min2)
+    return max(max1*max2*max3, max1*min1*min2)
+
+
+# Combination Sum  III
+'''
+find all possible combinations of K numbers that add up to a number n. Given only
+numbers from 1 to 9 can be used. Each combination should be unique
+寻找所有满足k个数之和等于n的组合，只允许使用数字1-9，并且每一种组合中的数字应该是唯一的。
+
+确保组合中的数字以递增顺序排列。
+'''
+class Solution(object):
+    def combinationSum3(self, k, n):
+        """
+        :type k: int
+        :type n: int
+        :rtype: List[List[int]]
+        """
+        if n > sum([i for i in range(1, 11)]):
+            return []
+
+        res = []
+        self.sum_help(k, n, 1, [], res)
+        return res
+
+
+    def sum_help(self, k, n, curr, arr, res):
+        if len(arr) == k:
+            if sum(arr) == n:
+                res.append(list(arr))
+            return
+
+        if len(arr) > k or curr > 9:
+            return
+
+        for i in range(curr, 10):
+            arr.append(i)
+            self.sum_help(k, n, i + 1, arr, res)
+            arr.pop()
+
+
+class Solution(object):
+    def combinationSum3(self, k, n):
+        """
+        :type k: int
+        :type n: int
+        :rtype: List[List[int]]
+        """
+        if n < 0 or k>9 or k<1:
+            return
+        nums = [1,2,3,4,5,6,7,8,9]
+        paths = []
+        self.dfs(paths, [], nums, k, n, 0)
+        return paths
+
+    def dfs(self, paths, curr_path, nums,  k, n, start):
+        if n == 0 and len(curr_path) == k:
+            paths.append(curr_path[:])
+        else:
+            for i in range(start, len(nums)):
+
+                self.dfs(paths, curr_path + [nums[i]], nums,  k, n - nums[i], i + 1)
+
+
+# Missing Number
+'''
+n distinct numbers from 0, 1, 2, ...n find the one that is missing from the aaray
+
+For example,
+Given nums = [0, 1, 3] return 2.
+
+our algorithm should run in linear runtime complexity. Could you implement it using only constant extra space complexity?
+'''
+
+#解法I：等差数列前n项和 - 数组之和
+
+
+class Solution(object):
+    def missingNumber(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        n = len(nums)
+        return n * (n + 1) / 2 - sum(nums)
+
+
+class Solution(object):
+    def missingNumber(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        '''
+        # method1, use sum
+        n = len(nums)
+        index_sum = (0 + n - 1) * n /2 + n
+        for i in range(n):
+            index_sum = index_sum - nums[i]
+        return index_sum
+        '''
+        # method2, use XOR
+        val = len(nums)
+        for i in range(len(nums)):
+            val = val ^ nums[i] ^ i
+        return val
+
+
+# Find the Duplicate Number
+
+# Lonely Pixel II
+
+# Task Scheduler
+
+# 3Sum Smaller
+
+# Best time to buy and sell stock
+
+# Unique Paths
+
+# Subarray Sum Equals K
+
+#78	Subsets
+
+#611 Valid Triangle Number
+
+#
+153	Find Minimum in Rotated Sorted Array	39.7%	Medium
+35	Search Insert Position	39.6%	Easy
+53	Maximum Subarray	39.5%	Easy
+59	Spiral Matrix II	39.4%	Medium
+643	Maximum Average Subarray I	39.3%	Easy
+562	Longest Line of Consecutive One in Matrix 	39.0%	Medium
+380	Insert Delete GetRandom O(1)	39.0%	Medium
+27	Remove Element	38.8%	Easy
+48	Rotate Image	38.4%	Medium
+66	Plus One	38.4%	Easy
+64	Minimum Path Sum	38.3%	Medium
+118	Pascal's Triangle	38.3%	Easy
+39	Combination Sum	38.2%	Medium
+75	Sort Colors	37.8%	Medium
+162	Find Peak Element	37.2%	Medium
+154	Find Minimum in Rotated Sorted Array II	37.0%	Hard
+289	Game of Life	36.8%	Medium
+128	Longest Consecutive Sequence	36.6%	Hard
+119	Pascal's Triangle II	36.6%	Easy
+11	Container With Most Water	36.5%	Medium
+42	Trapping Rain Water	36.5%	Hard
+80	Remove Duplicates from Sorted Array II	35.8%	Medium
+73	Set Matrix Zeroes	35.8%	Medium
+90	Subsets II	35.8%	Medium
+26	Remove Duplicates from Sorted Array	35.5%	Easy
+277	Find the Celebrity 	35.2%	Medium
+74	Search a 2D Matrix	35.1%	Medium
+548	Split Array with Equal Sum 	34.0%	Medium
+1	Two Sum	34.0%	Easy
+120	Triangle	33.6%	Medium
+40	Combination Sum II	33.4%	Medium
+624	Maximum Distance in Arrays 	33.0%	Easy
+81	Search in Rotated Sorted Array II	32.8%	Medium
+219	Contains Duplicate II	32.2%	Easy
+33	Search in Rotated Sorted Array	32.1%	Medium
+105	Construct Binary Tree from Preorder and Inorder Traversal	32.0%	Medium
+106	Construct Binary Tree from Inorder and Postorder Traversal	32.0%	Medium
+88	Merge Sorted Array	31.9%	Easy
+63	Unique Paths II	31.6%	Medium
+34	Search for a Range	31.3%	Medium
+16	3Sum Closest	31.0%	Medium
+209	Minimum Size Subarray Sum	30.3%	Medium
+605	Can Place Flowers	30.0%	Easy
+56	Merge Intervals	29.8%	Medium
+581	Shortest Unsorted Continuous Subarray	29.7%	Easy
+228	Summary Ranges	29.5%	Medium
+55	Jump Game	29.5%	Medium
+123	Best Time to Buy and Sell Stock III	29.1%	Hard
+31	Next Permutation	28.7%	Medium
+381	Insert Delete GetRandom O(1) - Duplicates allowed	28.7%	Hard
+229	Majority Element II	28.5%	Medium
+532	K-diff Pairs in an Array	28.2%	Easy
+414	Third Maximum Number	27.8%	Easy
+85	Maximal Rectangle	27.6%	Hard
+57	Insert Interval	27.4%	Hard
+18	4Sum	26.6%	Medium
+84	Largest Rectangle in Histogram	26.5%	Hard
+79	Word Search	26.5%	Medium
+45	Jump Game II	26.2%	Hard
+54	Spiral Matrix	25.8%	Medium
+152	Maximum Product Subarray	25.5%	Medium
+41	First Missing Positive	25.4%	Hard
+163	Missing Ranges 	24.8%	Medium
+189	Rotate Array	24.4%	Easy
+4	Median of Two Sorted Arrays	21.6%	Hard
+15	3Sum	21.6%	Medium
+644	Maximum Average Subarray II	16.8%	Hard
+126	Word Ladder II	14.0%	Hard
+
+
+
+
+
+
+
+
+
+
+
+##################################################################
+                        """Linked List"""
+#############################################################
+
 # E: Linked List Cycle
 # KEY: slow and fast runner, slow moves 1 and fast moves 2 each times
 class Solution(object):
@@ -1429,6 +4886,45 @@ class Solution(object):
                 seen[x] = 1
         return False
 
+
+#Third Maximum  number
+'''
+Given non-empty array of integer, return the third Maximum number in this array
+If does not exist, return the maximum number
+
+TC must be in O(n)
+
+
+Input: [3, 2, 1]
+Output: 1
+Explanation: The third maximum is 1.]
+
+
+Input: [1, 2]
+Output: 2
+Explanation: The third maximum does not exist, so the maximum (2) is returned instead.
+
+
+Input: [2, 2, 3, 1]
+Output: 1
+Explanation: Note that the third maximum here means the third maximum distinct number.
+Both numbers with value 2 are both considered as second maximum.
+
+'''
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 # Search Insert Position
 '''
 KEY: find the first position >= target
@@ -1522,9 +5018,301 @@ Digits are sorted such that the most significant digit is at the head of the lis
 
 
 '''
+
+class Solution(object):
+    def plusOne(self, digits):
+        """
+        :type digits: List[int]
+        :rtype: List[int]
+        """
+
+        for i in range(len(digits)-1, -1, -1):
+            if digits[i] < 9:
+                digits[i] = digits[i] + 1
+                return digits
+            else:
+                digits[i] = 0
+        digits.insert(0, 1)
+        return digits
+
+
+class Solution(object):
+    def plusOne(self, digits):
+        """
+        :type digits: List[int]
+        :rtype: List[int]
+        """
+        rem = 1
+        for i in reversed(range(len(digits))):
+            new = digits[i]+rem
+            if new > 9:
+                digits[i] = 0
+                rem = 1
+            else:
+                digits[i] = new
+                return digits
+
+        return [1] + digits
+
 # Max Consecutive Ones
 
+'''
+given a binary array, find the max number of consecutive 1s in this array
+
+EX:
+Input: [1,1,0,1,1,1]
+Output: 3
+Explanation: The first two digits or the last three digits are consecutive 1s.
+    The maximum number of consecutive 1s is 3.
+
+NOTE:
+1. input array will only contain 0 and 1
+
+2. length of  the array is positive and will NOT excee 10, 000
+
+'''
+
+class Solution(object):
+    def findMaxConsecutiveOnes(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        maxLen = 0
+        curLen = 0
+        for num in nums:
+            if num == 0:
+
+                if maxLen < curLen:
+                    maxLen = curLen
+                curLen = 0
+
+            else:
+                curLen = curLen + 1
+        if curLen > maxLen:
+            maxLen = curLen
+        return maxLen
+
+class Solution(object):
+    def findMaxConsecutiveOnes(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        cnt = 0
+        ans = 0
+        for num in nums:
+            if num == 1:
+                cnt += 1
+                ans = max(ans, cnt)
+            else:
+                cnt = 0
+
+        return ans
+
+
+class Solution(object):
+    def findMaxConsecutiveOnes(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+
+        curLength = 0
+        maxLength = 0
+        for n in nums:
+            if n == 1:
+                curLength += 1
+                if curLength > maxLength:
+                    maxLength = curLength
+            else:
+                curLength = 0
+
+        return maxLength
+
+
 # Shortest Unsorted Continuous Subarray
+'''
+Given an integer array, need to find one Continuous Subarray that if you only
+sort this subarray in ascending order, then the whole array will be sorted in
+ascending order, too
+
+Find the shorst such subarray and output its lenght
+
+Input: [2, 6, 4, 8, 10, 9, 15]
+Output: 5
+Explanation: You need to sort [6, 4, 8, 10, 9] in ascending order to make the whole array sorted in ascending order.
+
+Then length of the input array is in range [1, 10,000].
+The input array may contain duplicates, so ascending order here means <=.
+'''
+
+
+# O(n)   O(1)
+# java
+public class Solution {
+    public int findUnsortedSubarray(int[] nums) {
+        int len=nums.length;
+        int max=Integer.MIN_VALUE, min=Integer.MAX_VALUE;
+        int start=-1, end=-1;
+
+        for(int i=0; i<len; i++){
+            max = Math.max(max, nums[i]); //from left to right, search the current max
+            min = Math.min(min, nums[len-i-1]);  //from right to left, search the current min
+
+            if(nums[i] < max)
+                end = i;
+            if(nums[len-i-1] > min)
+                start = len-i-1;
+        }
+
+        if(start==-1) //the entire array is already sorted
+            return 0;
+
+        return end-start+1;
+    }
+}
+
+# https://leetcode.com/articles/shortest-unsorted-continous-subarray/
+
+class Solution(object):
+    def findUnsortedSubarray(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        min_loc=len(nums)-1
+        max_loc=0
+        nums1=sorted(nums)
+        for i in range(len(nums)):
+            if nums[i]!=nums1[i]:
+                if i<min_loc:
+                    min_loc=i
+                if i>max_loc:
+                    max_loc=i
+        if max_loc==0:
+            return 0
+        return max_loc-min_loc+1
+
+
+class Solution(object):
+    def findUnsortedSubarray(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+
+        """
+        2 pointers,
+        nums on the left, should be smallest, ... going up
+        nums on the right, should be largests, ... going down inside.
+        """
+
+        """
+        nums_sorted = sorted(nums)
+
+        # check non-overlap length
+        # 1, 3, 5, 7, 2, 8, 9   # original
+        # 1, 2, 3, 5, 6, 8, 9   # sorted
+
+        i, j = 0, len(nums)-1
+        while i < len(nums) and nums[i] == nums_sorted[i]:
+            i += 1
+        while i != len(nums) -1 and j > i and nums[j] == nums_sorted[j]:
+            j -= 1
+
+        if j == i:
+            return 0
+        return j - i + 1
+
+        """
+
+        # another approach, inspired by a solution  in the discussion.   SMART !!!
+        """
+        # java version
+        public int findUnsortedSubarray(int[] A) {
+             int n = A.length, beg = -1, end = -2, min = A[n-1], max = A[0];
+             for (int i=1;i<n;i++) {
+                 max = Math.max(max, A[i]);
+                 min = Math.min(min, A[n-1-i]);
+                 if (A[i] < max) end = i;
+                 if (A[n-1-i] > min) beg = n-1-i;
+            }
+            return end - beg + 1;
+        }
+
+        # 1236477895 array
+        # 0123456789 index
+        # according to above code, end=9,  beg = 3.  return 7
+        """
+
+        l = len(nums)
+        start, end = -1, -2
+        current_max, current_min = nums[0], nums[l-1]
+
+        for i in range(0, l):
+            current_max = max(nums[i], current_max)
+            current_min = min(nums[l-i-1], current_min)
+
+            if nums[i] < current_max:
+                end = i
+            if nums[l-i-1] > current_min:
+                start = l-i-1
+
+        print start, end
+        return end - start + 1
+
+
+class Solution(object):
+    def findUnsortedSubarray(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        sort = sorted(nums)
+        l,r = 1,0
+        for i in range(len(nums)):
+		    if sort[i] != nums[i]:
+		        l=i
+		        break
+        for j in range(len(nums)-1,l-1,-1):
+			if sort[j]!=nums[j]:
+				r=j
+				break
+        return r-l+1
+
+
+class Solution(object):
+    def findUnsortedSubarray(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        start = None
+        end = None
+        for i in range(len(nums)-1):
+            if start == None and nums[i] > nums[i+1]:
+                    start = i
+                    #print start
+            if start is not None and nums[i] > nums[i+1]:
+                    end = i+1
+                    #print end
+        if start is None:
+            return 0
+
+        while end+1 <= len(nums)-1:
+            if max(nums[start: end+1]) > nums[end+1]:
+                end += 1
+            else:
+                break
+        while start-1 >= 0:
+            if min(nums[start: end+1]) < nums[start-1]:
+                start -= 1
+            else:
+                break
+        return (end - start + 1)
+
+
 
 
 # Third Maximum Number
@@ -1534,6 +5322,50 @@ Digits are sorted such that the most significant digit is at the head of the lis
 # Shortest Word Distance
 
 # best time to buy and sell stock Ii
+'''
+
+have an array for which the ith element is the price of a given stock on day i
+
+Find the maximum profit. can complete as many transactions as you like, that is
+buy one and sell one share of stock MULTIPLE TIMES!
+
+MUST sell the stock before you buy again.
+
+# https://leetcode.com/articles/best-time-buy-and-sell-stock-ii/
+Solution
+Approach #1 Brute Force [Time Limit Exceeded]
+Time complexity : O(n^n) Recursive function is called n^n times.
+Space complexity : O(n)O(n). Depth of recursion is nn.
+
+
+Approach #2 (Peak Valley Approach) [Accepted]
+Time complexity : O(n)O(n). Single pass.
+Space complexity : O(1)O(1). Constant space required.
+
+Approach #3 (Simple One Pass) [Accepted]
+Time complexity : O(n)O(n). Single pass.
+Space complexity: O(1)O(1). Constant space needed.
+
+'''
+
+
+class Solution(object):
+    def maxProfit(self, prices):
+        """
+        :type prices: List[int]
+        :rtype: int
+        """
+        if not prices:
+            return 0
+        total = 0
+        for i in range(len(prices)-1):
+            if prices[i+1] > prices[i]:
+                total+= prices[i+1] - prices[i]
+
+        return total
+
+
+
 
 # Best time to Buy and Sell Stock
 '''
@@ -1590,6 +5422,17 @@ class Solution(object):
 # Reshape the matrix
 
 # maximum Subarray
+
+
+
+# Reshape the matrix
+'''
+reshape the matrix int a new one with different size but keep its original data
+
+
+
+'''
+
 
 # Pascal's Triangle Ii
 
@@ -1714,9 +5557,158 @@ maximumProduct(nums)
 # Merge Sorted Array
 
 
+# Triangle
+'''
+Given a Triangle, find the minimum path sum from top to bottom. Each step
+you may move to adjacent numbers on the row below
+
+[
+     [2],
+    [3,4],
+   [6,5,7],
+  [4,1,8,3]
+]
+
+The minimum path sum from top to bottom is 11 (i.e., 2 + 3 + 5 + 1 = 11).
+
+
+Bonus point if you are able to do this using only O(n) extra space, where n is the total number of rows in the triangle.
+
+
+'''
+
+# Modify the original triangle, top-down
+def minimumTotal2(self, triangle):
+    if not triangle:
+        return
+    for i in xrange(1, len(triangle)):
+        for j in xrange(len(triangle[i])):
+            if j == 0:
+                triangle[i][j] += triangle[i-1][j]
+            elif j == len(triangle[i])-1:
+                triangle[i][j] += triangle[i-1][j-1]
+            else:
+                triangle[i][j] += min(triangle[i-1][j-1], triangle[i-1][j])
+    return min(triangle[-1])
+
+# Modify the original triangle, bottom-up
+def minimumTotal3(self, triangle):
+    if not triangle:
+        return
+    for i in xrange(len(triangle)-2, -1, -1):
+        for j in xrange(len(triangle[i])):
+            triangle[i][j] += min(triangle[i+1][j], triangle[i+1][j+1])
+    return triangle[0][0]
 
 
 
+class Solution(object):
+    def minimumTotal(self, triangle):
+        """
+        :type triangle: List[List[int]]
+        :rtype: int
+        """
+        # use triangle itself for store, and bottom up to get the minimal value directly.
+
+        row_len=len(triangle)
+        for i in range(row_len-1,0,-1):
+            for j in range(len(triangle[i])-1):
+                triangle[i-1][j]+=min(triangle[i][j],triangle[i][j+1])
+
+        return triangle[0][0]
+
+
+
+# O(n) space
+class Solution(object):
+    def minimumTotal(self, triangle):
+        if not triangle:
+            return
+        res = triangle[-1]
+        for i in xrange(len(triangle)-2, -1, -1):
+            for j in xrange(len(triangle[i])):
+                res[j] = min(res[j], res[j+1]) + triangle[i][j]
+        return res[0]
+
+
+
+# Set Matrix Zeroes
+'''
+m * n matrix, if an element is 0, set its entire and column to 0.
+
+Do it in place
+
+FOLLOW-UP:
+Did you use extra space?
+A straight forward solution using O(mn) space is probably a bad idea.
+A simple improvement uses O(m + n) space, but still not the best solution.
+Could you devise a constant space solution?
+'''
+
+class Solution(object):
+    def setZeroes(self, matrix):
+        """
+        :type matrix: List[List[int]]
+        :rtype: void Do not return anything, modify matrix in-place instead.
+        """
+        row_index = []
+        col_index = []
+
+        # Record all the row/col indices where matrix element is a zero
+        for i in range(0, len(matrix)):
+            for j in range(0, len(matrix[i])):
+                if matrix[i][j] == 0:
+                    row_index.append(i)
+                    col_index.append(j)
+
+        for i in row_index:
+            for j in range(0, len(matrix[i])):
+                matrix[i][j] = 0
+
+        for i in range(0, len(matrix)):
+            for j in col_index:
+                matrix[i][j] = 0
+
+
+class Solution(object):
+    def setZeroes(self, matrix):
+        """
+        :type matrix: List[List[int]]
+        :rtype: void Do not return anything, modify matrix in-place instead.
+        """
+
+        i_set=set()
+        j_set=set()
+        for i, row in enumerate(matrix):
+            for j,col in enumerate(row):
+                if col ==0:
+                    i_set.add(i)
+                    j_set.add(j)
+
+
+        for i, row in enumerate(matrix):
+            for j,col in enumerate(row):
+                if i in i_set or j in j_set:
+                    matrix[i][j]=0
+
+
+class Solution(object):
+    def setZeroes(self, matrix):
+        """
+        :type matrix: List[List[int]]
+        :rtype: void Do not return anything, modify matrix in-place instead.
+        """
+        zeroRows = [False] * len(matrix)
+        zeroCols = [False] * len(matrix[0])
+        for i in range(len(matrix)):
+            for j in range(len(matrix[0])):
+                if matrix[i][j] == 0:
+                    zeroRows[i] = True
+                    zeroCols[j] = True
+        for i in range(len(matrix)):
+            for j in range(len(matrix[0])):
+                if zeroRows[i] or zeroCols[j]:
+                    matrix[i][j] = 0
 # Serach a 2D matrix
 
 
@@ -1988,3 +5980,914 @@ A solution set is:
                 else:
                     left += 1
         return res
+
+
+
+# find all duplicates in an array
+'''
+Given array of integers, some elements appear twice and others appear once
+Find all elements that appear twice in this array
+
+Do this in O(n) wihout using extra space
+'''
+
+
+
+
+class Solution(object):
+    def findDuplicates(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: List[int]
+        """
+        seen = set()
+        res = []
+        for num in nums:
+            if num in seen:
+                res.append(num)
+            else:
+                seen.add(num)
+        return res
+
+
+# O(n)    O(1)
+ class Solution(object):
+    def findDuplicates(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: List[int]
+        """
+        res = []
+        for x in nums:
+            if nums[abs(x)-1] < 0:
+                res.append(abs(x))
+            else:
+                nums[abs(x)-1] *= -1
+        return res
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+################################################################################
+"""
+
+
+String
+
+
+"""
+
+
+# Rea N charaters given Read4
+def read(self, buf, n):
+    idx = 0
+    while n > 0:
+        # read file to buf4
+        buf4 = [""]*4
+        l = read4(buf4)
+        # if no more char in file, return
+        if not l:
+            return idx
+        # write buf4 into buf directly
+        for i in range(min(l, n)):
+            buf[idx] = buf4[i]
+            idx += 1
+            n -= 1
+    return idx
+# Multiple calls
+### https://discuss.leetcode.com/topic/31965/python-solution-with-explainations-and-comments
+
+
+# Implement StrStr
+'''
+Return the index of the first occurrence of needle in hastack. or -1 if not present
+
+
+'''
+
+class Solution(object):
+    def strStr(self, haystack, needle):
+        """
+        :type haystack: str
+        :type needle: str
+        :rtype: int
+        """
+        if haystack is None or needle is None:
+            return -1
+        if needle == "":
+            return 0
+        for i in range(len(haystack)):
+            for j in range(len(needle)):
+                if i+j>=len(haystack):
+                    return -1
+                if haystack[i+j] != needle[j]:
+                    break
+                if j==len(needle)-1:
+                    return i
+        return -1
+
+def strStr(self, haystack, needle):
+    """
+    :type haystack: str
+    :type needle: str
+    :rtype: int
+    """
+    for i in range(len(haystack) - len(needle)+1):
+        if haystack[i:i+len(needle)] == needle:
+            return i
+    return -1
+
+
+# KMP
+def strStr(self, s, t):
+    if len(t) > len(s): return -1
+    kmp = [-1]
+    for i in range(len(t)):
+        j = kmp[i]
+        while not (j == -1 or t[i] == t[j]):
+            j = kmp[j]
+        kmp.append(j + 1)
+    i1 = i2 = 0
+    while True:
+        if i2 == len(t): return i1 - len(t)
+        elif i1 == len(s): return -1
+        elif i2 == -1 or s[i1] == t[i2]:
+            i1 += 1
+            i2 += 1
+        else:
+            i2 = kmp[i2]
+
+
+'''
+The time complexity is definitely not O(n), it is O(n*m).
+
+Since checking haystack[i:i+len(needle)] == needle is O(m) done O(n) times.
+
+n - length of haystack m - length of needle
+'''
+
+
+# Reverse words in a string -III
+'''
+Input: "Let's take LeetCode contest"
+Output: "s'teL ekat edoCteeL tsetnoc"
+
+ In the string, each word is separated by single space and there will not be any extra space in the string.
+
+https://leetcode.com/articles/reverse-words-in-a-string/
+
+'''
+class Solution(object):
+    def reverseWords(self, s):
+        """
+        :type s: str
+        :rtype: str
+        """
+        return ' '.join([i[::-1] for i in s.split()])
+
+
+
+#Stuent Attenence Record I
+'''
+GIven a string representing an attendance record for a student. contaings following 3 chars
+'A': Absent
+"L": late
+"P": present
+
+rewarded if his record does not contain more than one A or more than two continuous "l"
+'''
+
+# so check that there are NOT two A's or three consecutifve 'L'
+
+class Solution(object):
+    def checkRecord(self, s):
+        """
+        :type s: str
+        :rtype: bool
+        """
+        return s.count('A') <= 1 and s.count('LLL') == 0
+
+class Solution(object):
+    def checkRecord(self, s):
+        """
+        :type s: str
+        :rtype: bool
+        """
+        n=len(s)
+        if not n:
+            return True
+        countL,countA=0,0
+        for i in range(n):
+            if s[i]=="L":
+                countL+=1
+                if countL>2:
+                    return False
+            else:
+                countL=0
+                if s[i]=="A":
+                    countA+=1
+                    if countA>1:
+                        return False
+        return True
+
+
+
+# Reverse String  II
+'''
+Given a string and an int k, reverse the first k chars for every 2k chars counting from the start
+of the string
+If less than k char left, reverse all of them.
+'''
+
+#For every block of 2k characters starting with position i, we want to replace S[i:i+k] with it's reverse.
+
+def reverseStr(self, s, k):
+    s = list(s)
+    for i in xrange(0, len(s), 2*k):
+        s[i:i+k] = reversed(s[i:i+k])
+    return "".join(s)
+
+
+
+# Longest uncommon Subsequence I
+'''
+given two stirngs, find longest uncommon subsequence of this groupfp of
+two strings.
+
+LUS is defined as the longest subsequence of one of these strings strings and
+this subsequence should not be any subsequence of the other strings
+
+A subsequence is a sequence that can be derived from one sequence by deleting some chars wihtout changing the order of the remaining elements.
+
+'''
+
+"""
+Approach #1 Brute Force [Time Limit Exceeded]
+
+In the brute force approach we will generate all the possible 2^n
+​​ subsequences of both the strings and store their number of occurences in a
+hashmap. Longest subsequence whose frequency is equal to 11 will be the required
+ subsequence. And, if it is not found we will return -1−1.
+
+Time complexity : O(2^x+2^y) where xx and yy are the lengths of strings aa and bb respectively .
+Space complexity : O(2^x+2^y) 2^x+2^y subsequences will be generated.
+
+
+
+These three cases are possible with string aa and bb:-
+
+a=b. If both the strings are identical, it is obvious that no subsequence will
+be uncommon. Hence, return -1.
+
+length(a)=length(b) and a≠b. Example: abcabc and abdabd. In this case we can
+consider any string i.e. abcabc or abdabd as a required subsequence, as out of
+ these two strings one string will never be a subsequence of other string.
+ Hence, return length(a)length(a) or length(b)length(b).
+
+length(a)≠length(b). Example abcdabcd and abcabc. In this case we can consider
+bigger string as a required subsequence because bigger string can't be a
+subsequence of smaller string. Hence, return max(length(a),length(b)).
+
+Complexity Analysis
+
+Time complexity : O(min(x,y)) where xx and yy are the lengths of strings aa and bb respectively. Here equals method will take min(x,y)min(x,y) time .
+
+Space complexity : O(1). No extra space required.
+
+"""
+
+
+class Solution(object):
+    def findLUSlength(self, A, B):
+        """
+        :type a: str
+        :type b: str
+        :rtype: int
+        """
+        if A == B:
+            return -1
+        return max(len(A), len(B))
+
+
+# Roman To Integer
+
+
+class Solution:
+    # @param {string} s
+    # @return {integer}
+    def romanToInt(self, s):
+        ROMAN = {
+            'I': 1,
+            'V': 5,
+            'X': 10,
+            'L': 50,
+            'C': 100,
+            'D': 500,
+            'M': 1000
+        }
+
+        if s == "":
+            return 0
+
+        index = len(s) - 2
+        sum = ROMAN[s[-1]]
+        while index >= 0:
+            if ROMAN[s[index]] < ROMAN[s[index + 1]]:
+                sum -= ROMAN[s[index]]
+            else:
+                sum += ROMAN[s[index]]
+            index -= 1
+        return sum
+
+
+
+# Longest Common Prefix
+'''
+Write a fun to find the longest common prefix string amongst an array of strings
+
+https://leetcode.com/articles/longest-common-prefix/
+'''
+class Solution:
+
+    def lcp(self, str1, str2):
+        i = 0
+        while (i < len(str1) and i < len(str2)):
+            if str1[i] == str2[i]:
+                i = i+1
+            else:
+                break
+        return str1[:i]
+
+    # @return a string
+    def longestCommonPrefix(self, strs):
+        if not strs:
+            return ''
+        else:
+            return reduce(self.lcp,strs)
+
+
+class Solution(object):
+    def longestCommonPrefix(self, strs):
+        """
+        :type strs: List[str]
+        :rtype: str
+        """
+        if not strs:
+            return ''
+        p = strs[0]
+        for s in strs[1:]:
+            l = min(len(s), len(p))
+            i = 0
+            while i < l and s[i] == p[i]:
+                i += 1
+            p = p[:i]
+        return p
+
+class Solution(object):
+    def longestCommonPrefix(self, strs):
+        """
+        :type strs: List[str]
+        :rtype: str
+        """
+        if strs==[]:
+            return ""
+        first = min(strs)
+        last = max(strs)
+        r = ""
+        for idx in range(min(len(first), len(last))):
+            if first[idx] == last[idx]:
+                r += first[idx]
+            else:
+                break
+        return r
+
+
+class Solution(object):
+    def longestCommonPrefix(self, strs):
+        """
+        :type strs: List[str]
+        :rtype: str
+        """
+        #min (0, len(min))
+        if not strs:
+            return ''
+        shortest_word = min(strs)
+        if [shortest_word] == strs:
+            return shortest_word
+
+        result = ''
+        for ch in shortest_word:
+            for e in strs:
+                if ch != e[len(result)]:
+                    return result
+            result += ch
+        return result
+
+
+
+# Detect Capital
+'''
+given a word, judge whether the usage of Capitals in it is right or not
+
+right if:
+1. All letters are capitals, like USA
+2. All letters are not capitals. like leetcode
+3. Only first letter is cap if it has more than one letter, like Google
+
+otherwise, does not use capicals correctly
+
+
+'''
+public class Solution {
+    public boolean detectCapitalUse(String word) {
+        int cnt = 0;
+        for(char c: word.toCharArray()) if('Z' - c >= 0) cnt++;
+        return ((cnt==0 || cnt==word.length()) || (cnt==1 && 'Z' - word.charAt(0)>=0));
+    }
+}
+
+
+
+
+# Valid Parentheses
+
+
+# Repeated Substring Pattern
+'''
+Given non-empty string, check if it can be constructed by taking a substring of
+it and appedning Multiple compies together
+Assume string string consists of lowercase English letters only
+
+Example 1:
+Input: "abab"
+
+Output: True
+
+Explanation: It's the substring "ab" twice.
+Example 2:
+Input: "aba"
+
+Output: False
+Example 3:
+Input: "abcabcabcabc"
+
+Output: True
+
+Explanation: It's the substring "abc" four times. (And the substring "abcabc" twice.)
+
+'''
+
+class Solution(object):
+    def repeatedSubstringPattern(self, s):
+        """
+        :type s: str
+        :rtype: bool
+        """
+
+        l = len(s)
+        next = [-1 for i in range(l)]
+        j = -1
+        for i in range(1, l):
+            while j >= 0 and s[i] != s[j + 1]:
+                j = next[j]
+            if s[i] == s[j + 1]:
+                j += 1
+            next[i] = j
+        lenSub = l - 1 - next[l - 1]
+        return lenSub != l and l % lenSub ==0
+
+
+class Solution(object):
+    def repeatedSubstringPattern(self, s):
+        """
+        :type s: str
+        :rtype: bool
+        """
+
+        string =""
+        lengthOfStr = len(s)
+        for char in s[:int(lengthOfStr/2)]:
+            string += char
+            if lengthOfStr % len(string) == 0 and string * (lengthOfStr / len(string)) == s:
+                return True
+        return False
+
+
+# Constructing string from Binary Tree
+'''
+Need to construct a string consisting of parentheses and inttegers from a binary
+tree with preorder traversing way.
+
+Null node represented by empty parenthesis pair (). Omit all the empty parentheses
+
+Input: Binary tree: [1,2,3,4]
+       1
+     /   \
+    2     3
+   /
+  4
+
+Output: "1(2(4))(3)"
+
+Explanation: Originallay it needs to be "1(2(4)())(3()())",
+but you need to omit all the unnecessary empty parenthesis pairs.
+And it will be "1(2(4))(3)".
+Example 2:
+Input: Binary tree: [1,2,3,null,4]
+       1
+     /   \
+    2     3
+     \
+      4
+
+Output: "1(2()(4))(3)"
+
+Explanation: Almost the same as the first example,
+except we can't omit the first parenthesis pair to break the one-to-one mapping
+ relationship between the input and the output.
+
+https://leetcode.com/articles/construct-string-from-binary-tree/#approach-1-using-recursion-accepted
+
+'''
+public class Solution {
+
+    public String tree2str(TreeNode t) {
+        if (t == null)
+            return "";
+        Stack < TreeNode > stack = new Stack < > ();
+        stack.push(t);
+        Set < TreeNode > visited = new HashSet < > ();
+        String s = "";
+        while (!stack.isEmpty()) {
+            t = stack.peek();
+            if (visited.contains(t)) {
+                stack.pop();
+                s += ")";
+            } else {
+                visited.add(t);
+                s += "(" + t.val;
+                if (t.left == null && t.right != null)
+                    s += "()";
+                if (t.right != null)
+                    stack.push(t.right);
+                if (t.left != null)
+                    stack.push(t.left);
+            }
+        }
+        return s.substring(1, s.length() - 1);
+    }
+}
+
+
+class Solution(object):
+    def tree2str(self, t):
+        """
+        :type t: TreeNode
+        :rtype: str
+        """
+        if t == None:
+            return ''
+        if t.left == None and t.right == None:
+            return str(t.val)
+        if t.right == None:
+            return str(t.val) + '(' + self.tree2str(t.left) + ')'
+        return str(t.val) + '(' + self.tree2str(t.left) + ')' +
+        '(' + self.tree2str(t.right) + ')'
+
+
+
+
+# Number of Segments in a string
+'''
+Given number of segement in a string, where a segment is a contiguous sequence
+of non-space chars.
+
+Input: "Hello, my name is John"
+Output: 5
+'''
+class Solution(object):
+    def countSegments(self, s):
+        """
+        :type s: str
+        :rtype: int
+        """
+        return len(s.split())
+
+class Solution(object):
+    def countSegments(self, s):
+        """
+        :type s: str
+        :rtype: int
+        """
+        c = 0
+        # at the end of string to get the last element
+        s += ' '
+        for i in xrange(len(s)):
+            if s[i] != ' ' and s[i+1] == ' ':
+                c += 1
+        return c
+
+def countSegments(self, s):
+    return sum([s[i] != ' ' and (i == 0 or s[i - 1] == ' ') for i in range(len(s))])
+
+
+
+
+public int countSegments(String s) {
+    int res=0;
+    for(int i=0; i<s.length(); i++)
+        if(s.charAt(i)!=' ' && (i==0 || s.charAt(i-1)==' '))
+            res++;
+    return res;
+}
+'''
+Time complexity:  O(n)
+Space complexity: O(1)
+
+'''
+
+
+# Count and say - POORLY described
+'''
+count and say sequence is the sequence of intergers with the first five tersm as :
+
+ 1.     1
+ 2.     11
+ 3.     21
+ 4.     1211
+ 5.     111221
+ 6.     312211
+ 7.     13112221
+ 8.     1113213211
+ 9.     31131211131221
+ 10.   13211311123113112211
+
+
+'''
+class Solution(object):
+    def countAndSay(self, n):
+        """
+        :type n: int
+        :rtype: str
+        """
+        result = "1"
+        for _ in xrange(2, n+1):
+            count, length = 1, len(result)
+            temp = ""
+            result += "#"
+            for i in xrange(length):
+                if result[i+1] == result[i]:
+                    count += 1
+                else:
+                    temp += str(count) + result[i]
+                    count = 1
+            result = temp
+        return result
+
+
+#  Ransom Note
+'''s
+Given an arbitrary ransoam note string and
+'''
+
+
+
+
+#revesrse vowels of a string
+'''
+takes a string as input and reverse only the vowels of a stirng
+
+Example 1:
+Given s = "hello", return "holle".
+
+Example 2:
+Given s = "leetcode", return "leotcede".
+
+Note:
+
+'''
+class Solution(object):
+    def reverseVowels(self, s):
+        """
+        :type s: str
+        :rtype: str
+        """
+        vowels = 'aeuioAEUIO'
+        s = list(s)
+        l, r = 0, len(s)-1
+        while l < r:
+            if s[l] not in vowels:
+                l += 1
+            elif s[r] not in vowels:
+                r -= 1
+            else:
+                s[l], s[r] = s[r], s[l]
+                l += 1
+                r -= 1
+        return ''.join(s)
+
+
+
+
+# Reverse Strin
+
+'''
+takes a string and reverse it
+'''
+
+class SolutionClassic(object):
+    def reverseString(self, s):
+        r = list(s)
+        i, j  = 0, len(r) - 1
+        while i < j:
+            r[i], r[j] = r[j], r[i]
+            i += 1
+            j -= 1
+
+        return "".join(r)
+
+   class Solution(object):
+        def reverseString(self, s):
+            """
+            :type s: str
+            :rtype: str
+            """
+            return s[::-1]
+
+
+# Length of the last word
+'''
+Given string with uppper/lower cases letters and empty spaces.
+return the length of the last word in the string.
+
+If last does not exist, return 0
+
+For example,
+Given s = "Hello World",
+return 5.
+
+'''
+
+class Solution(object):
+    def lengthOfLastWord(self, s):
+        """
+        :type s: str
+        :rtype: int
+        """
+        if(s == ""):
+            return 0
+        last = len(s)-1
+        ans = 0
+        while(last >= 0 and s[last] == " "):
+            last -=1
+        while(last >= 0 and s[last] != " "):
+            last -=1
+            ans +=1
+        return ans
+
+
+# Add Binary
+'''
+Given two binary strings, return their sum(also binary string)
+
+For example,
+a = "11"
+b = "1"
+Return "100".
+'''
+class Solution(object):
+    def addBinary(self, a, b):
+        """
+        :type a: str
+        :type b: str
+        :rtype: str
+        """
+        if a == "":
+            return b
+        if b == "":
+            return a
+        a_2 = int(a,2)
+        b_2 = int(b,2)
+        carry = 1
+        while carry != 0:
+            carry = (a_2 & b_2)<<1
+            a_2 = a_2 ^ b_2
+            b_2 = carry
+        return bin(a_2)[2:]
+
+
+
+# vali palindrome
+'''
+Given a string, determine if it s a palindrome.
+
+For example,
+"A man, a plan, a canal: Panama" is a palindrome.
+"race a car" is not a palindrome.
+
+Note:
+Have you consider that the string might be empty? This is a good question to ask during an interview.
+
+For the purpose of this problem, we define empty string as valid palindrome.
+
+'''
+class Solution(object):
+    def isPalindrome(self, s):
+        """
+        :type s: str
+        :rtype: bool
+        """
+        s = s.lower()
+        l = 0
+        r = len(s) - 1
+        while l < r:
+            while l < r and not s[l].isalnum():
+                l += 1
+            while l < r and not s[r].isalnum():
+                r -= 1
+            if s[l] != s[r]:
+                return False
+            l += 1
+            r -= 1
+        return True
+
+
+
+# Longest common subsequence
+'''
+Two strings, find the longest common subsequence
+
+return the lenght of the LCS
+
+For "ABCD" and "EDCA", the LCS is "A" (or "D", "C"), return 1.
+
+For "ABCD" and "EACB", the LCS is "AC", return 2.
+'''
+
+class Solution:
+    """
+    @param A, B: Two strings.
+    @return: The length of longest common subsequence of A and B.
+    """
+    def longestCommonSubsequence(self, A, B):
+        # write your code here
+        n, m = len(A), len(B)
+        f = [[0] * (n + 1) for i in range(m + 1)]
+        for i in range(n):
+            for j in range(m):
+                f[i + 1][j + 1] = max(f[i][j + 1], f[i + 1][j])
+                if A[i] == B[j]:
+                    f[i + 1][j + 1] = f[i][j] + 1
+        return f[n][m]
+
+
+# 583. Delete Operation for two Strings -  Longest common subsequence
+'''
+Given two words, find the min number of steps required to make word1 and wor2 the same
+where each step you can delete one char in either string
+
+nput: "sea", "eat"
+Output: 2
+Explanation: You need one step to make "sea" to "ea" and another step to make "eat" to "ea".
+
+
+https://leetcode.com/articles/delete-operation-for-two-strings/
+'''
+class Solution(object):
+    def minDistance(self, A, B):
+        """
+        :type word1: str
+        :type word2: str
+        :rtype: int
+        """
+        M, N = len(A), len(B)
+        dp = [[0] * (N+1) for _ in xrange(M+1)]
+
+        for i in xrange(M):
+            dp[i][-1] = M-i
+        for j in xrange(N):
+            dp[-1][j] = N-j
+
+        for i in xrange(M-1, -1, -1):
+            for j in xrange(N-1, -1, -1):
+                if A[i] == B[j]:
+                    dp[i][j] = dp[i+1][j+1]
+                else:
+                    dp[i][j] = 1 + min(dp[i+1][j], dp[i][j+1])
+
+        return dp[0][0]
+
+
+
+#
