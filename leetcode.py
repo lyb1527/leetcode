@@ -3103,6 +3103,49 @@ Given an array of integers that is already sorted in ascending order,
 Please note that your returned answers (both index1 and index2) are not zero-based.
 
 '''
+
+# Binary Serach
+
+# O(NlogN)
+def twoSum(self, nums, target):
+    if nums == None or len(numbers) == 0:
+        return []
+
+    l, r =
+    for i in range(len(nums)):
+        l, r = i + 1, len(nums) - 1
+        while l <= r:
+            mid = l + (l - r) /2
+            if nums[mid] == target - numbers[i]:
+                return [i + 1, mid + 1]
+            elif nums[mid] < target - nums[i]:
+                l = mid + 1
+            else:
+                r = mid - 1
+    return []
+
+
+
+
+# TWo pointer solution
+#O(N)
+def twoSum(numbers, target):
+    if nums == None:
+        return []
+
+    l, r = 0, len(nums) - 1
+    while l < r:
+        sum = nums[l] + nums[r]
+        if sum == target:
+            return  [l + 1, r + 1] # not zero based
+        elif sum < target:
+            l += 1
+        else:
+            r -= 1
+    return []
+
+
+
 class Solution(object):
     def twoSum(self, numbers, target):
         """
@@ -3342,14 +3385,14 @@ class Solution(object):
         :type nums: List[int]
         :rtype: int
         """
-        '''
+
         # method1, use sum
         n = len(nums)
         index_sum = (0 + n - 1) * n /2 + n
         for i in range(n):
             index_sum = index_sum - nums[i]
         return index_sum
-        '''
+
         # method2, use XOR
         val = len(nums)
         for i in range(len(nums)):
@@ -3358,44 +3401,712 @@ class Solution(object):
 
 
 # Find the Duplicate Number
+'''
+
+'''
+
+"""
+根据鸽笼原理，给定n + 1个范围[1, n]的整数，其中一定存在数字出现至少两次。
+
+假设枚举的数字为 n / 2：
+
+遍历数组，若数组中不大于n / 2的数字个数超过n / 2，则可以确定[1, n /2]范围内一定有解，
+
+否则可以确定解落在(n / 2, n]范围内。
+"""
+#O(n * log n)
+class Solution(object):
+    def findDuplicate(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        low, high = 1, len(nums) - 1
+        while low <= high:
+            mid = (low + high) >> 1
+            cnt = sum(x <= mid for x in nums)
+            if cnt > mid:
+                high = mid - 1
+            else:
+                low = mid + 1
+        return low
+
+
+#O(n)
+class Solution(object):
+    def findDuplicate(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        slow = nums[0]
+        fast = nums[nums[0]]
+        while (slow != fast):
+            slow = nums[slow]
+            fast = nums[nums[fast]]
+
+        fast = 0;
+        while (fast != slow):
+            fast = nums[fast]
+            slow = nums[slow]
+
+        return slow
+
 
 # Lonely Pixel II
 
+'''
+
+'''
 # Task Scheduler
+'''
+CPU执行任务调度，任务用字符数组tasks给出，每两个相同任务之间必须执行n个不同的其他任务或者空闲。
+
+求最优调度策略下的CPU运行周期数。
+'''
+
 
 # 3Sum Smaller
 
+'''
+return  the number of triplets that nums[i] + nums[j] + nums[k] < target
+
+different from 3sum:
+if temp < target:
+    res += r - l
+    l += 1
+
+'''
+class Solution(object):
+    def threeSumSmaller(self, nums, target):
+        if nums == None or len(nums) < 3:
+            return 0
+
+        nums.sort()
+        res = 0
+
+        for i in range(len(nums)):
+            l, r = i + 1, len(nums) - 1
+
+            while l < r:
+                tmp = nums[i] +nums[l] + nums[r]
+
+                # accumulate the count
+                if temp < target:
+                    res += r - l
+                    l += 1
+                else:
+                    r -= 1
+        return res
+
+
+
+
 # Best time to buy and sell stock
+'''
+#https://leetcode.com/articles/best-time-buy-and-sell-stock/
+
+Approach -1: Brute Force
+
+
+approach-2: one pass
+TC: O(n)
+SC: O(1)
+
+Goal: find peak and valley in the given graph. Largest peak following the
+smallest valley. Maintain two variables,
+ minprice and maxprofit corresponding to smallest valley and max profit(the Maximumdifference between selling price
+ and minprice)
+
+'''
+
+class Solution(object):
+    def maxProfit(self, prices):
+        """
+        :type prices: List[int]
+        :rtype: int
+        """
+        low = float('inf')
+        profit = 0
+        for i in prices:
+            profit = max(profit, i-low)
+            low = min(low, i)
+        return profit
+
+class Solution(object):
+    def maxProfit(self, prices):
+        """
+        :type prices: List[int]
+        :rtype: int
+        """
+        if not prices: return 0
+        lowest = prices[0]
+        res = 0
+        for i in range(1, len(prices)):
+            lowest = min(prices[i], lowest)
+            res = max(res, prices[i]-lowest)
+        return res
+
+
+class Solution(object):
+    def maxProfit(self, prices):
+        """
+        :type prices: List[int]
+        :rtype: int
+        """
+
+        if len(prices) <= 1:
+            return 0
+
+        lo,hi = prices[0],prices[0]
+        profit = 0
+
+        for i in xrange(len(prices)):
+            if prices[i] < lo:
+                lo = prices[i]
+            else:
+                profit = max(profit,prices[i]-lo)
+
+
+        return profit
 
 # Unique Paths
 
 # Subarray Sum Equals K
+'''
+给定整数数组nums和整数k，寻找和等于k的连续子数组的个数。
 
+利用字典cnt统计前N项和出现的个数
+
+遍历数组nums：
+
+    在cnt中将sums的计数+1
+
+    累加前N项和为sums
+
+    将cnt[sums - k]累加至答案https://leetcode.com/articles/subarray-sum-equals-k/
+'''
+
+class Solution(object):
+    def subarraySum(self, nums, k):
+        """
+        :type nums: List[int]
+        :type k: int
+        :rtype: int
+        """
+        count = {0:1}
+        out=0
+        runsum=0
+        for x in nums:
+            runsum +=x
+            if runsum-k in count:
+             out +=count[runsum-k]
+            if runsum in count:
+             count[runsum] +=1
+            else:
+                count[runsum]=1
+        return out
+
+
+class Solution(object):
+    def subarraySum(self, nums, k):
+        """
+        :type nums: List[int]
+        :type k: int
+        :rtype: int
+        """
+        d = {0: 1}
+        count, cur_sum = 0, 0
+        for x in nums:
+            cur_sum += x
+            if cur_sum - k in d:
+                count += d[cur_sum-k]
+            if cur_sum in d:
+                d[cur_sum] += 1
+            else:
+                d[cur_sum] = 1
+        return count
+
+class Solution(object):
+    def subarraySum(self, nums, k):
+        """
+        :type nums: List[int]
+        :type k: int
+        :rtype: int
+        """
+        ans = sums = 0
+        cnt = collections.Counter()
+        for num in nums:
+            cnt[sums] += 1
+            sums += num
+            ans += cnt[sums - k]
+        return ans
 #78	Subsets
 
 #611 Valid Triangle Number
+'''
+Given array , to cunt the number of triplets chosen from the array
+that can make triangles if take them as side lenghths.
+Input: [2,2,3,4]
+Output: 3
+Explanation:
+Valid combinations are:
+2,3,4 (using the first 2)
+2,3,4 (using the second 2)
+2,2,3
+https://leetcode.com/problems/valid-triangle-number/#/solution
+'''
+"""
+Time complexity : O(n^2). Loop of kk and jj will be executed O(n^2) times in total, because, we do not reinitialize the value of kk for a new value of jj chosen(for the same ii). Thus the complexity will be O(n^2+n^2)=O(n^2).
+
+Space complexity : O(logn). Sorting takes O(logn) space.
+"""
+class Solution(object):
+    def triangleNumber(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        nums.sort()
+        nums = nums[::-1]
+        sol = 0
+        for i in range(len(nums) - 2):
+            j = i + 1
+            k = len(nums) - 1
+            while j < k:
+                diff = nums[i] - nums[j]
+                while nums[k] <= diff and k > j:
+                    k -= 1
+                sol += (k - j)
+                j += 1
+        return sol
+
+
+
 
 #
-153	Find Minimum in Rotated Sorted Array	39.7%	Medium
-35	Search Insert Position	39.6%	Easy
-53	Maximum Subarray	39.5%	Easy
-59	Spiral Matrix II	39.4%	Medium
-643	Maximum Average Subarray I	39.3%	Easy
-562	Longest Line of Consecutive One in Matrix 	39.0%	Medium
-380	Insert Delete GetRandom O(1)	39.0%	Medium
-27	Remove Element	38.8%	Easy
+# 153	Find Minimum in Rotated Sorted Array	39.7%	Medium
+'''
+Suppose an array sorted in ascending order is rotated at some pivot unknown to you beforehand.
+
+(i.e., 0 1 2 4 5 6 7 might become 4 5 6 7 0 1 2).
+
+Find the minimum element.
+'''
+class Solution:
+    # @param nums: a rotated sorted array
+    # @return: the minimum number in the array
+    def findMin(self, nums):
+        if len(nums) == 0:
+            return 0
+
+        start, end = 0, len(nums) - 1
+        target = nums[-1]
+        while start + 1 < end:
+            mid = (start + end) / 2
+            if nums[mid] <= target:
+                end = mid
+            else:
+                start = mid
+        return min(nums[start], nums[end])
+
+
+
+# Search Insert Position
+'''
+KEY: find the first position >= target
+'''
+class Solution(object):
+    def searchInsert(self, nums, target):
+        """
+        :type nums: List[int]
+        :type target: int
+        :rtype: int
+        """
+        # find the first position >= target
+        if not nums or len(nums) == 0:
+            return 0
+        start, end = 0, len(nums) - 1
+        while start + 1 < end:
+            mid = start + (end - start)/2
+            if nums[mid] == target:
+                return mid
+            elif nums[mid] < target:
+                start = mid
+            else:
+                end = mid
+        if nums[start] >= target:
+            return start
+        elif nums[end] >= target:
+            return end
+        else:
+            return end + 1
+
+
+
+# 53	Maximum Subarray	39.5%	Easy
+'''
+Find the contiguous subarray within an array (containing at least one number) which has the largest sum.
+
+For example, given the array [-2,1,-3,4,-1,2,1,-5,4],
+the contiguous subarray [4,-1,2,1] has the largest sum = 6.
+'''
+class Solution(object):
+    def maxSubArray(self, A):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        if not A:
+            return 0
+
+        curSum = maxSum = A[0]
+        for num in A[1:]:
+            curSum = max(num, curSum + num)
+            maxSum = max(maxSum, curSum)
+
+        return maxSum
+
+
+
+
+
+
+#643	Maximum Average Subarray I	39.3%	Easy
+'''
+给定包含n个整数的数组，寻找长度为k的连续子数组的平均值的最大值
+https://leetcode.com/articles/maximum-average-subarray/
+'''
+class Solution(object):
+    def findMaxAverage(self, nums, k):
+        """
+        :type nums: List[int]
+        :type k: int
+        :rtype: float
+        """
+        ans = None
+        sums = 0
+        for x in range(len(nums)):
+            sums += nums[x]
+            if x >= k:
+                sums -= nums[x - k]
+            if x >= k - 1:
+                ans = max(ans, 1.0 * sums / k)
+        return ans
+
+
+#59	Spiral Matrix II	39.4%	Medium
+'''
+SPIRAL INSIDE OUT, square matrix fileld with 1 - n^2
+'''
+
+def generateMatrix(self, n):
+    A, lo = [], n*n+1
+    while lo > 1:
+        lo, hi = lo - len(A), lo
+        A = [range(lo, hi)] + zip(*A[::-1])
+    return A
+
+
+class Solution(object):
+    def generateMatrix(self, n):
+        """
+        :type n: int
+        :rtype: List[List[int]]
+        """
+        A = [[0] * n for _ in range(n)]
+        i, j, di, dj = 0, 0, 0, 1
+        for k in xrange(n*n):
+            A[i][j] = k + 1
+            if A[(i+di)%n][(j+dj)%n]:
+                di, dj = dj, -di
+            i += di
+            j += dj
+        return A
+
+class Solution(object):
+    def generateMatrix(self, n):
+        """
+        :type n: int
+        :rtype: List[List[int]]
+        """
+        if n == 1:
+            return [[1]]
+
+        num_layers = n - 1
+        matrix = [[0 for _ in range(n)] for _ in range(n)]
+        count = 1
+
+        for layer in range(num_layers):
+            for i in range(layer, n - layer):
+                matrix[layer][i] = count
+                count += 1
+
+            for i in range(1 + layer, n - layer):
+                matrix[i][-1 - layer] = count
+                count += 1
+
+            for i in range(n - 2 - layer, -1 + layer, -1):
+                matrix[-1 - layer][i] = count
+                count += 1
+
+            for i in range(n - 2 - layer, layer, -1):
+                matrix[i][0 + layer] = count
+                count += 1
+
+        return matrix
+
+#562	Longest Line of Consecutive One in Matrix 	39.0%	Medium
+'''
+给定01矩阵M，计算矩阵中一条线上连续1的最大长度。一条线可以为横向、纵向、主对角线、反对角线。
+
+提示：给定矩阵元素个数不超过10,000
+
+解题思路：
+动态规划（Dynamic Programming）
+
+分表用二维数组h[x][y], v[x][y], d[x][y], a[x][y]表示以元素M[x][y]结尾，横向、纵向、主对角线、反对角线连续1的最大长度
+
+状态转移方程如下：
+
+h[x][y] = M[x][y] * (h[x - 1][y]  + 1)
+
+v[x][y] = M[x][y] * (v[x][y - 1]  + 1)
+
+d[x][y] = M[x][y] * (d[x - 1][y - 1]  + 1)
+
+a[x][y] = M[x][y] * (a[x + 1][y - 1]  + 1)
+'''
+class Solution(object):
+    def longestLine(self, M):
+        """
+        :type M: List[List[int]]
+        :rtype: int
+        """
+        h, w = len(M), len(M) and len(M[0]) or 0
+        ans = 0
+
+        #horizontal & diagonal
+        diag = [[0] * w for r in range(h)]
+        for x in range(h):
+            cnt = 0
+            for y in range(w):
+                cnt = M[x][y] * (cnt + 1)
+                diag[x][y] = M[x][y]
+                if x > 0 and y > 0 and M[x][y] and diag[x - 1][y - 1]:
+                    diag[x][y] += diag[x - 1][y - 1]
+                ans = max(ans, cnt, diag[x][y])
+
+        #vertical & anti-diagonal
+        adiag = [[0] * w for r in range(h)]
+        for x in range(w):
+            cnt = 0
+            for y in range(h):
+                cnt = M[y][x] * (cnt + 1)
+                adiag[y][x] = M[y][x]
+                if y < h - 1 and x > 0 and M[y][x] and adiag[y + 1][x - 1]:
+                    adiag[y][x] += adiag[y + 1][x - 1]
+                ans = max(ans, cnt, adiag[y][x])
+
+        return ans
+
+
+
+#380	Insert Delete GetRandom O(1)	39.0%	Medium
+'''
+design all the following ops in average O(1) time for SET
+
+insert(val): Inserts an item val to the set if not already present.
+remove(val): Removes an item val from the set if present.
+getRandom: Returns a random element from current set of elements. Each element must have the same probability of being returned.
+'''
+
+"""
+哈希表 + 数组 （HashMap + Array）
+
+利用数组存储元素，利用哈希表维护元素在数组中的下标
+
+由于哈希表的新增/删除操作是O(1)，而数组的随机访问操作开销也是O(1)，因此满足题设要求
+
+记数组为dataList，哈希表为dataMap
+
+insert(val): 将val添至dataList末尾，并在dataMap中保存val的下标idx
+
+remove(val): 记val的下标为idx，dataList末尾元素为tail，弹出tail并将其替换至idx处，在dataMap中更新tail的下标为idx，最后从dataMap中移除val
+
+getRandom: 从dataList中随机选取元素返回
+"""
+import random
+class RandomizedSet(object):
+
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.dataMap = {}
+        self.dataList = []
+
+    def insert(self, val):
+        """
+        Inserts a value to the set. Returns true if the set did not already contain the specified element.
+        :type val: int
+        :rtype: bool
+        """
+        if val in self.dataMap:
+            return False
+        self.dataMap[val] = len(self.dataList)
+        self.dataList.append(val)
+        return True
+
+    def remove(self, val):
+        """
+        Removes a value from the set. Returns true if the set contained the specified element.
+        :type val: int
+        :rtype: bool
+        """
+        if val not in self.dataMap:
+            return False
+        idx = self.dataMap[val]
+        tail = self.dataList.pop()
+        if idx < len(self.dataList):
+            self.dataList[idx] = tail
+            self.dataMap[tail] = idx
+        del self.dataMap[val]
+        return True
+
+    def getRandom(self):
+        """
+        Get a random element from the set.
+        :rtype: int
+        """
+        return random.choice(self.dataList)
+
+#27	Remove Element	38.8%	Easy
+'''
+
+Given a array and a value, remove all instances of that value in place and return new length
+
+MUST in place with constant memory
+Given input array nums = [3,2,2,3], val = 3
+
+Your function should return length = 2, with the first two elements of nums being 2.
+'''
+#Two Pointers
+@TC: O(n), array has total of n elements, both i and j traverse at most 2n steps
+@ SC: O(1)
+def removeElement(nums, target):
+    j = 0
+    for i in range(len(nums)):
+        if nums[i] != target:
+            nums[j] = nums[i]
+            j += 1
+    return i
+
+# Two Pointers - when elemensts to remove are rare
+
+@TC: O(n), both i and n traverse at most n steps. The number of assginment operation is euqal to the number
+of elements to remove. More efficient is elements are rareself.
+@SC; O(1)
+
+
+def removeElementRare(nums, target):
+    i = 0
+    n = len(nums)
+    while i < n:
+        if nums[i] == target:
+            nums[i] = nums[n-1]
+            n -= 1 # reduce array size by 1
+        else:
+            i += 1
+
+    return n
+
 48	Rotate Image	38.4%	Medium
 66	Plus One	38.4%	Easy
 64	Minimum Path Sum	38.3%	Medium
-118	Pascal's Triangle	38.3%	Easy
+#118	Pascal's Triangle	38.3%	Easy
+# Pascal's Triangle
+'''
+Given numRows, generate the first numRows of Pascal's triangle
+
+For exameple, given numRows = 5
+
+[
+     [1],
+    [1,1],
+   [1,2,1],
+  [1,3,3,1],
+ [1,4,6,4,1]
+]
+'''
+class Solution(object):
+    def generate(self, numRows):
+        """
+        :type numRows: int
+        :rtype: List[List[int]]
+        """
+        if not numRows:
+            return []
+
+        if numRows == 1:
+            return [[1]]
+
+        result = [[1]]
+        for i in range(1, numRows):
+            result.append([1])
+            for j in range(1, i):
+                result[i].append(result[i - 1][j - 1] + result[i - 1][j])
+            result[i].append(1)
+
+        return result
+
+
 39	Combination Sum	38.2%	Medium
 75	Sort Colors	37.8%	Medium
 162	Find Peak Element	37.2%	Medium
 154	Find Minimum in Rotated Sorted Array II	37.0%	Hard
 289	Game of Life	36.8%	Medium
 128	Longest Consecutive Sequence	36.6%	Hard
-119	Pascal's Triangle II	36.6%	Easy
+#119	Pascal's Triangle II	36.6%	Easy
+'''
+Given an index k, return the kth row of the pascal's Triangle
+
+given k return [1, 3, 3, 1]
+
+NOTE: optimize using only O(k) extra space?
+
+'''
+class Solution(object):
+    def getRow(self, rowIndex):
+        """
+        :type rowIndex: int
+        :rtype: List[int]
+        """
+        if rowIndex < 0:
+            return []
+        row = [0] * (rowIndex + 1)
+        row[0] = 1
+        for i in xrange(1, rowIndex + 1):
+            for j in xrange(i, 0, -1):
+                row[j] = row[j] + row[j - 1]
+        return row
+
+
 11	Container With Most Water	36.5%	Medium
+'''
+
+'''
+def maxArea(self, height):
+    l, r = 0, len(height) - 1
+    res = 0
+
+    while l < r:
+        res = max(res, min(height[l], height[r]) * (r - l))
+        if height[l] < height[r]:
+            l += 1
+        else:
+            r -= 1
+    return res
 42	Trapping Rain Water	36.5%	Hard
 80	Remove Duplicates from Sorted Array II	35.8%	Medium
 73	Set Matrix Zeroes	35.8%	Medium
@@ -3416,10 +4127,148 @@ class Solution(object):
 88	Merge Sorted Array	31.9%	Easy
 63	Unique Paths II	31.6%	Medium
 34	Search for a Range	31.3%	Medium
-16	3Sum Closest	31.0%	Medium
+#16	3Sum Closest	31.0%	Medium
+'''
+return the sum of the three integers closest to a given number
+'''
+class Solution():
+    def threeSumClosest(self, nums, target):
+        if nums == None or len(nums) < 3:
+            return 0
+
+        nums.sort()
+        res = nums[0] + nums[1] + nums[2]
+
+        for i in range(len(nums)):
+            l, r = i + 1, len(nums) - 1
+
+            while l < r:
+                tmp = nums[i] + nums[l] + nums[r]
+
+                if abs(res - target) > abs(tmp - target):
+                    res = tmp
+
+                if tmp == target:
+                    return tmp
+                elif tmp < target:
+                    l += 1
+                else:
+                    r -= 1
+        return res
+
+
 209	Minimum Size Subarray Sum	30.3%	Medium
+'''
+给定一个包含n个正整数的数组和一个正整数s，找出其满足和sum ≥ s的子数组的最小长度。如果不存在这样的子数组，返回0
+
+例如，给定数组 [2,3,1,2,4,3]与s = 7，
+子数组[4,3]具有满足题设条件的最小长度。
+
+进一步练习：
+如果你已经找到了O(n)的解法，尝试使用时间复杂度为O(n log n)的解法完成此题
+解题思路：
+O(n)解法：滑动窗口法，使用两个下标start和end标识窗口（子数组）的左右边界
+
+O(nlogn)解法：二分枚举答案，每次判断的时间复杂度为O(n)
+
+'''
+
+def minSubArrayLen(nums, s):
+    sum = 0
+    res = float('inf')
+    head = 0
+
+    for i in range(len(nums)):
+        sum += nums[i]
+
+        while sum >= s:
+            res = min(res, i - head + 1)
+            sum -= nums[head]
+            head += 1
+
+    return res if res <= len(nums) else 0
+
+
+# Subarray Sum II
+'''
+Given [1, 2, 3, 4], and interval = [1, 3]. return 4
+
+'''
+
+# Longest Substring without repeating chars
+"""abcabcbb is 'abc', bbbbb is 'b', with length 1"""
+
+def lengthOfLongestSubstring(self, s):
+    if s == None:
+        return 0
+    head = 0
+    dic = dict()
+    res = 0
+
+    for i in range(len(s)):
+        # conition check false, then move head
+        if s[i] in dict and head <= dic[s[i]]:
+            head = dic[s[i]] + 1
+
+        # put index of every digit into dic
+        dic[s[i]] = i
+        res = max(res, i - head + 1)
+
+    return res
+
+
+class Solution(object):
+    def lengthOfLongestSubstring(self, s):
+        """
+        :type s: str
+        :rtype: int
+        """
+        start = maxLength = 0
+        usedChar = {}
+
+        for i in range(len(s)):
+            if s[i] in usedChar and start <= usedChar[s[i]]:
+                start = usedChar[s[i]] + 1
+            else:
+                maxLength = max(maxLength, i - start + 1)
+
+            usedChar[s[i]] = i
+
+        return maxLength
+
+# Longest Substring with at Most two Distinct characters 
+
+
+
+# two pointers - window
+
 605	Can Place Flowers	30.0%	Easy
 56	Merge Intervals	29.8%	Medium
+'''
+
+'''
+class Solution(object):
+    def merge(self, intervals):
+        """
+        :type intervals: List[Interval]
+        :rtype: List[Interval]
+        """
+        if len(intervals) == 0:
+            return []
+
+        intervals.sort(key = lambda x : x.start)
+        result = [intervals[0]]
+
+        for interval in intervals:
+            if interval.start > result[-1].end:
+                result.append(interval)
+            else:
+                result[-1].end = max(result[-1].end, interval.end)
+
+        return result
+
+
+
 581	Shortest Unsorted Continuous Subarray	29.7%	Easy
 228	Summary Ranges	29.5%	Medium
 55	Jump Game	29.5%	Medium
@@ -3431,7 +4280,77 @@ class Solution(object):
 414	Third Maximum Number	27.8%	Easy
 85	Maximal Rectangle	27.6%	Hard
 57	Insert Interval	27.4%	Hard
-18	4Sum	26.6%	Medium
+#18	4Sum	26.6%	Medium
+'''
+a + b + c +  = target
+
+'''
+# Hash table
+# TC: O(n^2)
+# SC: O(n)
+def fourSum(self, nums, target):
+    if nums == None or len(nums) < 4:
+        return []
+
+    nums.sort()
+    ans = set()
+    dic = colelctions.defaultdict(list)
+
+    for i, m in enumerate(nums):
+        for j, n in enumerate(nums[:i]):
+            sum = m + n
+            if target - sum in dic:
+                for sub in dic[target - sum]:
+                    ans.add(tuple(sub + [n, m]))
+
+        for k, p in enumerate(nums[i+1:]):
+            dic[m + p].append([m, p])
+
+    return list(ans)
+
+
+
+
+
+# Divie and conquer
+# general solutionL-- Ksum
+#TC:  O(n^(k-1)), in this problem , O(n^3),
+#SC:O(1)
+class Solution(object):
+    def fourSum(self, nums, target):
+        if nums == None or len(nums) < 4:
+            return []
+        nums.sort()
+        return [list(t) for t in self.kSum(nums, target, 4)]
+
+    def kSum(self, nums, target, k):
+        res = set()
+
+        if k == 2:
+            l, r = 0, len(nums) -1
+            while l < r:
+                sum = nums=[l] + nums[r]
+
+                if sum == target:
+                    res.add((nums[l], nums[r]))
+                    l += 1
+                elif sum < target:
+                    l += 1
+                else:
+                    r -= 1
+
+        else:
+            l = 0
+            while l < len(nums) - k + 1:
+                for n in self.kSum(nums[l+1:], target - nums[l], k -1):
+                    res.add((nums[l], ) + tuple(n))
+                l += 1
+
+        return res
+
+
+
+
 84	Largest Rectangle in Histogram	26.5%	Hard
 79	Word Search	26.5%	Medium
 45	Jump Game II	26.2%	Hard
@@ -3441,7 +4360,82 @@ class Solution(object):
 163	Missing Ranges 	24.8%	Medium
 189	Rotate Array	24.4%	Easy
 4	Median of Two Sorted Arrays	21.6%	Hard
-15	3Sum	21.6%	Medium
+#15	3Sum	21.6%	Medium
+'''
+a + b + c = 0, all unique triplets, NO Duplicates
+
+For example, given array S = [-1, 0, 1, 2, -1, -4],
+
+A solution set is:
+[
+  [-1, 0, 1],
+  [-1, -1, 2]
+]
+'''
+
+# SILU: fix the first number, then two pointers the second and last number
+
+class Solution(object):
+    def threeSum(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: List[List[int]]
+        """
+        res = []
+        nums.sort()
+        for i in range(len(nums)-2):
+            if i > 0 and nums[i] == nums[i-1]:
+                continue
+            l, r = i+1, len(nums)-1
+            while l < r:
+                s = nums[i] + nums[l] + nums[r]
+                if s < 0:
+                    l +=1
+                elif s > 0:
+                    r -= 1
+                else:
+                    res.append((nums[i], nums[l], nums[r]))
+                    while l < r and nums[l] == nums[l+1]:
+                        l += 1
+                    while l < r and nums[r] == nums[r-1]:
+                        r -= 1
+                    l += 1; r -= 1
+        return res
+
+
+#TC: O(n^2)
+class Solution(object):
+    def threeSum(self, nums):
+        if nums == None or len(nums) < 3:
+            return []
+        nums.sort()
+        res = []
+
+        for i in range(len(nums)):
+            #if i > 0 and nums[i] == nums[i - 1]
+            #    continue
+
+            # avoid duplicates, if same, go to the next
+            if i == 0 or nums[i] != nums[i-1]:
+                l, r = i + 1, len(nums) - 1
+                while l < r:
+                    if nums[i] + nums[l] + nums[r] == 0:
+                        res.append((nums[i], nums[l], nums[r]))
+                        # avoid duplicates
+                        while l < r and nums[l] == nums[l + 1]:
+                            l += 1
+                        while l < r and nums[r] == nums[r-1]:
+                            r -= 1
+                        l += 1
+                        r -= 1
+                    elif  nums[i] + nums[l] + nums[r] < 0:
+                        l += 1
+                    else:
+                        r -= 1
+        return res
+
+
+
 644	Maximum Average Subarray II	16.8%	Hard
 126	Word Ladder II	14.0%	Hard
 
@@ -3598,25 +4592,42 @@ def reverseLinkedList(head):
     return prev
 
 # E. Palindrome Linked List
+"
+
 class Solution(object):
     def isPalindrome(self, head):
-        """
-        :type head: ListNode
-        :rtype: bool
-        """
-        newList = []
+        if head == None:
+            return True
 
+        mid = self.getMid(head)
+        right = mid.next
+        mid.next = None
+        return self.compare(head, self.rotate(right))
+
+    def rotate(self, head):
+        pre = None
         while head:
-            newList.append(head.val)
-            head = head.next
+            temp = head.next
+            head.next = pre
+            pre = head
+            head = temp
+        return pre
 
-        length = len(newList) / 2
-
-        for i in range(length):
-            if newList[i] != newList[-1-i]:
+    def compare(self, h1, h2):
+        while h1 and h2:
+            if h1.val != h2.val:
                 return False
-
+            h1 = h1.next
+            h2 = h2.next
         return True
+
+    def getMid(self, head):
+        slow = head
+        fast = head.next
+        while fast and fast.next:
+            slow = slow.next
+            fast = fast.next.next
+        return slow
 
 
 def isPalindrome(self, head):
@@ -4048,25 +5059,26 @@ all nodes less than x come before nodes greater than
 Given 1->4->3->2->5->2 and x = 3,
 return 1->2->2->4->3->5.
 '''
-class Solution(object):
+
+class Solution:
     def partition(self, head, x):
-        """
-        :type head: ListNode
-        :type x: int
-        :rtype: ListNode
-        """
-        h1 = l1 = ListNode(0)
-        h2 = l2 = ListNode(0)
+        h1 = cur1 = ListNode(0)
+        h2 = cur2 = ListNoe(0)
+
         while head:
+            tmp = head.next
             if head.val < x:
-                l1.next = head
-                l1 = l1.next
+                cur1.next = head
+                head.next = None
+                cur1 = cur1.next
             else:
-                l2.next = head
-                l2 = l2.next
-            head = head.next
-        l2.next = None
-        l1.next = h2.next
+                cur2.next = head
+                head.next = None
+                cur2 = cur2.next
+
+            head = tmp
+        # 1's tail = 2's start
+        cur1.next = h2.next
         return h1.next
 
 
@@ -5436,40 +6448,6 @@ reshape the matrix int a new one with different size but keep its original data
 
 # Pascal's Triangle Ii
 
-# Pascal's Triangle
-'''
-Given numRows, generate the first numRows of Pascal's triangle
-
-For exameple, given numRows = 5
-
-[
-     [1],
-    [1,1],
-   [1,2,1],
-  [1,3,3,1],
- [1,4,6,4,1]
-]
-'''
-class Solution(object):
-    def generate(self, numRows):
-        """
-        :type numRows: int
-        :rtype: List[List[int]]
-        """
-        if not numRows:
-            return []
-
-        if numRows == 1:
-            return [[1]]
-
-        result = [[1]]
-        for i in range(1, numRows):
-            result.append([1])
-            for j in range(1, i):
-                result[i].append(result[i - 1][j - 1] + result[i - 1][j])
-            result[i].append(1)
-
-        return result
 
 
 # Maximum Product of three Numbers
