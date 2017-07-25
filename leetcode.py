@@ -1,37 +1,576 @@
-'''
+JIUZHANG:
 
-Have to learn the probelm solving patterns by heart and apply them to similar probelms
-
-checkpoint 0:
-Get familiar with basic tricks such as two-pointers and bit manipulation from CICS or other books
-
-EASY problems: usually they have trivial brute force solutions . Need to learn how to apply the tricks to improve brute force
-solutions
-
-CHECKPOINT 1:
-
-If randomly oepn a few easy question for each DS, you can pinpoint the optimal
-solutions and implement them in a few minutes, may move onto the next CHECKPOINT
-, checkpoint 1 .
-
-STUDY GUIDE:
-1. sort the problems by acceptance rate escending
-2. try solving problems without hints at least with brute force solutions
-3. Study how the top solutions apply the tricks to improve performanceself.
-4.
-'''
-
-
+BINARY SEARCH:
 
 '''
 
+1. start + 1 < end:
+two pointers from start and end, if they are next to each other or overlap , then exit the loop
 
-TREE----------Acceptance
+2. start + (end - start) / 2: avoid overflow
 
+3. A[mid] ==, end = mid
+
+ <, >
+
+
+4. A[start], A[end] ? target
+
+'''
+
+TEMPLATE:
+
+    def findPosition(self, A, target):
+        # Write your code here
+        start = 0
+        end = len(A) - 1
+
+
+        # exit when start and end are next to each other(only two numbers left) or overlap
+        while start + 1 < end:
+            mid = start + (end - start) / 2
+            if target == A[mid]:
+                # when there is duplciates
+                # move end, might have same number before mid
+                end = mid
+                #OR
+                # when there is no duplicates, just return mid
+                return mid
+            elif target > A[mid]:
+                start = mid
+            else:
+                end = mid
+
+
+        # check where start or end is the target
+        if target == A[start]:
+            return start
+        elif target == A[end]:
+            return end
+        else:
+            return -1
+
+# Closest Number in Sorted Array
+
+
+# Last Position Of Target
+    def findPosition(self, A, target):
+        # Write your code here
+        if len(A) == 0 or A == None:
+            return -1
+
+        start = 0
+        end = len(A) - 1
+
+        if target < A[start] or target > A[end]:
+            return -1
+
+        while start + 1 < end:
+            mid = start + (end - start) / 2
+            if target == A[mid]:
+                end = mid
+            elif target > A[mid]:
+                start = mid
+            else:
+                end = mid
+
+        # want to find the last Position, so check end fisrt
+        if target == A[end]:
+            return end
+        elif target == A[start]:
+            return start
+        else:
+            return -1
+
+# Search a 2D matrix
+'''
+numbers in first row is bigger than numbers in the second row.
+each row is ascending
+Given target, return True if present in the matrix
+
+DO duplicates
+'''
+
+# two binary Search
+#do a BS on row then bs on column
+
+# one binary search
+# TC: Log(n*m) = logn + logm
+class Solution:
+
+    def searchMatrix(self, matrix, target):
+        if len(matrix) == 0:
+            return False
+
+        row, col = len(matrix), len(matrix[0])
+        # treat as whole list , total of  m * n elements
+        start, end = 0, row * col - 1
+        while start + 1 < end:
+            mid = (start + end) / 2
+            number = matrix[mid / col[][mid % col[]
+            if number == target:
+                return True
+            elif: number < target:
+                start = mid
+            else:
+                end = mid
+
+        if matrix[start / col][start % col] == target:
+            return True
+
+        if matrix[end / col][end % col] == target:
+            return True
+
+        return False
+
+
+# Maximum Number In Mountain Sequence
+
+# Search In a Big Sorted Array
+
+# Find Minimum In Rotated Sorted Array
+'''
+[0, 1, 2, 4, 5, 6 7] - > [4, 5, 6, 7, 0, 1, 2]
+
+
+'''
+# Approach: pick the LAST element from the list, compare with mi
+#if mid > last element, move start. If < last element, move end
+
+class Solution:
+    # @param nums: a rotated sorted array
+    # @return: the minimum number in the array
+    def findMin(self, nums):
+        if len(nums) == 0:
+            return 0
+
+        start, end = 0, len(nums) - 1
+        target = nums[-1]
+        while start + 1 < end:
+            mid = (start + end) / 2
+            if nums[mid] <= target:
+                end = mid
+            else:
+                start = mid
+        return min(nums[start], nums[end])
+
+
+# Find Peak Element
+'''
+[1, 2, 1, 3, 4, 5, 7, 6]
+peak if i < i -1 an i > i + 1
+If many peaks, return any
+'''
+
+# O(n), linear pass
+
+# O(logn)
+class Solution:
+    #@param A: An integers list.
+    #@return: return any of peek positions.
+    def findPeak(self, A):
+        # write your code here
+        start, end = 1, len(A) - 2
+        while start + 1 <  end:
+            mid = (start + end) / 2
+            if A[mid] < A[mid - 1]:
+                end = mid
+            elif A[mid] < A[mid + 1]:
+                start = mid
+            else:
+                end = mid
+
+        if A[start] < A[end]:
+            return end
+        else:
+            return start
+# First Bad Version
+'''
+Versin NUmber : 1 - n
+'''
+  def findFirstBadVersion(self, n):
+        start, end = 1, n
+        while start + 1 < end:
+            mid = (start + end) / 2
+            if SVNRepo.isBadVersion(mid):
+                end = mid
+            else:
+                start = mid
+
+        if SVNRepo.isBadVersion(start):
+            return start
+        return end
+
+# Search Insert Position
+'''
+find the first position that  >= target
+'''
+
+class Solution:
+    """
+    @param A : a list of integers
+    @param target : an integer to be inserted
+    @return : an integer
+    """
+    def searchInsert(self, A, target):
+        if len(A) == 0:
+            return 0
+
+        start, end = 0, len(A) - 1
+        # first position >= target
+        while start + 1 < end:
+            mid = (start + end) / 2
+            if A[mid] == target:
+                # do duplicates, if found, return
+                return mid
+            elif A[mid] < target:
+                start = mid
+            else:
+                end  = mid
+
+        if A[start] >= target:
+            return start
+        if A[end] >= target:
+            return end
+        # position not found
+        return len(A)
+
+###### Search In Rotated Sorted Array #######
+'''
+
+two rising segments, middle could be either segement.
+
+'''
+
+# 1. O(n), for loop
+
+
+
+# 2. Binary Serach (logn)
+    def search(self, A, target):
+        """
+        :type nums: List[int]
+        :type target: int
+        :rtype: int
+        """
+        if A is None or len(A) == 0:
+            return -1
+        start, end = 0, len(A) - 1
+
+        while start + 1 < end:
+            mid = start + (end - start) / 2
+
+            if A[mid] == target:
+                return mid
+
+            #middle in first rising segement, if T is between start and mid, move end to mid
+            if A[start] < A[mid]:
+                if A[start] <= target and target <= A[mid]:
+                    end = mid
+                else:
+                    start = mid
+
+            # mid in second rising segement.
+            else:
+                # if target is between mid and End, move start to mid
+                if A[mid] <= target and target <= A[end]:
+                    start = mid
+                else:
+                    end = mid
+
+        if A[start] == target:
+            return start
+        if A[end] == target:
+            return end
+        return -1
+
+# Smallest Rectangle Enclosing Black Pixels
+
+# Total Occurrence Of Target
+
+# Drop Eggs
+
+# First Position Of target
+
+# K Closest Numbers in Sorted Array
+
+# Divide Two Integers
+
+# Search for a range
+'''
+First target's first position, and last position
+'''
+    def searchRange(self, A, target):
+        if len(A) == 0:
+            return [-1, -1]
+
+        start, end = 0, len(A) - 1
+        while start + 1 < end:
+            mid = (start + end) / 2
+            if A[mid] < target:
+                start = mid
+            else:
+                end = mid
+        if A[start] == target:
+            leftBound = start
+        elif A[end] == target:
+            leftBound = end
+        else:
+            return [-1, -1]
+
+
+        start, end = leftBound, len(A) - 1
+        while start + 1 < end:
+            mid = (start + end) / 2
+            if A[mid] <= target:
+                start = mid
+            else:
+                end = mid
+        # check end first for last position
+        if A[end] == target:
+            rightBound = end
+        else:
+            rightBound = start
+        return [leftBound, rightBound]
+
+# Search a 2D matrix II
+
+'''
+HAS duplicates. return number of occurrence of target
+'''
+#O(n + m), O(1)
+
+
+class Solution:
+    """
+    @param matrix: An list of lists of integers
+    @param target: An integer you want to search in matrix
+    @return: An integer indicates the total occurrence of target in the given matrix
+    """
+    def searchMatrix(self, matrix, target):
+        if matrix == [] or matrix[0] == []:
+            return 0
+
+        row, column = len(matrix), len(matrix[0])
+        # from bottom left
+        i, j = row - 1, 0
+        count = 0
+        while i >= 0 and j < column:
+            if matrix[i][j] == target:
+                count += 1
+                i -= 1
+                j += 1
+            elif matrix[i][j] < target:
+                j += 1
+            elif matrix[i][j] > target:
+                i -= 1
+        return count
+
+# NOT keeping count
+def searchMatrix(self, matrix, target):
+    m = len(matrix)
+    n = len(matrix[0])
+
+    # from top-right
+    i, j = 0, n - 1
+    while i < m and j >= 0:
+        if matrix[i][j] == target:
+            return True
+        elif matrix[i][j] < target:
+            i += 1
+        else: # matrix[i][j] > target:
+            j -= 1
+
+    return False
+
+
+# Binary Search (template)
+class Solution:
+    # @param {int[]} A an integer array sorted in ascending order
+    # @param {int} target an integer
+    # @return {int} an integer
+    def findPosition(self, A, target):
+        # Write your code here
+        if len(A) == 0 or A == None:
+            return -1
+
+        start = 0
+        end = len(A) - 1
+
+        if target < A[start] or target > A[end]:
+            return -1
+
+        while start + 1 < end:
+            mid = start + (end - start) / 2
+            if target == A[mid]:
+                return mid
+            elif target > A[mid]:
+                start = mid
+            else:
+                end = mid
+
+        # want to find the first Position, so check start fisrt
+        if target == A[start]:
+            return start
+        elif target == A[end]:
+            return end
+        else:
+            return -1
+
+
+
+# Sqrt(x)
+
+# Maximum Average Subarray
+
+# Sqrt(x) II
+
+# Find Minimum In Rotated Sorted Array II
+'''
+Contains duplciates, worst case run-time is O(n )
+
+black box testing: has to go through all n elements to find the
+smallest number, which gives O(n)
+'''
+
+
+# Search in Rotated Sorted Array II
+
+# Copy Books
+
+# Wood Cut
+
+# Merge Sorted Array
+"""
+merge B into A
+
+FOLLOWUP: if A is 10^8, b is 10!
+do binary search for 10 numbers to find location in A, then copy the
+whole array to a new
+
+
+"""
+def merge(self, A, m, B, n):
+    # comparing the bigger values from the back of the list
+    indexA = m-1;
+    indexB = n-1;
+    while indexA >=0 and indexB>=0:
+
+        #senario1: move elements at front of A to the back of A
+        if A[indexA] > B[indexB]:
+            A[indexA+indexB+1] = A[indexA]
+            indexA -= 1
+
+        #senario2. two lists in ascending
+        else:
+            A[indexA+indexB+1] = B[indexB]
+            indexB -= 1
+    #senario1 continued: copy B to the front of A
+    while indexB >= 0:
+         A[indexB] = B[indexB]
+         indexB -= 1
+# Merge sorted Array II
+'''
+A + B => C
+'''
+
+# Remove Duplicates for sorted array
+
+
+# Remove Duplicates for sorted array II
+
+
+# Recover Rotated Sorted Array - REVERSE
+'''
+Change the rotated array to ascending
+
+EX: 4, 5, 1, 2, 3, -> 1, 2, 3, 4, 5
+
+O(N), hard for O(1)space, do it in-place!!!
+
+THREE STEPS REVERSE: in-place by reverse
+1 -> 5, 4, 1, 2, 3
+
+2 -> 5, 4, 3, 2, 1
+
+3 -> 1, 2, 3, 4, 5
+
+'''
+class Solution:
+
+    def recoverRotatedSortedArray(self, nums):
+        # [4, 5, 1, 2, 3]
+        # range(5-1) = > [0, 1, 2, 3], so 3 + 1 will not go out of index
+         for i in range(len(nums) - 1):
+            if nums[i] > nums[i+1]:
+                self.reverse(nums, 0, i)
+                self.reverse(nums, i + 1, len(nums) - 1)
+                self.reverse(nums, 0, len(nums) - 1)
+                return
+
+    def reverse(self, nums, start, end):
+        while start < end:
+            nums[start], nums[end] = nums[end], nums[start]
+            start += 1
+            end -= 1
+
+
+
+# Rotate String- REVERSE
+'''
+Given a string and an offset, rotate string by offset. (rotate from left to right)
 
 
 '''
 
+# REverse Wors in a String-REVERSE
+
+
+
+# Median Of two Sorted Arrays == Find kth in in two sorted Arrays
+'''
+find the k/2-th elements for both A and B, if A's k/2 smaller than B's, then
+remove the numbers before k/2 in A. Remaining is K - K/2
+'''
+# TC: log(k)   SC: O(1)
+class Solution:
+    """
+    @param A: An integer array.
+    @param B: An integer array.
+    @return: a double whose format is *.5 or *.0
+    """
+    def findMedianSortedArrays(self, A, B):
+        n = len(A) + len(B)
+        if n % 2 == 1:
+            return self.findKth(A, B, n / 2 + 1)
+        else:
+            smaller = self.findKth(A, B, n / 2)
+            bigger = self.findKth(A, B, n / 2 + 1)
+            return (smaller + bigger) / 2.0
+
+    def findKth(self, A, B, k):
+        if len(A) == 0:
+            return B[k - 1]
+        if len(B) == 0:
+            return A[k - 1]
+        if k == 1:
+            return min(A[0], B[0])
+
+        a = A[k / 2 - 1] if len(A) >= k / 2 else None
+        b = B[k / 2 - 1] if len(B) >= k / 2 else None
+
+        if b is None or (a is not None and a < b):
+            return self.findKth(A[k / 2:], B, k - k / 2)
+        return self.findKth(A, B[k / 2:], k - k / 2)
+
+# Find kth in in two sorted Arrays
+#(A.length + B.length)/2
+
+
+
+
+########################################################################
+LEETCODE
 # 1. Merge two binary trees
 
 '''
@@ -756,6 +1295,32 @@ What if the BST is modified (insert/delete operations) often and you need to
 因此采用中序遍历（左 -> 根 -> 右）即可以递增顺序访问BST中的节点，从而得到第k小的元素，时间复杂度O(k)
 
 '''
+# Binary Search
+
+class Solution:
+    def kthSmallest(self, root, k):
+
+        n = self.countNodes(root.left)
+        if n + 1 == k:
+            return root.val
+        elif n + 1 < k:
+            # k - n - 1 is the nth node in the right subtree
+            return self. kthSmallest(root.right, k - n - 1)
+        else:
+            # k is the same as the whole tree
+            return self.kthSmallest(root.left, k)
+
+    def countNodes(self, node):
+        if node == None:
+            return 0
+        return self.countNodes(node.left) = self.countNodes(node.left) + 1
+
+
+
+
+
+
+
 class Solution(object):
     def kthSmallest(self, root, k):
         """
@@ -2516,6 +3081,27 @@ all the nodes in the last level are as far left as possible.
 
 can have between 1 and 2^h nodes inclusive at the last level h
 '''
+class Solution():
+    def countNodes(self, root):
+        if not root:
+            return 0
+        if self.depth(root.left, True) == self.depth(root.right, False):
+            return 2 ** (self.depth(root.left, True) + 1) - 1
+        else:
+            return self.countNodes(root.left) + self.countNodes(root.right) + 1
+
+    def depth(self, root, isLeft):
+        ans = 0
+        while root:
+            if isLeft:
+                root = root.left
+            else:
+                root = root.right
+            ans += 1
+        return ans
+
+
+
 class Solution(object):
     def countNodes(self, root):
         """
@@ -3050,11 +3636,11 @@ class Solution(object):
         :type nums: List[int]
         :rtype: void Do not return anything, modify nums in-place instead.
         """
-        y = 0
+        tail = 0
         for x in range(len(nums)):
             if nums[x] != 0 :
-                nums[x], nums[y] = nums[y], nums[x]
-                y += 1
+                nums[x], nums[tail] = nums[tail], nums[x]
+                tail += 1
 
 
 
@@ -3096,7 +3682,7 @@ class Solution:
         return output
 
 
-# Two Sum - input array is sorted
+# Two Sum II - input array is sorted
 '''
 Given an array of integers that is already sorted in ascending order,
  find two numbers such that they add up to a specific target number.
@@ -3111,7 +3697,6 @@ def twoSum(self, nums, target):
     if nums == None or len(numbers) == 0:
         return []
 
-    l, r =
     for i in range(len(nums)):
         l, r = i + 1, len(nums) - 1
         while l <= r:
@@ -3697,16 +4282,19 @@ class Solution:
     # @param nums: a rotated sorted array
     # @return: the minimum number in the array
     def findMin(self, nums):
-        if len(nums) == 0:
+        if len(nums) == 0 or nums is None:
             return 0
 
         start, end = 0, len(nums) - 1
         target = nums[-1]
+
         while start + 1 < end:
             mid = (start + end) / 2
+            # if mid <= target, on second rising segement, smaller elements
+            # exist on the left of mid, move end to mid
             if nums[mid] <= target:
                 end = mid
-            else:
+            else: # if mid > end, move start move to mid
                 start = mid
         return min(nums[start], nums[end])
 
@@ -3741,6 +4329,92 @@ class Solution(object):
             return end
         else:
             return end + 1
+
+
+# First Bad Version
+'''
+Versin NUmber : 1 - n
+'''
+  def findFirstBadVersion(self, n):
+        start, end = 1, n
+        while start + 1 < end:
+            mid = (start + end) / 2
+            if SVNRepo.isBadVersion(mid):
+                end = mid
+            else:
+                start = mid
+
+        if SVNRepo.isBadVersion(start):
+            return start
+        return end
+
+
+# Count Of Smaller Number
+'''
+
+for each query, return the number of element in that array that are smaller than
+the given integer
+
+Array : [1, 2, 7, 8, 5]
+Query: [1, 8, 5]
+return [0, 4, 2]
+
+'''
+
+# Sort and binary search
+
+class Solution:
+    def countOfSmallerNumber(self, A, queries):
+        A.sort()
+        res = []
+
+        for q in queries:
+            l, r = 0 len(A)
+            while l < r:
+                mid = l + (r - l) / 2
+                # the first pos that is greater than q
+                if A[mid] >= q:
+                    r = mid
+                else:
+                    l = mid + 1
+            res.append(r)
+
+        return res
+
+
+class Solution:
+    """
+    @param A: A list of integer
+    @return: The number of element in the array that
+             are smaller that the given integer
+    """
+    def countOfSmallerNumber(self, A, queries):
+        A = sorted(A)
+
+        results = []
+        for q in queries:
+            results.append(self.countSmaller(A, q))
+        return results
+
+    def countSmaller(self, A, q):
+        # find the first number in A >= q
+        if len(A) == 0 or A[-1] < q:
+            return len(A)
+
+        start, end = 0, len(A) - 1
+        while start + 1 < end:
+            mid = (start + end) / 2
+            if A[mid] < q:
+                start = mid
+            else:
+                end = mid
+        if A[start] >= q:
+            return start
+        if A[end] >= q:
+            return end
+        return end + 1
+
+
 
 
 
@@ -4063,7 +4737,74 @@ class Solution(object):
 
 39	Combination Sum	38.2%	Medium
 75	Sort Colors	37.8%	Medium
-162	Find Peak Element	37.2%	Medium
+#162	Find Peak Element	37.2%	Medium
+'''
+
+'''
+class Solution:
+    #@param A: An integers list.
+    #@return: return any of peek positions.
+    def findPeak(self, A):
+        # write your code here
+        start, end = 1, len(A) - 2
+        while start + 1 <  end:
+            mid = (start + end) / 2
+            if A[mid] < A[mid - 1]:
+                end = mid
+            elif A[mid] < A[mid + 1]:
+                start = mid
+            else:
+                end = mid
+
+        if A[start] < A[end]:
+            return end
+        else:
+            return start
+
+# Sqrt(x)
+'''return the square root of x'''
+class Solution:
+
+    def sqrt(self, x):
+        start, end = 1, x
+        while start + 1 < end:
+            mid = (start + end) / 2
+            if mid * mid == x:
+                return mid
+            elif mid * mid < x:
+                start = mid
+            else:
+                end = mid
+        if end * end <= x:
+            return end
+        return start
+
+
+# Wood Cut
+'''
+pieces of wood with length[123, 345, 231], cut them into k pieces of same length
+
+'''
+class Solution:
+    def woodCut(self, L, k):
+        if sum(L) < k:
+            return 0
+
+        maxLen = max(L)
+        # from 1 to max len
+        start, end = 1, maxLen
+        while start + 1 < end:
+            mid = (start + end) / 2
+            pieces = sum([l / mid for l in L])
+            if pieces >= k:
+                start = mid
+            else:
+                end = mid
+
+        if sum([l / end for l in L]) >= k:
+            return end
+        return start
+
 154	Find Minimum in Rotated Sorted Array II	37.0%	Hard
 289	Game of Life	36.8%	Medium
 128	Longest Consecutive Sequence	36.6%	Hard
@@ -4108,12 +4849,158 @@ def maxArea(self, height):
             r -= 1
     return res
 42	Trapping Rain Water	36.5%	Hard
-80	Remove Duplicates from Sorted Array II	35.8%	Medium
+#Remove Duplicates from Sorted Array II	35.8%	Medium
+'''
+allowed at most twice in result
+
+'''
+
+def removeDuplicatesII(self, nums):
+    if nums == None:
+        return len(nums)
+
+    tail = 2
+    for i in range(2, len(nums)):
+        if nums[i] != nums[tail - 1] or nums[i] != nums[tail]:
+            nums[tail] = nums[ni]
+            tail += 1
+
+    return tail
+
 73	Set Matrix Zeroes	35.8%	Medium
 90	Subsets II	35.8%	Medium
-26	Remove Duplicates from Sorted Array	35.5%	Easy
+#26	Remove Duplicates from Sorted Array	35.5%	Easy
+'''
+given [1, 1, 2], retrun 2. with the nums being 1 an 2
+'''
+
+def removeDuplicates(self, nums):
+    if nums == None:
+        return len(nums)
+    tail = 1
+    for i in range(1, len(nums)):
+        if nums[i] != nums[tail - 1]:
+            nums[tail] = nums[i]
+            tail += 1
+    return tail  # return tail's length
+
+# Partition Array - Lintcode
+'''
+given nums an an int k, smaller than k and bigger than k
+return the Partitioning index, first nums[i] >= k
+
+'''
+def partitionArray(self, nums, k):
+    if nums == None:
+        return 0
+    for i in range(len(nums)):
+        # move the ones smaller than k
+        if nums[i] < k:
+            nums[tail], nums[i] = nums[i], nums[tail]
+            tail += 1
+    return tail
+
+# Partition Array By Odd and Even
+'''
+Parition an integer array into odd number first then even number seonc
+
+'''
+def partitionArrayByOddAndEven(self, nums):
+
+    tail = 0
+    for i in range(len(nums)):
+        if nums[i] % 2 == 1:
+            nums[tail], nums[i] = nums[i], nums[tail]
+            tail += 1
+
+# Sort Letters by Case
+'''
+A stirng only containing letters, sort it by lower case first
+and upper case second
+
+EX:
+
+'abAcD', a reasonable answer is 'acbA'. Not necessarily keep the orginal
+orer of lower case or uppper case.
+
+DO IT in-place and in one pass
+'''
+
+def sortLetters(self, chars):
+    tail = 0
+    for i in range(len(chars)):
+        # if lower cases, put in front
+        for ord(chars[i]) >= ord('a' and ord(chars[i])) <= ord('z'):
+            chars[tail], chars[i] = chars[i], chars[tail]
+            tail += 1
+
 277	Find the Celebrity 	35.2%	Medium
 74	Search a 2D Matrix	35.1%	Medium
+'''
+'''
+class Solution:
+    def searchMatrix(self, matrix, target):
+        m = len(matrix)
+        n = len(matrix[0])
+
+        l, r = m * n -1
+
+        while l <= r:
+            mid = l + (r - l) / 2
+            # n is the number of column
+            row = mid / n
+            col = mid % n
+
+            if matrix[row][col] == target:
+                return True
+            elif matrix[row][col] < target:
+                l = mid + 1
+            else:
+                r = mid - 1
+        return False
+
+# Search a 2D matrix II
+'''
+each row is sorted, each column is sorted
+'''
+
+def searchMatrix(self, matrix, target):
+    m = len(matrix)
+    n = len(matrix[0])
+
+    i, j = 0, n - 1
+    while i < m and j >= 0:
+        if matrix[i][j] == target:
+            return True
+        elif matrix[i][j] < target:
+            i += 1
+        else: # matrix[i][j] > target:
+            j -= 1
+
+    return False
+
+
+# H-Index
+
+
+# H-Index II
+
+def hIndex(self, citations):
+    n = len(citations)
+    l, r = 0, n - 1
+
+    while l <= r:
+        mid = l + (r -l) / 2
+
+        if citations[mid] == n - mid:
+            return n - mid
+        elif citations[mid] < n - mid:
+            l = mid + 1
+        else:
+            r = mid - 1
+    return n - l
+
+
 548	Split Array with Equal Sum 	34.0%	Medium
 1	Two Sum	34.0%	Easy
 120	Triangle	33.6%	Medium
@@ -4124,7 +5011,109 @@ def maxArea(self, height):
 33	Search in Rotated Sorted Array	32.1%	Medium
 105	Construct Binary Tree from Preorder and Inorder Traversal	32.0%	Medium
 106	Construct Binary Tree from Inorder and Postorder Traversal	32.0%	Medium
-88	Merge Sorted Array	31.9%	Easy
+#88	Merge Sorted Array	31.9%	Easy
+'''
+given two sorted arrays nums1 an nums2, merge nums2 into nums1
+
+# A has m elements, but size of A is m + n
+# B has n elements
+
+# has to be two ascending ordered
+'''
+
+def merge(self, A, m, B, n):
+    indexA = m-1;
+    indexB = n-1;
+    while indexA >=0 and indexB>=0:
+
+        #senario1: move elements at front of A to the back of A
+        if A[indexA] > B[indexB]:
+            A[indexA+indexB+1] = A[indexA]
+            indexA -= 1
+
+        #senario2. two lists in ascending
+        else:
+            A[indexA+indexB+1] = B[indexB]
+            indexB -= 1
+    #senario1 continued: copy B to the front of A
+    while indexB >= 0:
+         A[indexB] = B[indexB]
+         indexB -= 1
+
+
+YouTube
+def merge(self, num1, m, num2, n):
+    i = m -1
+    j = n - 1
+    k = m + n - 1
+    while k >= 0 and i >= 0 and j >= 0:
+        if nums1[i] > nums2[j]:
+            nums1[k] = nums1[i]
+            i -= 1
+        else:
+            nums1[k] = nums2[j]
+            j -= 1
+        k -= 1
+
+    if j >= 0:
+        nums1[:j+1] = nums2[:j+1]
+
+
+# Merge Soted List(A + B => C)
+##VARIATION: Merge two given sorted integer array A and B into a new sorted integer array.
+# TC: O(n1 + n2)
+
+def mergeSortedArray(Aa, b):
+
+	i = 0
+	j = 0
+	c =  []
+	while i < len(a) and j < len(b):
+		if a[i] < b[j]:
+			c.append(a[i])
+			i += 1
+		else:
+			c.append(b[j])
+			j += 1
+	if i < len(a):
+		while i < len(a):
+			c.append(a[i])
+			i += 1
+	if j < len(b):
+		while j < len(b):
+			c.append(b[j])
+			j += 1
+	return c
+
+# The Smallest Difference
+'''
+given two arrays, A and B. Find an element in A and B to make the
+smallest difference
+
+A =[3, 6, 7, 4]
+B = [2, 8, 9, 3]
+return 0 (3-3)
+'''
+class Solution:
+    def smallestDifference(self, A, B):
+        A.sort()
+        B.sort()
+
+        i = j = 0
+        diff = 2147483647
+
+        while i < len(A) an j < len(B):
+            if A[i] > B[j]:
+                diff = min(A[i] - B[j], diff)
+                # because i > j, so increment j to get closer to i
+                j += 1
+            else:
+                diff = min(B[j] - A[i], diff)
+                i += 1
+        return diff
+
+
+
 63	Unique Paths II	31.6%	Medium
 34	Search for a Range	31.3%	Medium
 #16	3Sum Closest	31.0%	Medium
@@ -4157,7 +5146,7 @@ class Solution():
         return res
 
 
-209	Minimum Size Subarray Sum	30.3%	Medium
+#209	Minimum Size Subarray Sum	30.3%	Medium
 '''
 给定一个包含n个正整数的数组和一个正整数s，找出其满足和sum ≥ s的子数组的最小长度。如果不存在这样的子数组，返回0
 
@@ -4172,7 +5161,7 @@ O(n)解法：滑动窗口法，使用两个下标start和end标识窗口（子�
 O(nlogn)解法：二分枚举答案，每次判断的时间复杂度为O(n)
 
 '''
-
+# TWO POINTERS
 def minSubArrayLen(nums, s):
     sum = 0
     res = float('inf')
@@ -4181,6 +5170,7 @@ def minSubArrayLen(nums, s):
     for i in range(len(nums)):
         sum += nums[i]
 
+        # inside while loop, - head to see if the sum still >= 7 to get shorter
         while sum >= s:
             res = min(res, i - head + 1)
             sum -= nums[head]
@@ -4189,11 +5179,65 @@ def minSubArrayLen(nums, s):
     return res if res <= len(nums) else 0
 
 
+# Binary Search
+# O(nlogn)
+class Solution:
+    def minSubArrayLen(self, s, nums):
+        if nums == None:
+            return 0
+
+        n = len(nums)
+        res = float('inf')
+        sumList = [0] * (n + 1)
+
+        for i in range(1, n+1):
+            sumList[i] = nums[i - 1] + sumList[i - 1]
+
+        for i in range(n + 1):
+            l, r = i + 1, n + 1
+            while l < r:
+                mid = l + (r - l) / 2
+                if sumList[mid] >= sumList[i] + s:
+                    r = mid
+                else:
+                    l = mid + 1
+            if r < n + 1:
+                res = min(res, r - i)
+
+        return res if res <= len(nums) else 0
+
+
+
+
+
 # Subarray Sum II
 '''
 Given [1, 2, 3, 4], and interval = [1, 3]. return 4
 
+[0, 0], [0, 1], [1, 1], [2, 2]
+  1,     1 + 2,    2,     3
 '''
+#[0, 1, 3, 6, 10]
+#10 - 3 = 7 ([3, 4])
+
+class Solution:
+    def subarraySumII(self, A, start, end):
+        if A is None:
+            return 0
+
+        res = 0
+        n = len(A)
+        S = [0] * (n + 1)
+        for i in range(n):
+            S[i + 1] = S[i] + A[i]
+
+        for i in range(n):
+            for j in range(i + 1, n + 1):
+                iff = S[j] - S[i]
+                if diff >= start and diff <= end:
+                    res += 1
+        return res
+
 
 # Longest Substring without repeating chars
 """abcabcbb is 'abc', bbbbb is 'b', with length 1"""
@@ -4210,6 +5254,7 @@ def lengthOfLongestSubstring(self, s):
         if s[i] in dict and head <= dic[s[i]]:
             head = dic[s[i]] + 1
 
+        # condition met
         # put index of every digit into dic
         dic[s[i]] = i
         res = max(res, i - head + 1)
@@ -4236,11 +5281,124 @@ class Solution(object):
 
         return maxLength
 
-# Longest Substring with at Most two Distinct characters 
+# Longest Substring with at Most two Distinct characters
+'''
+find the length of the longest substring T that contains at most 2 istinct chars
 
-
+'''
 
 # two pointers - window
+def lengthOfLongestSubstringTwoString(self, s):
+    if s is None:
+        return 0
+
+    res = 0
+    head = 0
+    dic = colelctions.defaultdict(int)
+
+    for i in range(len(s)):
+        dic[s[i]] += 1
+
+        # condition broken, move window's head until condiion is met
+        while len(dic) > 2:
+            dic[s[head]] -= 1
+                if dic[s[head]] == 0:
+                    del dic[s[head]]
+                head += 1
+        res = max(res, i -head + 1)
+
+    return res
+
+# Minimum window Substring
+'''
+Given string S and T, find the min widow in S which will all chars in T in O(n)
+
+S = 'ADDBECODEBANC'
+T = 'ABC'
+
+Min winow is 'BANC'
+
+'''
+class Solution:
+    def minWinow(self, s, t):
+        counter = collections.Counter(t)
+        window = []
+        res = ''
+        # s string's value and their indices
+        dic = collections.defaultdict(list)
+
+        for i, c in filter(lambda x: x[1] in t, enumerate(s)):
+            dic[c].append(i)
+            window.append(i)
+
+            # not satisfies condition
+            if len(dic[c]) > counter[c]:
+                window.remove(dic[c].pop(0))
+
+
+            if len(window) == len(t) and (res == '' or window[-1] - window[0] < len(res)):
+                res = s[window[0]:window[-1]+1]
+
+        return res
+
+window TEMPLATE:
+
+for():
+    elements appended to window
+
+    while(or if) condition not met:
+        shift window
+
+    if condition met:
+        update result
+
+
+
+# Substring with concatenation of all words
+'''
+Given a string s and a list of words of the same lenght.
+Find all starting indices of substring in s that is a concatenation of each word in words exactly once
+
+
+EX :
+
+s : 'barfoothefoobarman'
+words : ['foo', 'bar']
+return [0, 9]
+
+'''
+class Solution:
+    def findSubstring(self, s, words):
+
+
+
+        counter = collections.Counter(words)
+        res = []
+        x = len(words[0])
+
+        for n in range(x):
+            dic = colelctions.defaultdict(int)
+            count = 0
+            head = n
+            for  i in range(n, len(s) -x + 1, x):
+                tmp = s[i:i+x]
+
+                if tmp in counter:
+                    dic[tmp] += 1
+                    count += 1
+
+                    while dic[tmp] > counter[tmp]:
+                        dic[s[head:head+x]] -= 1
+                        count -= 1
+                        head += x
+                    if count == len(words):
+                        res.append(head)
+
+                else:
+                    head = i + x
+                    dic = colelctions.defaultdict(int)
+                    count = 0
+        return res
 
 605	Can Place Flowers	30.0%	Easy
 56	Merge Intervals	29.8%	Medium
@@ -4359,7 +5517,11 @@ class Solution(object):
 41	First Missing Positive	25.4%	Hard
 163	Missing Ranges 	24.8%	Medium
 189	Rotate Array	24.4%	Easy
-4	Median of Two Sorted Arrays	21.6%	Hard
+#4	Median of Two Sorted Arrays	21.6%	Hard
+'''
+
+
+'''
 #15	3Sum	21.6%	Medium
 '''
 a + b + c = 0, all unique triplets, NO Duplicates
@@ -5386,10 +6548,23 @@ class Solution(object):
         slow.next = slow.next.next
         return head
 
+# two pointers
+class Solution(object):
+    def removeNthFromEnd(self, head, n):
 
+        # need a new head, if n is length of list
+        dummy = cur = ListNode(0)
+        dummy.next = head
 
+        for i in range(n):
+            head = head.next
 
+        while head:
+            cur = cur.next
+            head = head.next
 
+        cur.next = cur.next.next
+        return dummy.next
 # Swap Nodes in Paris
 '''
 Given a LL, swap every two adjacent noes an return its head
@@ -5661,13 +6836,13 @@ class Solution(object):
         """
         if not nums: return 0
 
-        tail = 0
+        tail = 1
         for i in range(1, len(nums)):
             if nums[tail] != nums[i]:
                 tail += 1
                 nums[tail] = nums[i]
 
-        return tail + 1
+        return tail
 # Remove Element
 '''
 Given an array and a value, remove all instances of that value in place and return new length
@@ -5708,13 +6883,13 @@ class Solution(object):
         if not nums:
             return 0
 
-        length = 0
-        for temp in nums:
-            if temp != val:
-                nums[length] = temp
-                length += 1
+        tail = 0
+        for num in nums:
+            if num != val:
+                nums[tail] = num
+                tail += 1
 
-        return length
+        return tail
 
 # Array Partition I
 '''
@@ -6782,25 +7957,6 @@ class Solution(object):
                 nums[i] = 0
                 i += 1
 
-def sortColors(nums):
-    """
-    :type nums: List[int]
-    :rtype: void Do not return anything, modify nums in-place instead.
-    """
-    if not nums: return
-    i, j = 0, 0
-    for k in range(len(nums)):
-        v = nums[k]
-        nums[k] = 2
-        if v < 2:
-            nums[j] = 1
-            j += 1
-        if v == 0:
-            nums[i] = 0
-            i += 1
-
-a = [1, 2, 0, 0, 1, 2, 2, 1]
-sortColors(a)
 
 class Solution(object):
     def sortColors(self, nums):
@@ -6809,14 +7965,11 @@ class Solution(object):
         """
         if not nums:
             return []
-
         n = len(nums)
-
         cur = 0
         lo,hi = 0,n-1
 
         while cur <= hi:
-
             if nums[cur] == 0:
                 nums[cur],nums[lo] = nums[lo],nums[cur]
                 lo += 1
@@ -6826,6 +7979,7 @@ class Solution(object):
                 hi -= 1
 
             else: cur += 1
+
 
 
 
@@ -7076,15 +8230,29 @@ class Solution(object):
         return -1
 
 def strStr(self, haystack, needle):
-    """
-    :type haystack: str
-    :type needle: str
-    :rtype: int
-    """
+
     for i in range(len(haystack) - len(needle)+1):
         if haystack[i:i+len(needle)] == needle:
             return i
     return -1
+
+
+# ddouble array, two pointers
+def strStr(self, haystack, needle):
+    m = len(haystack)
+    n = len(needle)
+
+    for i in range(m+1):
+        for j in range(n+1):
+            if j == n:
+                return i
+
+            # not found
+            if i + j == m:
+                return -1
+
+            if haystack[i+j] != needle[j]:
+                break
 
 
 # KMP
