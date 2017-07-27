@@ -3,19 +3,32 @@ JIUZHANG:
 BINARY SEARCH:
 
 '''
+1. Four Keys:
 
-1. start + 1 < end:
+1). start + 1 < end:
 two pointers from start and end, if they are next to each other or overlap , then exit the loop
 
-2. start + (end - start) / 2: avoid overflow
+2). start + (end - start) / 2: avoid overflow
 
-3. A[mid] ==, end = mid
+3). A[mid] ==, end = mid
 
  <, >
 
 
-4. A[start], A[end] ? target
+4). A[start], A[end] ? target
 
+
+
+2. Rotated Sorted ArrayList
+* Find minimum
+* find target
+* with duplicates? O(n)
+
+
+3. Find Median in two Sorted Array
+
+
+4. Reverse in three Steps
 '''
 
 TEMPLATE:
@@ -469,16 +482,81 @@ def merge(self, A, m, B, n):
     while indexB >= 0:
          A[indexB] = B[indexB]
          indexB -= 1
+
+
+class Solution(object):
+    def merge(self, nums1, m, nums2, n):
+        i = m -1
+        j = n - 1
+        k = m + n - 1
+        while k >= 0 and i >= 0 and j >= 0:
+            if nums1[i] > nums2[j]:
+                nums1[k] = nums1[i]
+                i -= 1
+            else:
+                nums1[k] = nums2[j]
+                j -= 1
+            k -= 1
+
+        if j >= 0:
+            nums1[:j+1] = nums2[:j+1]
+
 # Merge sorted Array II
 '''
 A + B => C
 '''
+class Solution:
+    def mergeSortedArrayII(self, a , b):
+        i = 0
+        b = 0
+        c = []
+
+        while i <len(a) and j < len(b):
+            if a[i] < a[j]:
+                a.append(a[i])
+                i += 1
+            else:
+                c.append(b[i])
+                j += 1
+
+        # [1, 2, 3, 4], [5, 6, 7, 8]
+        # add elements to c that were not added in the while
+        if i < len(a):
+            while i < len(a):
+                c.append(a[i])
+                i += 1
+
+        if j < len(b):
+            while j < len(b):
+                c.append(b[j])
+                j += 1
+        return c
+
 
 # Remove Duplicates for sorted array
+def removeDuplicates(self, nums):
+    if nums == None: return len(nums)
 
+    tail = 1
+    for i in range(1, len(nums)):
+        if nums[i] != nums[tail - 1]:
+            nums[tail] = nums[i]
+            tail += 1
+    return tail
 
 # Remove Duplicates for sorted array II
 
+def removeDuplicatesII(self, nums):
+    if nums == None:
+        return len(nums)
+
+    tail = 2
+    for i in range(2, len(nums)):
+        if nums[i] != nums[tail - 1] or nums[i] != nums[tail]:
+            nums[tail] = nums[ni]
+            tail += 1
+
+    return tail
 
 # Recover Rotated Sorted Array - REVERSE
 '''
@@ -520,8 +598,32 @@ class Solution:
 '''
 Given a string and an offset, rotate string by offset. (rotate from left to right)
 
-
+offset=0 => "abcdefg"
+offset=1 => "gabcdef"
+offset=2 => "fgabcde"
+offset=3 => "efgabcd"
 '''
+
+
+class Solution:
+    # @param s: a list of char
+    # @param offset: an integer
+    # @return: nothing
+    def rotateString(self, s, offset):
+        if s is None or len(s) == 0:
+            return 0
+        n =len(s)
+        offset = offset % n
+        # has to -1 at the end to get the last element in the list
+        self.reverse(s, 0, n - offset - 1)
+        self.reverse(s, n - offset, n - 1)
+        self.reverse(s, 0, n - 1)
+
+    def reverse(self, s, start, end):
+        while start < end:
+            s[start], s[end] = s[end], s[start]
+            start += 1
+            end -= 1
 
 # REverse Wors in a String-REVERSE
 
@@ -565,6 +667,361 @@ class Solution:
 
 # Find kth in in two sorted Arrays
 #(A.length + B.length)/2
+
+
+"""
+TWO POINTERS
+"""
+
+# Window Sum
+'''
+an array of integer, a moving window of size k, return the sum of each winow
+'''
+class Solution:
+    def winSum(self, nums, k):
+        # Write your code here
+        n = len(nums)
+        if n < k or k <= 0:
+            return []
+        sums = [0] * (n - k + 1)
+        for i in xrange(k):
+            sums[0] += nums[i];
+
+        for i in xrange(1, n - k + 1):
+            sums[i] = sums[i - 1] - nums[i - 1] + nums[i + k - 1]
+
+        return sums
+
+# maxiumum window sum
+
+
+# mover zeroes
+
+# Remove Duplicate Numers in Array
+
+
+
+
+def removeDuplicates(self, nums):
+    if nums == None or len(nums) == 0:
+        return 0
+    nums.sort()
+    tail = 1
+    for i in range(len(nums):
+        if nums[i] != nums[tail]:
+            nums[tail] = nums[i]
+            tail += 1
+    return tail
+
+
+# valid palindrome
+
+'''
+def palindrome(s):
+    start, end = 0, len(s) - 1
+    while start < end :
+        if s[start] != s[end]:
+            return False
+        start += 1
+        end += 1
+
+    return True
+
+'''
+
+# rotate String
+
+
+
+# Recover Rotated Sorted Array
+
+
+
+
+# TWO SUM
+
+# two sum - Data Structure Design (can only use hashmap)
+
+# two sum - input arary is sorted
+
+#O(N)
+def twoSum(numbers, target):
+    if nums == None:
+        return []
+
+    l, r = 0, len(nums) - 1
+    while l < r:
+        sum = nums[l] + nums[r]
+        if sum == target:
+            return  [l + 1, r + 1] # not zero based
+        elif sum < target:
+            l += 1
+        else:
+            r -= 1
+    return []
+
+
+# Two Sum - Unique pairs
+'''
+how many unique paris such that their sum == target
+'''
+public class Solution {
+    /**
+     * @param nums an array of integer
+     * @param target an integer
+     * @return an integer
+     */
+    public int twoSum6(int[] nums, int target) {
+        // Write your code here
+        if (nums == null || nums.length < 2)
+            return 0;
+
+        Arrays.sort(nums);
+        int cnt = 0;
+        int left = 0, right = nums.length - 1;
+        while (left < right) {
+            int v = nums[left] + nums[right];
+            if (v == target) {
+                cnt ++;
+                left ++;
+                right --;
+                # until find
+                while (left < right && nums[right] == nums[right + 1])
+                    right --;
+                # first different
+                while (left < right && nums[left] == nums[left - 1])
+                    left ++;
+            } else if (v > target) {
+                right --;
+            } else {
+                left ++;
+            }
+        }
+        return cnt;
+    }
+}
+
+# 3Sum
+'''
+all triplets sum to 0
+'''
+
+Hash: O(n^2) + O(n)
+
+#two Pointers: O(n^2) + O(1)
+class Solution(object):
+    '''
+        题意：求数列中三个数之和为0的三元组有多少个，需去重
+        暴力枚举三个数复杂度为O(N^3)
+        先考虑2Sum的做法，假设升序数列a，对于一组解ai,aj, 另一组解ak,al
+        必然满足 i<k j>l 或 i>k j<l, 因此我们可以用两个指针，初始时指向数列两端
+        指向数之和大于目标值时，右指针向左移使得总和减小，反之左指针向右移
+        由此可以用O(N)的复杂度解决2Sum问题，3Sum则枚举第一个数O(N^2)
+        使用有序数列的好处是，在枚举和移动指针时值相等的数可以跳过，省去去重部分
+    '''
+    def threeSum(self, nums):
+        nums.sort()
+        res = []
+        length = len(nums)
+        for i in range(0, length - 2):
+            if i and nums[i] == nums[i - 1]:
+                continue
+            target = nums[i] * -1
+            left, right = i + 1, length - 1
+            while left < right:
+                if nums[left] + nums[right] == target:
+                    res.append([nums[i], nums[left], nums[right]])
+                    right -= 1
+                    left += 1
+                    while left < right and nums[left] == nums[left - 1]:
+                        left += 1
+                    while left < right and nums[right] == nums[right + 1]:
+                        right -= 1
+                elif nums[left] + nums[right] > target:
+                    right -= 1
+                else:
+                    left += 1
+        return res
+
+
+
+# Triangle Count
+'''
+array of ints, how many triangle can we have
+
+A < b < c : if a + b > c, must be a triangle
+'''
+
+# Brute force: O(n^3)
+
+# TC: O(n^2) becasue only counting numbers
+def triangleCount(S):
+    s.sort()
+    ans = 0
+    for i in range(len(S)):
+        left, right = 0, i - 1
+        while left < right:
+            if S[left] + S[right] > S[i]:
+                # +=, not =
+                ans  += right - left
+                right -= 1
+            else:
+                left += 1
+    return ans
+
+
+
+
+# two sum - less than or equal to target
+
+def twoSumSmaller(nums, target):
+    if nums is None or len(nums) < 2:
+        return 0
+
+    nums.sort()
+    left, right = 0, len(nums) - 1
+    count = 0
+    while left < right:
+        if nums[left] + nums[right] <= target:
+            count += right - left
+            left += 1
+        else:
+            right -= 1
+    return count
+
+# two sum - greater than target
+
+
+# two sum closest
+def twoSumClosest(nums, target):
+    nums.sort()
+
+    left, right = 0, len(nums) - 1
+    best = float('inf')
+    while left < right:
+        diff = abs(nums[left] + nums[right] - target)
+        best= min(best, diff)
+        if nums[left] + nums[right] < target:
+            left += 1
+        else:
+            right -= 1
+    return best
+
+
+# 3Sum closest
+
+
+# 4sum
+
+# two sum - difference equals to target
+
+
+
+
+# partition array
+
+def partitionArray(nums, k):
+    if nums is None or len(nums) == 0:
+        return 0
+    left, right = 0, len(nums) - 1
+
+    while left < right:
+        # find first one that should NOT on left
+        while left < right and nums[left] < k:
+            left += 1
+        # find first that shoul not on right, from right to left
+        while left < right and nums[right] >= k:
+            right -= 1
+
+        if left < right:
+            nums[left], nums[right] = nums[right], nums[left]
+            left += 1
+            right -= 1
+
+
+    if nums[left] < k:
+        # 0 ... left
+        return left + 1
+    # 0 ... left - 1
+    return left
+
+
+class Solution:
+    """
+    @param nums: The integer array you should partition
+    @param k: As description
+    @return: The index after partition
+    """
+    def partitionArray(self, nums, k):
+        start, end = 0, len(nums) - 1
+        while start <= end:
+            while start <= end and nums[start] < k:
+                start += 1
+            while start <= end and nums[end] >= k:
+                end -= 1
+            if start <= end:
+                nums[start], nums[end] = nums[end], nums[start]
+                start += 1
+                end -= 1
+        return start
+
+# kth smallest numbers in unsorted array
+ # Kth largets element
+
+
+
+''' divie into left and right'''
+# Partition Array By Odd and Even
+
+# Interleaving Positive and negative numbers()
+'''
+alternating position an negative
+
+
+'''
+
+
+
+# Sort Letters by Case(lower to left, upper to right)
+
+
+############Partition to 3 parts ###########
+
+
+# sort Colors
+'''array of n objects'''
+def sortColors(a):
+    if a is None or len(a) == 0:
+        return
+    left = 0
+    right = len(a) - 1
+    i = 0
+    while i <= right:
+        if a[i] == 0:
+            # move 0 to left
+            a[i], a[left] = a[left], a[i]
+            left += 1
+            i += 1
+        elif a[i] == 1:
+            i += 1
+        else:
+            # swap i and right
+            a[i], a[right] = a[right], a[i]
+            right -= 1
+
+# Rainbow Sort == sort colors
+'''
+array of n object with k different colors, sort them so
+same colors are adjacent. 1, 2,2, 3, k
+
+MUST do in this IN-PLACE , cannot count
+'''
+#counting sort, use hash map to count , then expand
+
+TC: O(nlogk)
+
+
+ 
 
 
 
