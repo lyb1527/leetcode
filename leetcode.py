@@ -965,6 +965,7 @@ class Solution:
                 end -= 1
         return start
 
+
 # kth smallest numbers in unsorted array
  # Kth largets element
 
@@ -972,6 +973,7 @@ class Solution:
 
 ''' divie into left and right'''
 # Partition Array By Odd and Even
+
 
 # Interleaving Positive and negative numbers()
 '''
@@ -1021,13 +1023,196 @@ MUST do in this IN-PLACE , cannot count
 TC: O(nlogk)
 
 
- 
+# pancake sort(possible)
+
+
+# topological Sort
+
+
+#--------------------------------------------------------------------
+'''linked list'''
+
+# reverse nodes in K-group
+
+
+# reverse linked list
+
+def reverse(head):
+    prev = None
+    curr = head
+    while curr:
+        # store pointer 1 -2
+        # then  cur.next -> prev
+        tmp = cur.next
+        cur.next = prev
+
+        # move two nodes to right, None becomes cur,
+        # cur = tmp
+        prev = curr
+        curr = tmp
+
+    return prev
 
 
 
 
-########################################################################
+#########Questions with dummy node
+
+# partition list
+
+# merge two sorted lists
+
+# reverse linked list II
+
+# swap two nodes in linked list
+
+# reorder list
+
+# rotate list
+
+# copy list with random pointer
+
+method1: hashmap
+
+method2: use next
+
+
+# linked list Cycle
+
+class Solution(object):
+    def hasCycle(self, head):
+        """
+        :type head: ListNode
+        :rtype: bool
+        """
+        if head is None or head.next is None:
+            return False
+        slow = head
+        fast = head.next
+        while slow != fast:
+            if fast is None or fast.next is None:
+                return False
+            slow = slow.next
+            fast = fast.next.next
+        return True
+
+
+
+# linked list cycle II
+
+'''where  the cycle begins'''
+  def detectCycle(self, head):
+        """
+        :type head: ListNode
+        :rtype: ListNode
+        """
+        if head is None or head.next is None:
+            return None
+        slow = head
+        fast = head.next
+        while fast != slow:
+            if fast is None or fast.next is None:
+                return None
+            slow = slow.next
+            fast = fast.next.next
+
+        while head != slow.next:
+            head = head.next
+            slow = slow.next
+        return head
+
+
+
+# Inetersection of two linked lists
+'''essentially just finding where the cycle begins  '''
+
+
+
+# Sort List
+'''MUST know merge sort version, better know quick sort '''
+
+
+#####Arrays
+
+# Merge two sorted arrays
+def mergeSortedArray(self, a, b )
+        i = 0
+        j = 0
+        c = []
+
+        while i <len(a) and j < len(b):
+            if a[i] < a[j]:
+                a.append(a[i])
+                i += 1
+            else:
+                c.append(b[i])
+                j += 1
+
+        # [1, 2, 3, 4], [5, 6, 7, 8]
+        # add elements to c that were not added in the while
+
+        # check to see if one array is not empty
+        if i < len(a):
+    		while i < len(a):
+    			c.append(a[i])
+    			i += 1
+    	if j < len(b):
+    		while j < len(b):
+        		c.append(b[j])
+    			j += 1
+
+        return c
+
+# merge sorted arrays - B int A
+def merge(self, num1, m, num2, n):
+    i = m -1
+    j = n - 1
+    k = m + n - 1
+    while k >= 0 and i >= 0 and j >= 0:
+        if nums1[i] > nums2[j]:
+            #senario1: move elements at front of A to the back of A
+            nums1[k] = nums1[i]
+            i -= 1
+        else:
+            #senario2. two lists in ascending
+            nums1[k] = nums2[j]
+            j -= 1
+        k -= 1
+    #senario1 continued: copy B to the front of A
+    if j >= 0:
+        nums1[:j+1] = nums2[:j+1]
+
+
+# Intersection of two Arrays
+'''3 common ways to solve:
+1. hash, put one array into hash, for loop the second array
+
+2. sorting an then compare the first elements for both a and b keep popping until same
+
+3. binary search on one aray
+
+'''
+
+##########Subarray
+
+# Maxium Subarray
+
+
+#------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------
 LEETCODE
+
+
+
+###############################################################################
+'''Tree Questions'''
+#################################################################################
+
+
+
+
+
+
 # 1. Merge two binary trees
 
 '''
@@ -2118,7 +2303,6 @@ class Solution(object):
             return None
 
         mid = len(nums) // 2
-
         root = TreeNode(nums[mid])
         root.left = self.sortedArrayToBST(nums[:mid])
         root.right = self.sortedArrayToBST(nums[mid+1:])
@@ -3711,7 +3895,7 @@ class Solution(object):
         return True
 
 ###############################################################################
-                                    '''Array'''
+                                '''Array Questions '''
 ###############################################################################
 
 # Array Partition I
@@ -3855,6 +4039,49 @@ class Solution(object):
                 row.append(nums[(x * c + y) / w][(x * c + y) % w])
             ans.append(row)
         return ans
+
+
+# Kth Largest Element in an array
+
+class Solution(object):
+    def findKthLargest(self, nums, k):
+        """
+        :type nums: List[int]
+        :type k: int
+        :rtype: int
+        """
+        return self.quickSelect(nums, 0, len(nums) - 1, k)
+
+
+    def quickSelect(self, nums, start, end, k):
+        if start == end:
+            return nums[start]
+
+        i = start
+        j = end
+        pivot = nums[(i + j) / 2]
+
+        while i <= j:
+            while i <= j and nums[i] > pivot:
+                i += 1
+            while i <= j and nums[j] < pivot:
+                j -= 1
+
+
+            if i <= j:
+                nums[i], nums[j] = nums[j], nums[i]
+                i += 1
+                j -= 1
+
+        # kth, k - 1 is a offset relative to start
+        # kth is on the left
+        if (start + k - 1 <= j):
+            return self.quickSelect(nums, start, j, k)
+        # kth is on the rihgt
+        if start + k -1 >= i:
+            return self.quickSelect(nums, i, end, k - (i - start))
+        # kth is middle
+        return nums[j + 1]
 
 
 
@@ -4223,6 +4450,7 @@ def twoSum(self, numbers, target):
             if numbers[mid] == tmp:
                 return [i+1, mid+1]
             elif numbers[mid] < tmp:
+
                 l = mid+1
             else:
                 r = mid-1
@@ -5478,40 +5706,21 @@ given two sorted arrays nums1 an nums2, merge nums2 into nums1
 # has to be two ascending ordered
 '''
 
-def merge(self, A, m, B, n):
-    indexA = m-1;
-    indexB = n-1;
-    while indexA >=0 and indexB>=0:
-
-        #senario1: move elements at front of A to the back of A
-        if A[indexA] > B[indexB]:
-            A[indexA+indexB+1] = A[indexA]
-            indexA -= 1
-
-        #senario2. two lists in ascending
-        else:
-            A[indexA+indexB+1] = B[indexB]
-            indexB -= 1
-    #senario1 continued: copy B to the front of A
-    while indexB >= 0:
-         A[indexB] = B[indexB]
-         indexB -= 1
-
-
-YouTube
 def merge(self, num1, m, num2, n):
     i = m -1
     j = n - 1
     k = m + n - 1
     while k >= 0 and i >= 0 and j >= 0:
         if nums1[i] > nums2[j]:
+            #senario1: move elements at front of A to the back of A
             nums1[k] = nums1[i]
             i -= 1
         else:
+            #senario2. two lists in ascending
             nums1[k] = nums2[j]
             j -= 1
         k -= 1
-
+    #senario1 continued: copy B to the front of A
     if j >= 0:
         nums1[:j+1] = nums2[:j+1]
 
@@ -5532,6 +5741,7 @@ def mergeSortedArray(Aa, b):
 		else:
 			c.append(b[j])
 			j += 1
+
 	if i < len(a):
 		while i < len(a):
 			c.append(a[i])
@@ -6068,11 +6278,12 @@ class Solution(object):
 
 
 
-##################################################################
-                        """Linked List"""
-#############################################################
+################################################################################
+                        """Linked List Questions """
+################################################################################
 
 # E: Linked List Cycle
+
 # KEY: slow and fast runner, slow moves 1 and fast moves 2 each times
 class Solution(object):
     def hasCycle(self, head):
@@ -6086,21 +6297,6 @@ class Solution(object):
                 return True
         return False
 
-
-# fast runner and slow runner technique
-def hasCycle(head):
-    if head is None or head.next is None:
-        return False
-    slow = fast = head
-    while fast and fast.next:
-        slow = slow.next
-        fast = fast.next.next
-
-        #If faster runner catches slow runner some time, it means linked list has a circle.
-        if slow == fast:
-            return True
-
-    return False
 
 
 
@@ -6161,12 +6357,12 @@ Time complexity : O(m+n)
 Space complexity : O(m) or O(n).
 
 '''
-def getIntersectionNoe(headA, headB):
+def getIntersectionNode(headA, headB):
     nodeList = set()
     curr = headA
     while(curr != None):
         nodeList.add(curr)
-        cur = cur.next
+        curr = curr.next
 
     pointer = headB
     while (pointer != None):
@@ -6187,7 +6383,6 @@ def removeELements(head, val):
             curr.next = curr.next.next
         else:
             curr = curr.next
-
     return dummy.next
 
 # Reverse Linked List
@@ -6249,22 +6444,39 @@ class Solution(object):
         return slow
 
 
-def isPalindrome(self, head):
-    """
-    :type head: ListNode
-    :rtype: bool
-    """
-    rev = None
-    slow = fast = head
-    while fast and fast.next:
-        fast = fast.next.next
-        rev, rev.next, slow = slow, rev, slow.next
-    if fast:
-        slow = slow.next
-    while rev and rev.val == slow.val:
-        slow = slow.next
-        rev = rev.next
-    return not rev
+class Solution(object):
+    def isPalindrome(self, head):
+
+        #if not head or not head.next:
+        #    return True
+
+        # move slow pointer to the middle and fast pointer to the end
+        slow = fast = head
+        while fast and fast.next:
+            fast = fast.next.next
+            slow = slow.next
+
+        # odd number, move slow pointer bias to the right part
+        if fast:
+            slow = slow.next
+
+        # reverse the right part
+        tail = None
+        while slow:
+            carry = slow.next
+            slow.next = tail
+            tail = slow
+            slow = carry
+
+        # check if the left and right parts are equal
+        fast = head
+        while tail:
+            if tail.val != fast.val:
+                return False
+            tail = tail.next
+            fast = fast.next
+
+        return True
 
 # E: Merge Two Sorted List
 
@@ -6305,9 +6517,7 @@ def rotateRight(head, k):
     :type k: int
     :rtype: ListNode
     """
-    if k == 0:
-        return head
-    if head == None:
+    if k == 0 or head == None:
         return head
     dummy = ListNode(0)
     dummy.next = head
@@ -6324,52 +6534,72 @@ def rotateRight(head, k):
     p.next = None
     return head
 
+class Solution(object):
+    def rotateRight(self, head, k):
+        """
+        :type head: ListNode
+        :type k: int
+        :rtype: ListNode
+        """
 
+        if head is None or head.next is None or k == 0:
+            return head
+
+        tail = head
+        length = 1
+        while tail.next is not None:
+            tail = tail.next
+            length += 1
+        tail.next = head
+
+        k = k % length
+        for i in range(length - k):
+            tail = tail.next
+        head = tail.next
 
 # Sort List
 '''
 sort a LL in O(nlogn0) using constant space complexity
 '''
 class Solution(object):
-    def merge(self, head1, head2):
-        head = ListNode(0)
-        current = head
-
-        while head1 and head2:
-            if head1.val <= head2.val:
-                current.next = head1
-                head1 = head1.next
-            else:
-                current.next = head2
-                head2 = head2.next
-            current = current.next
-
-        if head1:
-            current.next = head1
-        if head2:
-            current.next = head2
-
-        return head.next
-
     def sortList(self, head):
-        """
-        :type head: ListNode
-        :rtype: ListNode
-        """
-        if head is None or head.next is None:
+        if head == None or head.next == None:
             return head
 
-        slow = fast = head
+        # right: mid.next, left: head
+        mid = self.midMiddle(head)
+        right = self.sortList(mid.next)
+        mid.next = None
+        left = self.sortList(head)
+        return self.merge(left, right)
+
+
+    def midMiddle(self, head):
+        slow = head
+        fast = head.next
         while fast.next and fast.next.next:
-            fast = fast.next.next
             slow = slow.next
+            fast = fast.next.next
+        return slow
 
-        head1 = head
-        head2 = slow.next
-        slow.next = None
+    def merge(self, left, right):
+        dummy = ListNode(0)
+        curr = dummy
+        while left != None and right != None:
+            if left.val < right.val:
+                curr.next = left
+                left = left.next
+            else:
+                curr.next = right
+                right = right.next
 
-        return self.merge(self.sortList(head1), self.sortList(head2))
+            curr = curr.next
 
+        if left != None:
+            curr.next = left
+        if right != None:
+            curr.next = right
+        return dummy.next
 
 
 # Insertion Sort List
@@ -6395,6 +6625,35 @@ class Solution(object):
             head = next
 
         return dummy.next
+
+class Solution(object):
+
+    def insertionSortList(self, head):
+        """
+        :type head: ListNode
+        :rtype: ListNode
+        """
+        if not head:
+            return None
+
+        dummy = ListNode(0)
+        dummy.next = head
+        while head.next != None:
+            if head.next.val >= head.val:
+                head = head.next
+            else:
+                temp = head.next
+                head.next = temp.next
+                temp.next = None
+                x = dummy
+                while x.next.val < temp.val:
+                    x = x.next
+                temp.next = x.next
+                x.next  = temp
+        return dummy.next
+
+
+
 
 
 # Reorder List
@@ -6569,28 +6828,25 @@ LL with elements are sorte in ascending order, conver ti to a height balanced BS
 #https://discuss.leetcode.com/topic/18935/python-solutions-convert-to-array-first-top-down-approach-bottom-up-approach/2
 '''
 
-class Solution:
-    head = None
-    # @param head, a list node
-    # @return a tree node
+class Solution(object):
     def sortedListToBST(self, head):
-        current, length = head, 0
-        while current is not None:
-            current, length = current.next, length + 1
-        self.head = head
-        return self.sortedListToBSTRecu(0, length)
-
-    def sortedListToBSTRecu(self, start, end):
-        if start == end:
-            return None
-        mid = start + (end - start) / 2
-        left = self.sortedListToBSTRecu(start, mid)
-        current = TreeNode(self.head.val)
-        current.left = left
-        self.head = self.head.next
-        current.right = self.sortedListToBSTRecu(mid + 1, end)
-        return current
-
+        """
+        :type head: ListNode
+        :rtype: TreeNode
+        """
+        if not head: return None
+        if not head.next: return TreeNode(head.val)
+        slow = head
+        fast = head.next.next
+        while fast and fast.next:
+            slow = slow.next
+            fast = fast.next.next
+        temp = slow.next
+        slow.next = None
+        root = TreeNode(temp.val)
+        root.left = self.sortedListToBST(head)
+        root.right = self.sortedListToBST(temp.next)
+        return root
 
 
 # Reverse Linked List II
@@ -6682,7 +6938,7 @@ return 1->2->2->4->3->5.
 class Solution:
     def partition(self, head, x):
         h1 = cur1 = ListNode(0)
-        h2 = cur2 = ListNoe(0)
+        h2 = cur2 = ListNode(0)
 
         while head:
             tmp = head.next
@@ -6777,29 +7033,9 @@ Output: 7 -> 0 -> 8
 
 
 '''
-class Solution(object):
-    def addTwoNumbers(self, l1, l2):
-        carry = 0
-        root = n = ListNode(0)
-        while l1 or l2 or carry:
-            v1 = v2 = 0
-            if l1:
-                v1 = l1.val
-                l1 = l1.next
-            if l2:
-                v2 = l2.val
-                l2 = l2.next
-            carry, val = divmod(v1+v2+carry, 10)
-            n.next = ListNode(val)
-            n = n.next
-        return root.next
 
 class Solution(object):
     def addTwoNumbers(self, l1, l2):
-        '''
-            6/29/17: Solution 1
-        '''
-        # Solution 1 (99.75%):
         dummy = ListNode(0)
         curr = dummy
         adv = 0
@@ -7077,13 +7313,22 @@ class Solution(object):
 
 
 
+##############################################################################
+''' '''
+##############################################################################
+
+
+
+
+
+
+
+
 
 
 
 '''
 Array
-
-
 
 '''
 
@@ -9494,3 +9739,181 @@ class Solution(object):
 
 
 #
+
+
+
+##################################################################################
+'''Basic Algorithms'''
+########################################################################
+
+
+
+class Solution():
+
+
+    def sortInts(self, A):
+        if A == None or len(A) == 0:
+            return
+        self.quickSort(A, 0, len(A) -1)
+
+    def quickSort(self, A, start, end):
+        if start >= end:
+            return
+        left = start, right = end
+        # 1. pivot cannot be start or end, random number, could call random, but more calculation
+        pivot = A[(start + end) / 2]
+
+        # 2. left <= right
+        # this while is partition algorithm
+        while left <= right:
+            while left <= right and A[left] < pivot:
+                left += 1
+            while left <= right and A[right] > pivot:
+                right += 1
+
+            if left <= right:
+                A[left], A[right] = A[right], A[left]
+                left += 1
+                right -= 1
+        # the while exits when left an right overlap
+
+        self.quickSort(A, start, right)
+        self.quickSort(A, left, end)
+
+
+
+
+
+
+# Merge Sort
+
+def mergeSort(alist):
+    print("Splitting ",alist)
+    if len(alist)>1:
+        mid = len(alist)//2
+        lefthalf = alist[:mid]
+        righthalf = alist[mid:]
+
+        mergeSort(lefthalf)
+        mergeSort(righthalf)
+
+        i=0
+        j=0
+        k=0
+        while i < len(lefthalf) and j < len(righthalf):
+            if lefthalf[i] < righthalf[j]:
+                alist[k]=lefthalf[i]
+                i=i+1
+            else:
+                alist[k]=righthalf[j]
+                j=j+1
+            k=k+1
+
+        while i < len(lefthalf):
+            alist[k]=lefthalf[i]
+            i=i+1
+            k=k+1
+
+        while j < len(righthalf):
+            alist[k]=righthalf[j]
+            j=j+1
+            k=k+1
+    print("Merging ",alist)
+
+
+class Solution:
+    # @param {int[]} A an integer array
+    # @return nothing
+    def sortIntegers2(self, A):
+      self._mergesort(A, 0, len(A) - 1 )
+
+
+    def _mergesort(self, aList, first, last ):
+      # break problem into smaller structurally identical pieces
+      mid = ( first + last ) / 2
+      if first < last:
+        self._mergesort( aList, first, mid )
+        self._mergesort( aList, mid + 1, last )
+
+      # merge solved pieces to get solution to original problem
+      a, f, l = 0, first, mid + 1
+      tmp = [None] * ( last - first + 1 )
+
+      while f <= mid and l <= last:
+        if aList[f] < aList[l] :
+          tmp[a] = aList[f]
+          f += 1
+        else:
+          tmp[a] = aList[l]
+          l += 1
+        a += 1
+
+      if f <= mid :
+        tmp[a:] = aList[f:mid + 1]
+
+      if l <= last:
+        tmp[a:] = aList[l:last + 1]
+
+      a = 0
+      while first <= last:
+        aList[first] = tmp[a]
+        first += 1
+        a += 1
+
+
+
+
+
+
+
+
+
+
+class Solution:
+
+    def sortIntegers2(self, A):
+        if A == None or len(0)  ==0:
+            return
+
+        # avoid created multiptle times in mergesort, create array here
+        # then pass it to
+        temp = []
+        self.mergeSort(A, 0, len(A) - 1, temp)
+
+    def mergeSort(self, A, start, end, temp):
+        if start >= end:
+            return
+        # sort left half and right half
+        mergeSort(A, start, (start + end) / 2, temp)
+        mergeSort(A, (start + end) / 2 + 1, end, temp)
+        # merge
+        merge(A, start, end, temp)
+
+    def merge(self, A, start, end, temp):
+        middle = (start + end) / 2
+        leftIndex = start
+        rightIndex = middle + 1
+        temp_index = start
+
+        while leftIndex <= middle an rightIndex <= end:
+            if A[leftIndex] < A[rightIndex]:
+                A[temp_index] = A[leftIndex]
+                temp_index += 1
+                leftIndex += 1
+            else:
+                A[temp_index] = A[rightIndex]
+                temp_index += 1
+                rightIndex += 1
+
+        # possible one array is not empty yet
+        while leftIndex <= middle:
+            temp[temp_index] = A[leftIndex]
+            temp_index += 1
+            leftIndex += 1
+        while rightIndex <= end:
+            temp[temp_index] = A[rightIndex]
+            temp_index += 1
+            rightIndex += 1
+
+        for i in range(start, end):
+            A[i] = temp[i]
