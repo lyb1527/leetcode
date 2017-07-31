@@ -1900,10 +1900,73 @@ class Solution(object):
         return res1 == res2
 
 # Binary Tree Inorder Traversal
+Recursive:
+
+class Solution:
+    """
+    @param root: The root of binary tree.
+    @return: Inorder in ArrayList which contains node values.
+    """
+    def inorderTraversal(self, root):
+        # write your code here
+        list = []
+        self.traverse(root, list)
+        return list
+
+    def traverse(self, root, list):
+        if root:
+            self.traverse(root.left, list)
+            list.append(root.val)
+            self.traverse(root.right, list)
+
+
+
+# Inorder Traversal
+# left --  root -- right
+def inorderTraversal(self, root):
+    if not root:
+        return None
+    result = []
+    stack = []
+    curr = root
+    while stack or curr:
+        while curr:
+            stack.append(curr)
+            curr = curr.left
+        curr = stack.pop()
+        result.append(curr.val)
+        current = curr.right
+    return result
+
+
+
+
 
 
 
 # BInary Tree Preorder Traversal
+
+Recursive :
+
+class Solution:
+    """
+    @param root: The root of binary tree.
+    @return: Preorder in ArrayList which contains node values.
+    """
+    def preorderTraversal(self, root):
+        # write your code here
+        list = []
+        self.recursive_preorder(root, list)
+        return list
+
+
+    def recursive_preorder(self, root, list):
+        if root:
+            list.append(root.val)
+            self.recursive_preorder(root.left,list)
+            self.recursive_preorder(root.right,list)
+
+
 
 
 # Binary Tree Upside Down
@@ -4024,7 +4087,7 @@ where mm is the number of columns in the given matrix. Looking at the same in th
 
 class Solution(object):
     def matrixReshape(self, nums, r, c):
-        """
+        """ass
         :type nums: List[List[int]]
         :type r: int
         :type c: int
