@@ -6921,6 +6921,31 @@ Given 1->2->3->4->5->NULL, m = 2 and n = 4,
 return 1->4->3->2->5->NULL.
 
 '''
+def reverseBetween(self, head, m, n):
+
+        dummy = middle = ListNode(0)
+        dummy.next = head
+
+        for i in range(m-1):
+            dummy = dummy.next
+
+        tail = None
+        cur = dummy.next
+        for i in range(n - m + 1):
+            tmp = cur.next
+            cur.next = tail
+            tail = cur
+            cur = tmp
+
+        dummy.next.next = cur
+        dummy.next = tail
+
+        return middle.next
+
+
+
+
+
 
 
 
@@ -6944,44 +6969,6 @@ class Solution(object):
             curr.next, prev, curr = prev, curr, curr.next
             count -= 1
         return prev, curr
-
-
-class Solution(object):
-    def reverseBetween(self, head, m, n):
-        """
-        :type head: ListNode
-        :type m: int
-        :type n: int
-        :rtype: ListNode
-        """
-        if not head or m == n:
-            return head
-
-        dumy = ListNode(0)
-        dumy.next = head
-        pre = dumy
-
-
-        # find the start node to be reversed
-        for _ in xrange(m-1):
-            pre = pre.next
-
-
-        start, tail = pre.next, pre.next
-
-        end = None
-        for _ in xrange(n-m):
-            node = start
-            start = start.next
-            node.next = end
-            end = node
-
-        pre.next = start
-        tail.next = start.next
-        start.next = end
-
-        return dumy.next
-
 
 
 
@@ -7211,8 +7198,8 @@ class Solution(object):
         evenhead = even
         while even is not None and even.next:
             odd.next = even.next
-            even.next = odd.next.next
             odd = odd.next
+            even.next = odd.next.next
             even = even.next
         odd.next = evenhead
         return head
