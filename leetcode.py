@@ -1949,6 +1949,7 @@ def inorderTraversal(self, root):
 Recursive :
 
 class Solution:
+
     """
     @param root: The root of binary tree.
     @return: Preorder in ArrayList which contains node values.
@@ -9967,3 +9968,246 @@ class Solution:
 
         for i in range(start, end):
             A[i] = temp[i]
+
+
+
+
+#------------------------------------------------------------------------------
+
+                                  """Stack Questions"""
+
+#-----------------------------------------------------------------------------
+
+
+ #	496 	Next Greater Element I 	56.9% 	Easy
+
+class Solution(object):
+    def nextGreaterElement(self, findNums, nums):
+
+        d = {}
+        stack = []
+        result = []
+
+        for x in nums:
+            # if element in the stack smaller than next element,
+            # pop the stack an make it as key, value is next value
+            while  len(stack) and stack[-1] < x:
+                d[stack.pop()] = x
+            # add element in the stack
+            stack.append(x)
+
+        # go through the findNums, if key exists in the dictionary, then return
+        # value, if not return the changed default value -1
+        for x in findNums:
+            result.append(d.get(x, -1))  # .get(KEY, DEFAULT if not found)
+
+        return result
+
+
+时间复杂度O(n * m) 其中n为nums的长度，m为findNums的长度
+Python代码：
+class Solution(object):
+    def nextGreaterElement(self, findNums, nums):
+        """
+        :type findNums: List[int]
+        :type nums: List[int]
+        :rtype: List[int]
+        """
+        dmap = {v : k for k, v in enumerate(nums)}
+        size = len(nums)
+        ans = []
+        for e, n in enumerate(findNums):
+            for j in range(dmap[n] + 1, size):
+                if nums[j] > n:
+                    ans.append(nums[j])
+                    break
+            if len(ans) <= e: ans.append(-1)
+        return ans
+
+
+232 	Implement Queue using Stacks 	36.6% 	Easy
+225 	Implement Stack using Queues 	32.7% 	Easy
+155 	Min Stack 	28.5% 	Easy
+20 	Valid Parentheses 	33.3% 	Easy
+636 	Exclusive Time of Functions 	39.0% 	Medium
+#503 	Next Greater Element II 	47.1% 	Medium
+'''
+给定一个循环数组（末尾元素的下一个元素为起始元素），输出每一个元素的下一个更大的数字（
+Next Greater Number）。Next Greater Number是指位于某元素右侧，大于该元素，且距离最近的元素。
+如果不存在这样的元素，则输出-1。
+'''
+class Solution(object):
+    def nextGreaterElements(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: List[int]
+        """
+        stack = []
+        size = len(nums)
+        ans = [-1] * size
+        for x in range(size * 2):
+            i = x % size
+            while stack and nums[stack[-1]] < nums[i]:
+                ans[stack.pop()] = nums[i]
+            stack.append(i)
+        return ans
+
+
+
+
+
+
+456 	132 Pattern 	28.7% 	Medium
+439 	Ternary Expression Parser 	50.5% 	Medium
+#402 	Remove K Digits 	26.2% 	Medium
+#给定一个用字符串表示的非负整数num，从中移除k位数字，使得剩下的数字尽可能小。
+"""
+SILU: 使得栈中的数字尽可能保持递增顺序。
+one can simply scan from left to right, and remove the first "peak" digit;
+the peak digit is larger than its right neighbor. One can repeat this procedure k times
+because it frequently remove a particular element from a string and has complexity O(k*n
+
+
+One can simulate the above procedure by using a stack, and obtain a O(n) algorithm.
+when the result stack (i.e. res) pop a digit, it is equivalent as remove
+ that "peak" digit.
+"""
+
+ class Solution(object):
+    def removeKdigits(self, num, k):
+        """
+        :type num: str
+        :type k: int
+        :rtype: str
+        """
+        n = len(num)
+        if k == n:
+            return "0"
+        if k == 0:
+            return num
+        stack = []
+        for d in num:
+            while k and stack and stack[-1] > d:
+                stack.pop()
+                k -= 1
+            stack.append(d)
+
+        ret = stack[:-k] if k !=0 else stack
+        return ''.join(ret).lstrip('0') or "0"
+
+#394 	Decode String 	41.2% 	Medium
+给定一个经过编码的字符串，返回其解码字符串。
+
+编码规则为：k[encoded_string]，其中中括号内的encoded_string被重复k次。注意k一定是正整数。
+
+"""
+解题思路：
+利用栈（Stack）数据结构。
+
+当出现左括号时，将字符串压栈。
+
+当出现右括号时，将字符串弹栈，并重复响应次数，累加至新的栈顶元素。
+"""
+class Solution(object):
+    def decodeString(self, s):
+        """
+        :type s: str
+        :rtype: str
+        """
+        stack = []
+        stack.append([1,""])
+        num = ""
+        for ch in s:
+            # isdigit(): only returns if ch == '23'
+            if ch.isdigit():
+                num += ch
+            elif ch == "[":
+                stack.append([int(num), ""])
+                num = ""
+            elif ch == "]":
+                k, st = stack.pop()
+                stack[-1][1] += k * st
+            else:
+                stack[-1][1] += ch
+        return stack[0][1]
+
+
+class Solution(object):
+    def decodeString(self, s):
+        """
+        :type s: str
+        :rtype: str
+        """
+        stack = []
+        currNum = 0
+        curr = ""
+
+        for c in s:
+            if c.isdigit():
+                currNum = currNum * 10 + int(c)
+
+            elif c == "[":
+                stack.append(curr)
+                stack.append(currNum)
+                curr, currNum = "", 0
+
+            # ['aaa', 2], curr = 'bc'
+            # 'aaa' + bc * 2
+            elif c == "]":
+                num = stack.pop()
+                pre = stack.pop()
+                curr = pre + num * curr
+            else:
+                curr += c
+        return curr
+
+385 	Mini Parser 	30.4% 	Medium
+#341 	Flatten Nested List Iterator 	41.3% 	Medium
+'''
+给定一个嵌套的整数列表，实现一个迭代器将其展开。
+每一个元素或者是一个整数，或者是一个列表 -- 其元素也是一个整数或者其他列表。
+'''
+利用栈（Stack）数据结构对嵌套列表展开，在hasNext方法内将下一个需要访问的整数元素准备好，详见代码。
+
+
+331 	Verify Preorder Serialization of a Binary Tree 	36.1% 	Medium
+255 	Verify Preorder Sequence in Binary Search Tree 	40.1% 	Medium
+173 	Binary Search Tree Iterator 	41.1% 	Medium
+150 	Evaluate Reverse Polish Notation 	27.1% 	Medium
+144 	Binary Tree Preorder Traversal 	44.9% 	Medium
+103 	Binary Tree Zigzag Level Order Traversal 	34.4% 	Medium
+94 	Binary Tree Inorder Traversal 	46.4% 	Medium
+#71 	Simplify Path 	25.2% 	Medium
+'''
+Given an absolute path for a file, Simplifyit
+
+For example,
+path = "/home/", => "/home"
+path = "/a/./b/../../c/", => "/c"
+
+'''
+591 	Tag Validator 	27.2% 	Hard
+316 	Remove Duplicate Letters 	29.4% 	Hard
+272 	Closest Binary Search Tree Value II 	38.8% 	Hard
+224 	Basic Calculator 	26.9% 	Hard
+145 	Binary Tree Postorder Traversal 	40.0% 	Hard
+#85 	Maximal Rectangle 	27.7% 	Hard  == 84
+'''
+Given binary matrix filled with 0 and 1s. FInd the largest rectangle
+containing only 1's and return its area
+
+
+
+'''
+For example, given the following matrix:
+
+1 0 1 0 0
+1 0 1 1 1
+1 1 1 1 1
+1 0 0 1 0
+
+Return 6.
+
+
+84 	Largest Rectangle in Histogram 	26.6% 	Hard
+42 	Trapping Rain Water 	36.6% 	Hard
