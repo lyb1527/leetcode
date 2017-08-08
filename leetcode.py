@@ -9320,6 +9320,27 @@ public class Solution {
 
 
 # Valid Parentheses
+def isValidParentheses(s):
+    stack = []
+    for char in s:
+        if char == '(' or char == '[' or char == '}':
+            stack.push(c)
+
+        if c == ')':
+            if stack or stack[-1] != ")":
+                return False
+
+        if c == ']':
+            if stack or stack[-1] != '[':
+                return False
+        if c == '}':
+            if stack or stack[-1] != '{':
+                return False
+
+        stack.pop()
+
+    return  stack
+
 
 
 # Repeated Substring Pattern
@@ -10026,10 +10047,81 @@ class Solution(object):
 
 
 232 	Implement Queue using Stacks 	36.6% 	Easy
-225 	Implement Stack using Queues 	32.7% 	Easy
+#225 	Implement Stack using Queues 	32.7% 	Easy
+'''
+push:
+pop():
+top():
+empty()
+
+'''
+
+
 155 	Min Stack 	28.5% 	Easy
 20 	Valid Parentheses 	33.3% 	Easy
+
+class Solution:
+    # @param {string} s A string
+    # @return {boolean} whether the string is a valid parentheses
+    def isValidParentheses(self, s):
+        # Write your code here
+        stack = []
+        for ch in s:
+            # 压栈
+            if ch == '{' or ch == '[' or ch == '(':
+                stack.append(ch)
+            else:
+                # 栈需非空
+                if not stack:
+                    return False
+                # 判断栈顶是否匹配
+                if ch == ']' and stack[-1] != '[' or \
+                ch == ')' and stack[-1] != '(' or \
+                ch == '}' and stack[-1] != '{':
+                    return False
+                # 弹栈
+                stack.pop()
+        return not stack
+
+
 636 	Exclusive Time of Functions 	39.0% 	Medium
+'''
+function_id: start_or_end:temstamp
+求每个函数调用的总时长
+logs =
+["0:start:0",
+ "1:start:2",
+ "1:end:5",
+ "0:end:6"]
+
+'''
+class Solution(object):
+    def exclusiveTime(self, n, logs):
+        """
+        :type n: int
+        :type logs: List[str]
+        :rtype: List[int]
+        """
+        ans = [0] * n
+        stack = []
+        prev_time = 0
+
+        for log in logs:
+            fn, typ, time = log.split(':')
+            fn, time = int(fn), int(time)
+
+            if typ == 'start':
+                if stack:
+                    ans[stack[-1]] += time - prev_time
+                stack.append(fn)
+                prev_time = time
+            else:
+                ans[stack.pop()] += time - prev_time + 1
+                prev_time = time + 1
+
+        return ans
+
+
 #503 	Next Greater Element II 	47.1% 	Medium
 '''
 给定一个循环数组（末尾元素的下一个元素为起始元素），输出每一个元素的下一个更大的数字（
@@ -10058,6 +10150,9 @@ class Solution(object):
 
 
 456 	132 Pattern 	28.7% 	Medium
+'''
+
+'''
 439 	Ternary Expression Parser 	50.5% 	Medium
 #402 	Remove K Digits 	26.2% 	Medium
 #给定一个用字符串表示的非负整数num，从中移除k位数字，使得剩下的数字尽可能小。
@@ -10171,6 +10266,47 @@ class Solution(object):
 
 
 331 	Verify Preorder Serialization of a Binary Tree 	36.1% 	Medium
+'''
+The key here is, when you see two consecutive "#" characters on stack, pop both of them and replace the topmost element on the stack with "#". For example,
+
+preorder = 1,2,3,#,#,#,#
+
+Pass 1: stack = [1]
+
+Pass 2: stack = [1,2]
+
+Pass 3: stack = [1,2,3]
+
+Pass 4: stack = [1,2,3,#]
+
+Pass 5: stack = [1,2,3,#,#] -> two #s on top so pop them and replace top with #. -> stack = [1,2,#]
+
+Pass 6: stack = [1,2,#,#] -> two #s on top so pop them and replace top with #. -> stack = [1,#]
+
+Pass 7: stack = [1,#,#] -> two #s on top so pop them and replace top with #. -> stack = [#]
+
+If there is only one # on stack at the end of the string then return True else return False.
+'''
+class Solution(object):
+    def isValidSerialization(self, preorder):
+        """
+        :type preorder: str
+        :rtype: bool
+        """
+        p = preorder.split(',')
+        stack = []
+        for s in p:
+            stack.append(s)
+            while len(stack) > 1 and stack[-1] == '#' and stack[-2] == '#':
+                stack.pop()
+                stack.pop()
+                if not stack:
+                    return False
+                stack[-1] = '#'
+        return stack == ['#']
+
+
+
 255 	Verify Preorder Sequence in Binary Search Tree 	40.1% 	Medium
 173 	Binary Search Tree Iterator 	41.1% 	Medium
 150 	Evaluate Reverse Polish Notation 	27.1% 	Medium
@@ -10185,7 +10321,46 @@ For example,
 path = "/home/", => "/home"
 path = "/a/./b/../../c/", => "/c"
 
+
+Speical cases:
+1. ''/../''  -> just return /
+2. a path may contain multiple // together, /home//foo/
+
+
 '''
+        # split with / then get rid of . and ''
+        >>> [p for p in s.split('/') if p != '.' and p != ""]
+
+        places = [p for p in path.split("/") if p!="." and p!=""]
+        stack = []
+        for p in places:
+            if p == "..":
+                if len(stack) > 0:
+                    stack.pop()
+            else:
+                stack.append(p)
+        return "/" + "/".join(stack)
+
+
+class Solution(object):
+    def simplifyPath(self, path):
+        """
+        :type path: str
+        :rtype: str
+        """
+        strs = path.split('/')
+        strs2 = []
+        for s in strs:
+            if s == "." or s == "":
+                continue
+            if s == "..":
+                if strs2:
+                    strs2.pop()
+            else:
+                strs2.append(s)
+
+        return '/'+'/'.join(strs2)
+
 591 	Tag Validator 	27.2% 	Hard
 316 	Remove Duplicate Letters 	29.4% 	Hard
 272 	Closest Binary Search Tree Value II 	38.8% 	Hard
@@ -10196,9 +10371,6 @@ path = "/a/./b/../../c/", => "/c"
 Given binary matrix filled with 0 and 1s. FInd the largest rectangle
 containing only 1's and return its area
 
-
-
-'''
 For example, given the following matrix:
 
 1 0 1 0 0
@@ -10208,6 +10380,75 @@ For example, given the following matrix:
 
 Return 6.
 
+'''
 
-84 	Largest Rectangle in Histogram 	26.6% 	Hard
+# stack
+class Solution(object):
+    def maximalRectangle(self, matrix):
+        """
+        :type matrix: List[List[str]]
+        :rtype: int
+        """
+        if not matrix:
+            return 0
+        m, n, A = len(matrix), len(matrix[0]), 0
+        height = [0 for _ in range(n)]
+        # go through each row and add 1 to column if matrix[i][j] is 1 else 0
+        for i in range(m):
+            for j in xrange(n):
+
+                height[j] = height[j]+1 if matrix[i][j]=="1" else 0
+            A = max(A, self.largestRectangleArea(height))
+        return A
+
+
+    def largestRectangleArea(self, height):
+        height.append(0)
+        stack, A = [0], 0
+        for i in range(1, len(height)):
+            while stack and height[stack[-1]] > height[i]:
+                h = height[stack.pop()]
+                w = i if not stack else i-stack[-1]-1
+                A = max(A, w*h)
+            stack.append(i)
+        return A
+
+
+
+#84 	Largest Rectangle in Histogram 	26.6% 	Hard
+'''
+[2, 1, 5, 6, 2, 3], width for each is 1
+# the largest rectangle is between 5 and 6, 5 x 2 = 10
+'''
+# stack in O(n), O(n)
+'''
+If stack is empty or value at top of stack is less than or equal to value at the current inex,
+push it into stack
+Otherwise keep removing values from the stack till value at top of stack is
+leff than the value at current index.
+while removing values from stack, calculate area.
+'''
+class Solution(object):
+    def largestRectangleArea(self, heights):
+        """
+        :type heights: List[int]
+        :rtype: int
+        """
+        # add an empty bar to the end of height
+        heights.append(0)
+        stack = [-1]
+        ans = 0
+        # keep adding  indices to stack if current element is smaller than the value
+        # of the stack
+        for i in xrange(len(heights)):
+            # last i, heights[i] is 0
+            while heights[i] < heights[stack[-1]]:
+                h = heights[stack.pop()]
+                w = i - stack[-1] - 1
+                ans = max(ans, h * w)
+            stack.append(i)
+        return ans
+
+
+
 42 	Trapping Rain Water 	36.6% 	Hard
