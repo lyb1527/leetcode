@@ -6242,6 +6242,40 @@ class Solution(object):
 
 84	Largest Rectangle in Histogram	26.5%	Hard
 79	Word Search	26.5%	Medium
+'''
+search if a word in within a 2D matrix
+'''
+class Solution(object):
+
+    def exist(self, board, word):
+
+        visited = [[False] * len(board[0]) for _ in range(len(board))]
+        if not board:
+            return False
+        for i in range(len(board)):
+            for j in range(len(board[0])):
+                if self.dfs(board, visited, i, j, word):
+                    return True
+        return False
+
+    # check whether can find word, start at (i,j) position
+    def dfs(self, board, visited, i, j, word):
+        if len(word) == 0: # all the characters are checked
+            return True
+        if i<0 or i>=len(board) or j<0 or j>=len(board[0]) or word[0]!=board[i][j]:
+            return False
+        if visited[i][j]:
+            return False
+        tmp = board[i][j]  # first character is found, check the remaining part
+        visited[i][j] = True   # Mark this as visited
+        # check whether can find "word" along one of the four possible directions
+        if self.dfs(board, visited, i+1, j, word[1:]) or self.dfs(board, visited, i-1, j, word[1:]) \
+        or self.dfs(board, visited, i, j+1, word[1:]) or self.dfs(board, visited, i, j-1, word[1:]):
+            return True
+        # If we cnnot find the word, then we must backtrack
+        visited[i][j] = False
+        return False
+
 45	Jump Game II	26.2%	Hard
 54	Spiral Matrix	25.8%	Medium
 152	Maximum Product Subarray	25.5%	Medium
@@ -10311,6 +10345,29 @@ class Solution(object):
 173 	Binary Search Tree Iterator 	41.1% 	Medium
 150 	Evaluate Reverse Polish Notation 	27.1% 	Medium
 144 	Binary Tree Preorder Traversal 	44.9% 	Medium
+'''
+root, left, right
+
+'''
+class Solution:
+    def preorder(self, root):
+
+        if not root:
+            return []
+
+        preorder = []
+        stack = [root]
+        while stack:
+            node = stack.pop()
+            preorder.append(node.val)
+            if node.right:
+                stack.append(node.right)
+            if node.left:
+                stack.append(node.left)
+        return preorder
+
+
+
 103 	Binary Tree Zigzag Level Order Traversal 	34.4% 	Medium
 94 	Binary Tree Inorder Traversal 	46.4% 	Medium
 #71 	Simplify Path 	25.2% 	Medium
