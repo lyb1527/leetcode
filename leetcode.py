@@ -10524,7 +10524,18 @@ class Solution(object):
 #----------------------------------------------------------------------
 
 
-290	Word Pattern	33.0%	Easy
+290	Word Pattern	33.0%	Easy ==  205 Isomorphic Strings
+'''
+given a patten and a string, find if str follows the same patten
+'''
+给定一个模式pattern和一个字符串str，判断str是否满足相同的pattern。
+
+
+SILU: 使用字典dict分别记录pattern到word的映射以及word到pattern的映射
+
+
+
+
 1	Two Sum	34.4%	Easy
 599	Minimum Index Sum of Two Lists	46.9%	Easy
 '''
@@ -10556,7 +10567,18 @@ class Solution:
 '''
 a harmonious array is an array where the difference betwen its max value and
 its min value is exactly 1
+
+给定整数数组nums，求其中最大值与最小值相差恰好为1(harmonious)的子序列的长度的最大值。
+
+注意： 数组长度不超过20000
 '''
+SILU:
+用字典cnt统计各数字出现的次数。
+
+升序遍历cnt的键值对
+
+
+
 575	Distribute Candies	59.5%	Easy
 '''
 给定一组长度为偶数的整数，其中每个数字代表一个糖果的种类标号。
@@ -10601,7 +10623,7 @@ class Solution(object):
             if candies[idx] > candies[idx - 1]:
                 count += 1
             idx += 1
-        return count 
+        return count
 
 
 @Set,
@@ -10623,10 +10645,114 @@ class Solution(object):
 
 
 500	Keyboard Row	59.9%	Easy
+'''
+给定一组单词，返回可以用美式键盘中的某一行字母键入的所有单词。
+'''
+
+class Solution(object):
+    def findWords(self, words):
+
+        #>>> set('abcdsf')
+        #{'d', 'c', 'a', 'b', 'f', 's'}
+        rs = map(set, ['qwertyuiop', 'asdfghjkl', 'zxcvbnm'])
+        ans = []
+        for word in words:
+            wset = set(word.lower())
+            if any(wset <= rset for rset in rs):
+                ans.append(word)
+        return ans
+
+
 463	Island Perimeter	57.1%	Easy
+'''
+给定一个二维地图，1表示陆地，0表示水域。单元格水平或者竖直相连（不含对角线）。
+地图完全被水域环绕，只包含一个岛屿（也就是说，一个或者多个相连的陆地单元格）。
+岛屿没有湖泊（岛屿内部环绕的水域）。单元格是边长为1的正方形。地图是矩形，长宽不超过100
+。计算岛屿的周长。
+'''
+每一个陆地单元格的周长为4，当两单元格上下或者左右相邻时，令周长减2。
+class Solution(object):
+    def islandPerimeter(self, grid):
+        """
+        :type grid: List[List[int]]
+        :rtype: int
+        """
+        result = 0
+        for i in range(len(grid)):
+            for j in range(len(grid[0])):
+                if grid[i][j]:
+                    result += 4
+                    if i and grid[i-1][j]: # if i == if i > 0
+                        result -= 2
+                    if j and grid[i][j-1]:
+                        result -= 2
+        return result
+
+
+
 447	Number of Boomerangs	44.9%	Easy
+'''
+n points that are pariwise distinct,
+
+'''
 438	Find All Anagrams in a String	33.7%	Easy
 409	Longest Palindrome	45.4%	Easy
+'''
+string consists of lower and uppper letters, find length of longest palindromes that can be built with those letters
+
+case sensitive, Aa is not palindrome
+
+给定一个只包含小写或者大写字母的字符串，寻找用这些字母可以组成的最长回文串的长度。
+
+大小写敏感，例如"Aa"在这里不认为是一个回文。
+'''
+class Solution(object):
+    def longestPalindrome(self, s):
+        """
+        :type s: str
+        :rtype: int
+        """
+        if not s or len(s) == 0:
+            return 0
+
+        count = 0
+        hash1 = {}
+        for i in s:
+            if i not in hash1:
+                hash1[i] = 1
+            else:
+                del hash1[i]
+                count += 1
+
+        if hash1 != {}:
+            return count*2 + 1
+        else:
+            return count*2
+
+
+class Solution(object):
+    def longestPalindrome(self, s):
+        """
+        :type s: str
+        :rtype: int
+        """
+
+        d = {}
+        count = 0
+
+        for i in range(len(s)):
+            if s[i] in d:
+                del d[s[i]]
+                count += 2
+            else:
+                d[s[i]] = 1
+
+        if len(d) != 0:
+            count += 1
+
+        return count
+
+
 136	Single Number	54.4%	Easy
 359	Logger Rate Limiter 	59.6%	Easy
 266	Palindrome Permutation 	56.8%	Easy
@@ -10636,6 +10762,9 @@ class Solution(object):
 217	Contains Duplicate	45.6%	Easy
 205	Isomorphic Strings	33.7%	Easy
 204	Count Primes	26.5%	Easy
+'''
+count the number of prime numbers less than a +n
+'''
 202	Happy Number	40.6%	Easy
 645	Set Mismatch	41.1%	Easy
 170	Two Sum III - Data structure design 	24.4%	Easy
@@ -10643,15 +10772,181 @@ class Solution(object):
 350	Intersection of Two Arrays II	44.6%	Easy
 246	Strobogrammatic Number 	39.7%	Easy
 389	Find the Difference	50.5%	Easy
+'''
+给定两个字符串s和t，都只包含小写字母。
+
+字符串t由字符串s打乱顺序并且额外在随机位置添加一个字母组成。
+
+寻找t中新增的那个字母。
+'''
+分别统计s与t的字母个数，然后比对即可。若使用Python解题，可以使用collections.Counter
+
+
+class Solution(object):
+    def findTheDifference(self, s, t):
+        """
+        :type s: str
+        :type t: str
+        :rtype: str
+        """
+        dic = {}
+        for i in t :
+            if i in dic :
+                dic[i] +=   1
+            else :
+                dic[i] = 1
+
+        for i in s :
+            if i in dic :
+                dic[i] -= 1
+
+        for key in dic :
+            if dic[key] != 0 :
+                return key
+
+
+
+class Solution(object):
+    def findTheDifference(self, s, t):
+        """
+        :type s: str
+        :type t: str
+        :rtype: str
+        """
+        # another solution is bit manipulation:
+        res = 0
+
+        for e in s:
+            res = res ^ ord(e)
+
+        for e in t:
+            res = res ^ ord(e)
+
+        return chr(res)
+
+
+
 535	Encode and Decode TinyURL	73.9%	Medium
 166	Fraction to Recurring Decimal	17.5%	Medium
 347	Top K Frequent Elements	47.9%	Medium
+'''
+
+empty array of integers, return the k most frequent elements
+Given [1,1,1,2,2,3] and k = 2, return [1,2].
+
+Your algorithm's time complexity must be better than O(n log n), where n is the array's size.
+
+给定一个非空整数数组，返回其前k个出现次数最多的元素
+
+'''
+
+@bucket sort . O(n)
+1. 遍历数组nums，利用字典cntDict统计各元素出现次数。
+2. 遍历cntDict，利用嵌套列表freqList记录出现次数为i（ i∈[1, n] ）的所有元素
+3. 逆序遍历freqList，将其中的前k个元素输出。
+class Solution(object):
+    def topKFrequent(self, nums, k):
+        """
+        :type nums: List[int]
+        :type k: int
+        :rtype: List[int]
+        """
+        n = len(nums)
+        cntDict = collections.defaultdict(int)
+        for i in nums:
+            cntDict[i] += 1
+        freqList = [[] for i in range(n + 1)]
+        for p in cntDict:
+            freqList[cntDict[p]] += p,
+        ans = []
+        for p in range(n, 0, -1):
+            ans += freqList[p]
+        return ans[:k]
+
+
+
+
+
+
+
 525	Contiguous Array	38.9%	Medium
+'''
+find the max length of a contiguous subarray with equal number of 0 and 1
+给定一个二进制数组，求其中满足0的个数与1的个数相等的最长子数组
+https://leetcode.com/articles/contiguous-array/#approach-3-using-hashmap-accepted
+'''
+class Solution(object):
+    def findMaxLength(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        dmap = {0 : -1}
+        ans = total = 0
+        for i, n in enumerate(nums):
+            total += 2 * nums[i] - 1
+            if total in dmap:
+                ans = max(ans, i - dmap[total])
+            else:
+                dmap[total] = i
+        return ans
+
+
 508	Most Frequent Subtree Sum	52.2%	Medium
 325	Maximum Size Subarray Sum Equals k 	42.3%	Medium
 187	Repeated DNA Sequences	31.4%	Medium
+'''
+Given s = "AAAAACCCCCAAAAACCCCCCAAAAAGGGTTT",
+
+Return:
+["AAAAACCCCC", "CCCCCAAAAA"].
+
+DNA由一系列简写为A,C,G,T的碱基组成，例如"ACGAATTCCG"。研究DNA时，识别DNA中的重复序列有时候会有用处。
+
+写一个函数找出DNA分子中所有不止一次出现的10字母长度的子串序列。
+'''
+字典+位运算，或者进制转换。
+
+由于直接将字符串存入字典会导致Memory Limit Exceeded，采用位操作将字符串转化为整数可以减少内存开销。
+
+
+
+class Solution(object):
+    def findRepeatedDnaSequences(self, s):
+        """
+        :type s: str
+        :rtype: List[str]
+        """
+        newSeq = set()
+        repeated = set()
+        for i in range(0, len(s) - 10 + 1):
+            subSeq = s[i : i + 10]
+
+            if subSeq not in newSeq:
+                newSeq.add(subSeq)
+            else:
+                repeated.add(subSeq)
+
+        return list(repeated)
+
+
+
 311	Sparse Matrix Multiplication 	50.7%	Medium
 299	Bulls and Cows	34.8%	Medium
+'''
+告诉他有多少个数字处在正确的位置上（称为"bulls" 公牛），以及有多少个数字处在错误的位置上（称为"cows" 奶牛）
+
+神秘数字：  1807
+朋友猜测：  7810
+提示信息：  1公牛 3奶牛。（公牛是8， 奶牛是0, 1和7）
+，使用A表示公牛，B表示母牛，在上例中，你的函数应当返回1A3B。
+'''
+
+bull = secret与guess下标与数值均相同的数字个数
+
+cow = secret与guess中出现数字的公共部分 - bull
+
+
 244	Shortest Word Distance II 	37.9%	Medium
 288	Unique Word Abbreviation 	16.6%	Medium
 274	H-Index	33.1%	Medium
