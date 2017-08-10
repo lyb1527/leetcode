@@ -10509,3 +10509,176 @@ class Solution(object):
 
 
 42 	Trapping Rain Water 	36.6% 	Hard
+
+
+
+
+
+
+
+
+#-------------------------------------------------------------------
+
+                                    '''Hash Table Questions'''
+
+#----------------------------------------------------------------------
+
+
+290	Word Pattern	33.0%	Easy
+1	Two Sum	34.4%	Easy
+599	Minimum Index Sum of Two Lists	46.9%	Easy
+'''
+two lists with strings, find the common item for both list
+with LEAST LIST INDEX SUM, if there is a choice tie, output all of them
+with no order requirement.
+'''
+class Solution:
+
+    def findRestaurant(self, list1, list2):
+        dict1 = {v : i for i, v in enumerate(list1)}
+        minSum = len(list1) + len(list2)
+        ans = []
+
+        for i, v in enumerate(list2):
+            if v not in dict1:
+                continue
+            currSum = i + dict1[v]
+
+            if currSum < minSum:
+                ans = [r]
+                minSum = currSum
+            elif currSum == minSum:
+                ans.append(r)
+        return ans
+
+
+594	Longest Harmonious Subsequence	40.6%	Easy
+'''
+a harmonious array is an array where the difference betwen its max value and
+its min value is exactly 1
+'''
+575	Distribute Candies	59.5%	Easy
+'''
+给定一组长度为偶数的整数，其中每个数字代表一个糖果的种类标号。
+
+将糖果均分给哥哥和妹妹，返回妹妹可以得到的最大糖果种类数。
+
+determine the number oif uniuque elements in the first hafl of the array
+
+the max of uniuque canies the girl can objtain is atmost
+n/2.
+
+Approaches:
+
+
+Sorting
+
+Using Set:
+find the number of unique element  is to traverse
+over all the elements an keepp putting elements in a set.
+A set will only contain unique elements.
+
+At the end, we count the numbers in the set,
+
+
+
+'''
+
+@Sorting:
+O(nlogn): Sorting takes O(nlogn) time
+O(1): constant space is used.
+
+class Solution(object):
+    def distributeCandies(self, candies):
+        """
+        :type candies: List[int]
+        :rtype: int
+        """
+        candies.sort()
+        count = 1
+        idx = 1
+        while idx < len(candies) and count < len(candies) / 2:
+            if candies[idx] > candies[idx - 1]:
+                count += 1
+            idx += 1
+        return count 
+
+
+@Set,
+O(n)[array is traversed only once]
+ O(n)[set will be size n in the worst case]
+
+class Solution(object):
+    def distributeCandies(self, candies):
+        """
+        :type candies: List[int]
+        :rtype: int
+        """
+        s = set()
+        for candy in candies:
+            s.add(candy)
+        # len(candies) /2, if unique elements is more than half
+        # len(s), less than half
+        return min(len(s), len(candies) / 2)
+
+
+500	Keyboard Row	59.9%	Easy
+463	Island Perimeter	57.1%	Easy
+447	Number of Boomerangs	44.9%	Easy
+438	Find All Anagrams in a String	33.7%	Easy
+409	Longest Palindrome	45.4%	Easy
+136	Single Number	54.4%	Easy
+359	Logger Rate Limiter 	59.6%	Easy
+266	Palindrome Permutation 	56.8%	Easy
+624	Maximum Distance in Arrays 	33.2%	Easy
+242	Valid Anagram	46.3%	Easy
+219	Contains Duplicate II	32.3%	Easy
+217	Contains Duplicate	45.6%	Easy
+205	Isomorphic Strings	33.7%	Easy
+204	Count Primes	26.5%	Easy
+202	Happy Number	40.6%	Easy
+645	Set Mismatch	41.1%	Easy
+170	Two Sum III - Data structure design 	24.4%	Easy
+349	Intersection of Two Arrays	47.2%	Easy
+350	Intersection of Two Arrays II	44.6%	Easy
+246	Strobogrammatic Number 	39.7%	Easy
+389	Find the Difference	50.5%	Easy
+535	Encode and Decode TinyURL	73.9%	Medium
+166	Fraction to Recurring Decimal	17.5%	Medium
+347	Top K Frequent Elements	47.9%	Medium
+525	Contiguous Array	38.9%	Medium
+508	Most Frequent Subtree Sum	52.2%	Medium
+325	Maximum Size Subarray Sum Equals k 	42.3%	Medium
+187	Repeated DNA Sequences	31.4%	Medium
+311	Sparse Matrix Multiplication 	50.7%	Medium
+299	Bulls and Cows	34.8%	Medium
+244	Shortest Word Distance II 	37.9%	Medium
+288	Unique Word Abbreviation 	16.6%	Medium
+274	H-Index	33.1%	Medium
+249	Group Shifted Strings 	41.2%	Medium
+314	Binary Tree Vertical Order Traversal 	36.5%	Medium
+3	Longest Substring Without Repeating Characters	24.3%	Medium
+49	Group Anagrams	34.5%	Medium
+454	4Sum II	46.4%	Medium
+451	Sort Characters By Frequency	50.9%	Medium
+609	Find Duplicate File in System	53.0%	Medium
+18	4Sum	26.7%	Medium
+94	Binary Tree Inorder Traversal	46.5%	Medium
+138	Copy List with Random Pointer	26.3%	Medium
+648	Replace Words	48.6%	Medium
+380	Insert Delete GetRandom O(1)	39.1%	Medium
+36	Valid Sudoku	35.7%	Medium
+554	Brick Wall	44.6%	Medium
+356	Line Reflection 	30.1%	Medium
+355	Design Twitter	25.4%	Medium
+632	Smallest Range	42.7%	Hard
+336	Palindrome Pairs	26.1%	Hard
+159	Longest Substring with At Most Two Distinct Characters 	41.0%	Hard
+358	Rearrange String k Distance Apart 	31.9%	Hard
+149	Max Points on a Line	15.3%	Hard
+340	Longest Substring with At Most K Distinct Characters 	38.7%	Hard
+85	Maximal Rectangle	27.8%	Hard
+76	Minimum Window Substring	25.2%	Hard
+37	Sudoku Solver	30.1%	Hard
+30	Substring with Concatenation of All Words	22.0%	Hard
+381	Insert Delete GetRandom O(1) - Duplicates allowed	28.8%	Hard
