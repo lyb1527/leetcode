@@ -10524,16 +10524,70 @@ class Solution(object):
 #----------------------------------------------------------------------
 
 
+205 Isomorphic Strings
+'''
+two strings, determine if they are isomorphic
+
+Two strings are isomorphic if the characters in s can be replaced to get t.
+
+Given "egg", "add", return true.
+
+Given "foo", "bar", return false.
+
+Given "paper", "title", return true.
+
+You may assume both s and t have the same length.
+'''
+
+class Solution(object):
+    def isIsomorphic(self, s, t):
+
+        if len(s) != len(t):
+            return False
+        s2t, t2s = {}, {}
+
+        for ss, tt in zip(s, t):
+            if ss not in s2t and tt not in t2s:
+                s2t[ss] = tt
+                t2s[tt] = ss
+            elif ss not in s2t or s2t[ss] != tt:
+                return False
+        return True
+
+
+
 290	Word Pattern	33.0%	Easy ==  205 Isomorphic Strings
 '''
 given a patten and a string, find if str follows the same patten
+
+pattern = "abba", str = "dog cat cat dog" should return true.
+pattern = "abba", str = "dog cat cat fish" should return false.
 '''
 给定一个模式pattern和一个字符串str，判断str是否满足相同的pattern。
 
 
 SILU: 使用字典dict分别记录pattern到word的映射以及word到pattern的映射
 
+#str = "dog cat cat dog" should return true.
+def wordPattern(self, pattern, str):
+    words = str.split()
+    if len(pattern) != len(words):
+        return False
 
+    patternDict, wordDict = {}, {}
+    for pattern, word in zip(pattern, words):
+
+        # pattern to word mapping
+        if pattern not in patternDict:
+            patternDict[pattern] = word
+
+        #word to pattern mapping
+        if word not in wordDict:
+            wordDict[word] = pattern
+
+        if wordDict[word] != pattern or patternDict[pattern] != word:
+            return False
+    return True
 
 
 1	Two Sum	34.4%	Easy
@@ -10577,6 +10631,22 @@ SILU:
 
 升序遍历cnt的键值对
 
+
+Time complexity : O(n). One loop is required to fill mapmap and one for traversing the mapmap.
+
+Space complexity : O(n). In worst case map size grows upto size nn.
+
+def findLHS(self.nums):
+    cnt = collections.Counter(nums)
+    ans = 0
+    lastKey = lastVal = None
+    #> sorted(cnt.items())
+    #[(1, 1), (2, 3), (3, 2), (5, 1), (7, 1)]
+    for key, val in sorted(cnt.items()):
+        if lastKey is not None and lastKey + 1 == key:
+            ans = max(ans, val + lastVal)
+        lastKey, lastVal = key, val
+    return ans
 
 
 575	Distribute Candies	59.5%	Easy
@@ -10692,10 +10762,106 @@ class Solution(object):
 
 447	Number of Boomerangs	44.9%	Easy
 '''
-n points that are pariwise distinct,
+给定平面上的n个两两不同的点，一个“回飞镖”是指一组点(i, j, k)满足i到j的距离=i到k的距离（考虑顺序）
 
+计算回飞镖的个数。你可以假设n最多是500，并且点坐标范围在 [-10000, 10000] 之内。
 '''
+class Solution(object):
+    def numberOfBoomerangs(self, points):
+        """
+        :type points: List[List[int]]
+        :rtype: int
+        """
+        count = 0
+        for point1 in points:
+            m = {}
+            for point2 in points:
+                dx = point1[0] - point2[0]
+                dy = point1[1] - point2[1]
+                d = dx*dx + dy*dy
+                if d in m:
+                    count += m[d]*2
+                    m[d] +=1
+                else:
+                    m[d] = 1
+        return count
+
+
 438	Find All Anagrams in a String	33.7%	Easy
+'''
+given a string s and string p, find all the start inices of p's anagrams in s
+'''
+s:'cbaebabacd'   p : 'abc'
+
+[0, 6]
+0: cba is a anagram of abc
+6: bac is an anagram of bac
+
+
+class Solution(object):
+    def findAnagrams(self, s, p):
+
+        ls, lp = len(s), len(p)
+        cp = collections.Counter(p)
+        cs = collections.Counter()
+        ans = []
+        for i in range(ls):
+            cs[s[i]] += 1
+            if i >= lp:
+                cs[s[i - lp]] -= 1
+                if cs[s[i - lp]] == 0:
+                    del cs[s[i - lp]]
+            if cs == cp:
+                ans.append(i - lp + 1)
+        return ans
+
+
+
+
+class Solution(object):
+    def findAnagrams(self, s, p):
+
+        res = []
+        n, m = len(s), len(p)
+        if n < m: return res
+        # ord('z') - 122
+        phash, shash = [0]*123, [0]*123
+        for x in p:
+            phash[ord(x)] += 1
+        for x in s[:m-1]:
+            shash[ord(x)] += 1
+        for i in range(m-1, n):
+            # add one each time
+            shash[ord(s[i])] += 1
+            if i-m >= 0:
+                shash[ord(s[i-m])] -= 1
+            if shash == phash:
+                res.append(i - m + 1)
+        return res
+
+
+
+@ O(n)
+class Solution(object):
+    def findAnagrams(self, s, p):
+
+        ls, lp = len(s), len(p)
+        count = lp
+        cp = collections.Counter(p)
+        ans = []
+        for i in range(ls):
+            if cp[s[i]] >=1 :
+                count -= 1
+            cp[s[i]] -= 1
+            if i >= lp:
+                if cp[s[i - lp]] >= 0:
+                    count += 1
+                cp[s[i - lp]] += 1
+            if count == 0:
+                ans.append(i - lp + 1)
+        return ans
+
+
 409	Longest Palindrome	45.4%	Easy
 '''
 string consists of lower and uppper letters, find length of longest palindromes that can be built with those letters
@@ -10758,6 +10924,50 @@ class Solution(object):
 266	Palindrome Permutation 	56.8%	Easy
 624	Maximum Distance in Arrays 	33.2%	Easy
 242	Valid Anagram	46.3%	Easy
+'''
+Given two strings s and t, write a function to determine if t is an anagram of s.
+
+For example,
+s = "anagram", t = "nagaram", return true.
+s = "rat", t = "car", return false.
+'''
+
+@sorting
+Time complexity : O(nlogn). Assume that nn is the length of ss, sorting costs O(nlogn) and comparing two strings costs O(n).
+Sorting time dominates and the overall time complexity is O(nlogn).
+
+Space complexity : O(1). Space depends on the sorting implementation which, usually, costs O(1) auxiliary space if heapsort is used.
+class Solution(object):
+    def isAnagram(self, s, t):
+
+        return sorted(s) == sorted(t)
+
+@hashmap
+class Solution(object):
+    def isAnagram(self, s, t):
+        """
+        :type s: str
+        :type t: str
+        :rtype: bool
+        """
+        lookup = {}
+        for c in s:
+            if c in lookup:
+                lookup[c] += 1
+            else:
+                lookup[c] = 1
+        for c in t:
+            if c not in lookup:
+                return False
+            else:
+                lookup[c] -= 1
+        for item in lookup.values():
+            if item != 0:
+                return False
+        return True
+
+
+
 219	Contains Duplicate II	32.3%	Easy
 217	Contains Duplicate	45.6%	Easy
 205	Isomorphic Strings	33.7%	Easy
@@ -10767,6 +10977,63 @@ count the number of prime numbers less than a +n
 '''
 202	Happy Number	40.6%	Easy
 645	Set Mismatch	41.1%	Easy
+'''
+集合S初始包含数字1到n。其中一个数字缺失，一个数字重复。
+
+求其中重复的数字，与缺失的数字。
+
+'''
+用字典求重复的数字，用等差数列求和公式求缺失的数字
+
+@sorting
+class Solution(object):
+    def findErrorNums(self, nums):
+
+        nums.sort()
+        twice = None
+        for i, d in enumerate(nums):
+            if twice is None and i > 0 and nums[i] == nums[i-1]:
+                twice = nums[i]
+        nums = set(nums)
+        for i in range(len(nums) + 1):
+            if i + 1 not in nums:
+                return twice, i + 1
+
+
+class Solution(object):
+    def findErrorNums(self, nums):
+
+        missing = set(range(1, len(nums)+1)) - set(nums)
+        nums = sorted(nums)
+        for i in range(0, len(nums)):
+            if nums[i] == nums[i+1]:
+                return [nums[i]] + list(missing)
+
+
+class Solution(object):
+    def findErrorNums(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: List[int]
+        """
+        #create set, create range
+        setOfNumbers, result = set(), range(2)
+
+        #Traverse list, check if number exists in set else add
+        for x in nums:
+            if x in setOfNumbers:
+                result[0] = x
+            else:
+                setOfNumbers.add(x)
+
+        #Check which number is absent
+        for x in range(len(nums)+1):
+            if x not in setOfNumbers:
+                result[1] = x
+
+        #return result
+        return result
+
 170	Two Sum III - Data structure design 	24.4%	Easy
 349	Intersection of Two Arrays	47.2%	Easy
 350	Intersection of Two Arrays II	44.6%	Easy
@@ -10828,6 +11095,17 @@ class Solution(object):
 
 535	Encode and Decode TinyURL	73.9%	Medium
 166	Fraction to Recurring Decimal	17.5%	Medium
+'''
+给定两个整数代表分数的分子和分母，返回字符串形式的小数
+
+如果小数部分是循环的，用括号将循环节围起来。
+
+例如，
+
+给定分子 = 1, 分母 = 2, 返回 "0.5".
+给定分子 = 2, 分母 = 1, 返回 "2".
+给定分子 = 2, 分母 = 3, 返回 "0.(6)".
+'''
 347	Top K Frequent Elements	47.9%	Medium
 '''
 
@@ -10956,11 +11234,96 @@ cow = secret与guess中出现数字的公共部分 - bull
 49	Group Anagrams	34.5%	Medium
 454	4Sum II	46.4%	Medium
 451	Sort Characters By Frequency	50.9%	Medium
+'''
+Given a string, sort it in decreasing orer based on frequency of chars
+
+A and a are not the same.
+
+
+Input: "Aabb"
+
+Output:
+"bbAa"
+
+Explanation:
+"bbaA" is also a valid answer, but "Aabb" is incorrect.
+Note that 'A' and 'a' are treated as two different characters.
+
+
+给定一个字符串，将字符按照出现次数倒序排列。
+'''
+class Solution(object):
+    def frequencySort(self, s):
+
+        ans = ''
+        c = []
+        for x in set(s):
+            #[[1, 'a'], [2, 'b'], [1, 'A']]
+            c.append([s.count(x),x])
+        # [[2, 'b'], [1, 'a'], [1, 'A']]
+        c.sort(reverse=True)
+        for y in c:
+            ans += y[0]*y[1]
+        return ans
+
 609	Find Duplicate File in System	53.0%	Medium
 18	4Sum	26.7%	Medium
 94	Binary Tree Inorder Traversal	46.5%	Medium
 138	Copy List with Random Pointer	26.3%	Medium
 648	Replace Words	48.6%	Medium
+'''
+英文中，以较短的单词为前缀，可以构成较长的单词。此时前缀可以称为“词根”。
+
+给定一组词根字典dict，一个句子sentence。将句中的单词换为字典中出现过的最短词根。
+'''
+
+
+@Trie
+利用词根dict构建字典树trie，遍历sentence中的word，在trie中进行搜索。
+class TrieNode:
+    def __init__(self):
+        self.children = dict()
+        self.isWord = False
+
+class Trie:
+
+    def __init__(self):
+        self.root = TrieNode()
+
+    def insert(self, word):
+        node = self.root
+        for letter in word:
+            child = node.children.get(letter)
+            if child is None:
+                child = TrieNode()
+                node.children[letter] = child
+            node = child
+        node.isWord = True
+
+    def search(self, word):
+        ans = ''
+        node = self.root
+        for letter in word:
+            node = node.children.get(letter)
+            if node is None: break
+            ans += letter
+            if node.isWord: return ans
+        return word
+
+class Solution(object):
+    def replaceWords(self, dict, sentence):
+        """
+        :type dict: List[str]
+        :type sentence: str
+        :rtype: str
+        """
+        trie = Trie()
+        for word in dict: trie.insert(word)
+        ans = []
+        for word in sentence.split():
+            ans.append(trie.search(word))
+        return ' '.join(ans)
+
 380	Insert Delete GetRandom O(1)	39.1%	Medium
 36	Valid Sudoku	35.7%	Medium
 554	Brick Wall	44.6%	Medium
