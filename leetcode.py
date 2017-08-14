@@ -11339,3 +11339,96 @@ class Solution(object):
 37	Sudoku Solver	30.1%	Hard
 30	Substring with Concatenation of All Words	22.0%	Hard
 381	Insert Delete GetRandom O(1) - Duplicates allowed	28.8%	Hard
+
+
+
+
+#--------------------------------------------------------------------------
+
+                            '''Topological Sorting Questions '''
+
+#------------------------------------------------------------------------------
+
+
+# Course Schedule
+
+
+
+
+class Solution(object):
+    def canFinish(self, numCourses, prerequisites):
+        """
+        :type numCourses: int
+        :type prerequisites: List[List[int]]
+        :rtype: bool
+        """
+        graph = [[] for _ in range(numCourses)]
+        indegree = [0] * numCourses
+        for x, y in prerequisites:
+            graph[y].append(x)
+            indegree[x] += 1
+        k = 0
+        q = []
+        for idx in range(numCourses):
+            if indegree[idx] == 0:
+                q.append(idx)
+
+        while q:
+            idx = q.pop()
+            indegree[idx] = -1
+            k += 1
+            for node in graph[idx]:
+                indegree[node] -=1
+                if indegree[node] == 0:
+                    q.append(node)
+        return numCourses == k
+
+
+
+
+
+class Solution(object):
+    def canFinish(self, numCourses, prerequisites):
+        """
+        :type numCourses: int
+        :type prerequisites: List[List[int]]
+        :rtype: bool
+        """
+        count, graph = [0]*numCourses, collections.defaultdict(list)
+        for pre in prerequisites:
+            graph[pre[1]].append(pre[0])
+            count[pre[0]]+=1
+        queue = collections.deque(c for c in range(numCourses) if count[c]==0)
+        visited = len(queue)
+        while queue:
+            courses = graph[queue.popleft()]
+            for course in courses:
+                count[course]-=1
+                if count[course]==0:
+                    queue.append(course)
+                    visited+=1
+        return visited==numCourses
+
+
+
+def canFinish(numCourses, prerequisites):
+    if numCourses <= 1:
+        return True
+
+    if len(prerequisites) == 0 or len(prerequisites[0])== 0:
+        return True
+
+
+    # for each node, will create a hash map for it
+
+    # build graph
+    graph = {}
+    for i in range(numCourses):
+        dictionary[i] = set()
+
+    for i in range(len(prerequisites)):
+        graph[prerequisites[i][0]].append(prerequisites[i][i])
+
+    # BFS
+    queue = []
+    for
