@@ -11367,7 +11367,7 @@ class Solution(object):
         for x, y in prerequisites:
             graph[y].append(x)
             indegree[x] += 1
-        k = 0
+        count = 0
         q = []
         for idx in range(numCourses):
             if indegree[idx] == 0:
@@ -11376,12 +11376,12 @@ class Solution(object):
         while q:
             idx = q.pop()
             indegree[idx] = -1
-            k += 1
+            count += 1
             for node in graph[idx]:
                 indegree[node] -=1
                 if indegree[node] == 0:
                     q.append(node)
-        return numCourses == k
+        return numCourses == count
 
 
 
@@ -11408,6 +11408,9 @@ class Solution(object):
                     queue.append(course)
                     visited+=1
         return visited==numCourses
+
+
+
 
 
 
