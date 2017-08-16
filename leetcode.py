@@ -2962,6 +2962,36 @@ class Solution(object):
         :type root: TreeNode
         :rtype: bool
         """
+        queue = collections.deque()
+        queue.append(root)
+        queue.append(root)
+
+        while queue:
+            t1 = queue.popleft()
+            t2 = queue.popleft()
+            if t1 == None and t2 == None:
+                continue
+            if t1 == None or t2 == None:
+                return False
+            if t1.val != t2.val:
+                return False
+
+            # outter mirror
+            queue.append(t1.left)
+            queue.append(t2.right)
+            # INNTER MIRROR
+            queue.append(t1.right)
+            queue.append(t2.left)
+
+        return True
+
+
+class Solution(object):
+    def isSymmetric(self, root):
+        """
+        :type root: TreeNode
+        :rtype: bool
+        """
         if root is None:
             return True
         stack = [(root.left, root.right)]
