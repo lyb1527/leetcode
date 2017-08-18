@@ -11370,6 +11370,55 @@ class Solution(object):
 30	Substring with Concatenation of All Words	22.0%	Hard
 381	Insert Delete GetRandom O(1) - Duplicates allowed	28.8%	Hard
 
+#--------------------------------------------------------------------------
+
+                            '''Breath First Search Questions '''
+
+#------------------------------------------------------------------------------
+
+# Number of Islands
+class Solution(object):
+    def numIslands(self, grid):
+        """
+        :type grid: List[List[str]]
+        :rtype: int
+        """
+        # visit each num.
+        # when found a 1, propagate to all its 1 neighbors and mark them with 2.
+        # increment isand counter
+        if len(grid) == 0 or len(grid[0]) == 0:
+            return 0
+
+        islands = 0
+        for i in range(len(grid)):
+            for j in range(len(grid[0])):
+                if grid[i][j] == "1":
+                    self.propagate(grid, i, j)
+                    islands += 1
+
+        for i in range(len(grid)):
+            for j in range(len(grid[0])):
+                if grid[i][j] == "#":
+                    grid[i][j] = "1"
+
+        return islands
+
+
+    def propagate(self, grid, i, j):
+        n = len(grid)
+        m = len(grid[0])
+        dirs = [[-1, 0], [1, 0], [0, -1], [0, 1]]
+        stack = [[i, j]]
+        while len(stack) > 0:
+            i, j = stack.pop()
+            grid[i][j] = "#"
+            for d in dirs:
+                ii = i + d[0]
+                jj = j + d[1]
+                if ii >= 0 and ii < n and jj >= 0 and jj < m and grid[ii][jj] == "1":
+                    stack.append([ii, jj])
+
+# perfect Squares
 
 
 
@@ -11465,3 +11514,37 @@ def canFinish(numCourses, prerequisites):
     # BFS
     queue = []
     for
+
+
+# Course Schedule II
+
+
+class Solution(object):
+    def findOrder(self, numCourses, prerequisites):
+        """
+        :type numCourses: int
+        :type prerequisites: List[List[int]]
+        :rtype: List[int]
+        """
+        graph = collections.defaultdict(list)
+        indegree = [0] * numCourses
+
+        # build graph
+        for pre in prerequisites:
+            graph[pre[1]].append(pre[0])
+            indegree[pre[0]] += 1
+
+        queue = collections.deque(c for c in range(numCourses) if indegree[c] == 0)
+
+        order = []    # order list to store order
+        while queue:
+            course = queue.popleft()   # pop the  courses in the queue, CS1, courses = graph[popleft()]
+            order.append(course)       # add the course to the order
+            for course in graph[course]:    # graph[course]
+                indegree[course] -= 1
+                if indegree[course] == 0:
+                    queue.append(course)
+
+        if len(order) == numCourses:  # only return the order if len(order) == number of courses popped from queue
+            return order
+        return []                     # not equal
