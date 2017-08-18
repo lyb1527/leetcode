@@ -11418,7 +11418,184 @@ class Solution(object):
                 if ii >= 0 and ii < n and jj >= 0 and jj < m and grid[ii][jj] == "1":
                     stack.append([ii, jj])
 
-# perfect Squares
+# Surrounded Region
+class Solution(object):
+    def solve(self, board):
+        """
+        :type board: List[List[str]]
+        :rtype: void Do not return anything, modify board in-place instead.
+        """
+        if not any(board):
+            return
+
+        n, m = len(board), len(board[0])
+        q = [ij for k in range(max(n,m)) for ij in ((0, k), (n-1, k), (k, 0), (k, m-1))]
+        while q:
+            i, j = q.pop()
+            if 0 <= i < n and 0 <= j < m and board[i][j] == 'O':
+                board[i][j] = 'W'
+                q += (i, j-1), (i, j+1), (i-1, j), (i+1, j)
+
+        board[:] = [['XO'[c == 'W'] for c in row] for row in board]
+
+find all regions surrrouned by X,
+REverse thought: find all the 'O' taht are not surrrouned by 'X'
+'O's on the left, right, up, down side MUST NOT BE  surrounded, so we could fill
+water from the "O" on four sides. The remaining "O" that has not been filled with water is surrouned by 'X'.
+this is because the "O" are surrouned by X, water cannot reach
+
+change the spot where water is filled to O, change rest of spots to X()
+
+
+class Solution(object):
+    def solve(self, board):
+        """
+        :type board: List[List[str]]
+        :rtype: void Do not return anything, modify board in-place instead.
+        """
+        queue = collections.deque([])
+        for r in xrange(len(board)):
+            for c in xrange(len(board[0])):
+                if (r in [0, len(board)-1] or c in [0, len(board[0])-1]) and board[r][c] == "O":
+                    queue.append((r, c))
+
+        # outer layer, filling water into "O" spots, and filling water into adjacent spots
+        while queue:
+            r, c = queue.popleft()
+            if 0<=r<len(board) and 0<=c<len(board[0]) and board[r][c] == "O":
+                board[r][c] = "D"
+                queue.append((r-1, c)); queue.append((r+1, c))
+                queue.append((r, c-1)); queue.append((r, c+1))
+
+
+        # 'O's are the spots surrouned by the x. change them to 'X'
+        # change the spots marked D, where water is filled back to O
+        for r in xrange(len(board)):
+            for c in xrange(len(board[0])):
+                if board[r][c] == "O":
+                    board[r][c] = "X"
+                elif board[r][c] == "D":
+                    board[r][c] = "O"
+
+
+# Perfect Squares
+给定一个正整数n，求相加等于n的完全平方数（例如 1, 4, 9, 16, ...）的最小个数。
+
+例如，给定n = 12，返回3，因为12 = 4 + 4 + 4；给定n = 13，返回2，因为13 = 4 + 9。
+
+def numSquares(self, n):
+    if n < 2:
+        return n
+    lst = []
+    i = 1
+    while  i * i <= n:
+        lst.append(i*i)
+        i += 1
+    cnt = 0
+    toCheck = {n}
+    while toCheck:
+        cnt += 1
+        temp = set()
+        for x in toCheck:
+            for y in lst:
+                if x == y:
+                    return cnt
+                if x < y:
+                    break
+                temp.add(x - y)
+        toCheck = temp
+    return cnt
+
+
+
+# clone graph
+克隆一个无向图。图中的每个节点包含一个标签及其邻居的列表。
+class Solution:
+    # @param node, a undirected graph node
+    # @return a undirected graph node
+    def cloneGraph(self, node):
+        if node is None: return
+        d = {}
+        queue = []
+
+        queue.append(node)
+
+        vert = UndirectedGraphNode(node.label)
+        d[node] = vert
+
+        while queue:
+            current_vert = queue.pop()
+
+            for nbr in current_vert.neighbors:
+                x = d.get(nbr)
+
+                if x:
+                    d[current_vert].neighbors.append(d[nbr])
+                else:
+                    p = UndirectedGraphNode(nbr.label)
+                    d[current_vert].neighbors.append(p)
+                    d[nbr] = p
+                    queue.insert(0, nbr)
+
+        return vert
+
+
+class Solution:
+    # @param node, a undirected graph node
+    # @return a undirected graph node
+    def cloneGraph(self, node):
+        if not node: return
+        root = UndirectedGraphNode(node.label)
+        visited = {}
+        visited[node.label] = root
+        queue = collections.deque()
+        queue.append(node)
+
+        while queue:
+            front = queue.popleft()
+
+            for nei in front.neighbors:
+                if nei.label not in visited:
+                    visited[nei.label] = UndirectedGraphNode(nei.label)
+                    queue.append(nei)
+                visited[front.label].neighbors.append(visited[nei.label])
+        return root
+
+
+
+# Graph Valid Tree
+Given n nodes, labeled from 0 to n-1, and a list of undirected edges, write a function to check these edges make up a vali tree
+
+class Solution:
+    # @param {int} n an integer
+    # @param {int[][]} edges a list of undirected edges
+    # @return {boolean} true if it's a valid tree, or false
+    def validTree(self, n, edges):
+        # Write your code here
+        if len(edges) != n - 1:
+            return False
+
+        neighbors = collections.defaultdict(list)
+        for u, v in edges:
+            neighbors[u].append(v)
+            neighbors[v].append(u)
+
+        visited = {}
+        from Queue import Queue
+        queue = Queue()
+
+        queue.put(0)
+        visited[0] = True
+        while not queue.empty():
+            cur = queue.get()
+            visited[cur] = True
+            for node in neighbors[cur]:
+                if node not in visited:
+                    visited[node] = True
+                    queue.put(node)
+
+        return len(visited) == n
+
 
 
 
