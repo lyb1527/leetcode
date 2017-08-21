@@ -11669,30 +11669,6 @@ class Solution(object):
 
 
 
-
-def canFinish(numCourses, prerequisites):
-    if numCourses <= 1:
-        return True
-
-    if len(prerequisites) == 0 or len(prerequisites[0])== 0:
-        return True
-
-
-    # for each node, will create a hash map for it
-
-    # build graph
-    graph = {}
-    for i in range(numCourses):
-        dictionary[i] = set()
-
-    for i in range(len(prerequisites)):
-        graph[prerequisites[i][0]].append(prerequisites[i][i])
-
-    # BFS
-    queue = []
-    for
-
-
 # Course Schedule II
 
 
