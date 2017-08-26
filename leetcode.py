@@ -1865,39 +1865,6 @@ class Solution(object):
                 queue.append((node1.right, node2.right))
         return True
 
-# BFS
-class Solution(object):
-    def bfs(self, root):
-        res = [root.val]
-        l = [root]
-        while l:
-            for i in l:
-                tmp = l.pop()
-                if tmp.left:
-                    l.append(tmp.left)
-                    res.append(tmp.left.val)
-                else:
-                    res.append('t')
-                if tmp.right:
-                    l.append(tmp.right)
-                    res.append(tmp.right.val)
-                else:
-                    res.append('t')
-        return res
-
-    def isSameTree(self, p, q):
-        """
-        :type p: TreeNode
-        :type q: TreeNode
-        :rtype: bool
-        """
-        if not p and not q:
-            return True
-        if not p or not q or p.val != q.val:
-            return False
-        res1 = self.bfs(p)
-        res2 = self.bfs(q)
-        return res1 == res2
 
 # Binary Tree Inorder Traversal
 Recursive:
@@ -3100,7 +3067,7 @@ class Solution(object):
             self.helper(root.right, cur + '->')
 
 
-# Balance Binary Tree
+# Balanced Binary Tree
 '''
 
 Given a BT, etermine if it is hgiehgt balanced.
@@ -3128,6 +3095,28 @@ class Solution:
             return False, 0
 
         return abs(leftHeight - rightHeight) <= 1, max(leftHeight, rightHeight) + 1
+
+
+public class Solution {
+    public boolean isBalanced(TreeNode root) {
+        return maxDepth(root) != -1;
+    }
+
+    private int maxDepth(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+
+        int left = maxDepth(root.left);
+        int right = maxDepth(root.right);
+        if (left == -1 || right == -1 || Math.abs(left-right) > 1) {
+            return -1;
+        }
+        return Math.max(left, right) + 1;
+    }
+}
+
+
 
 
 
@@ -10373,6 +10362,33 @@ class Solution(object):
 
 255 	Verify Preorder Sequence in Binary Search Tree 	40.1% 	Medium
 173 	Binary Search Tree Iterator 	41.1% 	Medium
+'''
+Next()
+HasNext()
+both in O(1) and O(h)
+'''
+class Solution:
+    def __init__(self, root):
+        self.stack = []
+        self.pushAll(root)
+
+    def hasNext(self):
+        return self.stack
+
+    def next(self):
+        node = self.stack.pop()
+        if node.right:
+            self.pushAll(node.right)
+        return node.val
+
+
+    def pushAll(self, node):
+        while node:
+            self.stack.append(node)
+            node = node.left
+
+
+
 150 	Evaluate Reverse Polish Notation 	27.1% 	Medium
 144 	Binary Tree Preorder Traversal 	44.9% 	Medium
 '''
