@@ -1546,7 +1546,34 @@ class Solution(object):
         return str(t.val) + '(' + self.tree2str(t.left) + ')' + '(' + self.tree2str(t.right) + ')'
 
 
+# Construct Binary Tree From String
+class Solution(object):
+    def str2tree(self, s):
 
+
+        if not s: return None
+        stack, builder = [], ""
+        for c in s:
+            if c == '-' or c.isdigit():
+                builder += c
+            else:
+                if builder:
+                    stack.append(TreeNode(builder))
+                    builder = ""
+                if c == ')':
+                    sub = stack.pop()
+                    if not stack[-1].left:
+                        stack[-1].left = sub
+                    else:
+                        stack[-1].right = sub
+        if builder:
+            stack.append(TreeNode(builder))
+        return stack[0]
+
+
+
+
+#Convert BST to Greater Tree
 
 # Invert  Binary Tree
 '''
@@ -2322,7 +2349,7 @@ class Codec:
 
 
 
-# Convert Sorted List to BST
+# Convert Sorted Array to BST
 
 class Solution(object):
     def sortedArrayToBST(self, nums):
@@ -3550,6 +3577,7 @@ class Solution:
         if root == None:
             return 0
         if root.left==None or root.right==None:
+            # one of the subtree is lenght 0
             return self.minDepth(root.left)+self.minDepth(root.right)+1
         return min(self.minDepth(root.right),self.minDepth(root.left))+1
 
@@ -6946,6 +6974,7 @@ LL with elements are sorte in ascending order, conver ti to a height balanced BS
 '''
 
 class Solution(object):
+
     def sortedListToBST(self, head):
         """
         :type head: ListNode
@@ -10406,6 +10435,7 @@ class Solution:
         while stack:
             node = stack.pop()
             preorder.append(node.val)
+            # add right first, so left popped first
             if node.right:
                 stack.append(node.right)
             if node.left:
