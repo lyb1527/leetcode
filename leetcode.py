@@ -1575,6 +1575,13 @@ class Solution(object):
 
 #Convert BST to Greater Tree
 
+
+@recursive
+
+
+@Iterative: reverse inorder traverse
+
+
 # Invert  Binary Tree
 '''
 
@@ -3719,7 +3726,53 @@ class Solution(object):
 
 # BOundary of Binary Tree
 
+class Solution(object):
+    def boundaryOfBinaryTree(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[int]
+        """
+        if not root: return []
+        if not root.left and not root.right: return [root.val]
+        leftBoundary = self.getLeft(root)
+        leaves = []
+        self.getLeaves(root, leaves)
+        rightBoundary = self.getRight(root)
 
+        return leftBoundary + leaves + rightBoundary
+
+    def getLeft(self, root):
+        result = [root.val]
+        root = root.left
+        while root:
+            if root.left or root.right:
+                result.append(root.val)
+            if root.left:
+                root = root.left
+            else:
+                root = root.right
+        return result
+
+    def getLeaves(self, root, leaves):
+        if not root: return
+        if not root.left and not root.right:
+            leaves.append(root.val)
+            return
+        self.getLeaves(root.left, leaves)
+        self.getLeaves(root.right, leaves)
+
+    def getRight(self, root):
+        result = []
+        root = root.right
+        while root:
+            if root.left or root.right:
+                result.append(root.val)
+            if root.right:
+                root = root.right
+            else:
+                root = root.left
+        result.reverse()
+        return result
 
 # Recover Binary Search Tree
 '''
