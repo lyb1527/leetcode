@@ -3210,6 +3210,38 @@ class Solution(object):
 
 
 
+
+class Solution(object):
+    def deleteNode(self, root, key):
+        """
+        :type root: TreeNode
+        :type key: int
+        :rtype: TreeNode
+        """
+        if not root:
+            return None
+        if root.val == key:
+            root = self.update_node(root)
+        else:
+            if root.val > key:
+                root.left = self.deleteNode(root.left, key)
+            else:
+                root.right = self.deleteNode(root.right, key)
+        return root
+
+    def update_node(self, node):
+        # if right node, return left
+        if node.right == None:
+            return node.left
+        else:
+            tempNode = node.right
+            while tempNode.left:
+                tempNode = tempNode.left
+            tempNode.left = node.left
+            return node.right
+
+
+
 # Sum Root to Leaf Numbers
 '''
 
