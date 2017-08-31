@@ -4090,6 +4090,131 @@ class Solution(object):
             cur = cur.right
         return True
 
+
+
+
+# 662 Maximum Width Of Binary Tree
+
+# 129 Sum root to leaf NUmbers
+    1
+2       3
+12 + 13 = 25
+return 25
+
+@Recursive
+
+
+class Solution(object):
+    def sumNumbers(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+        """
+        return self.rootSum(root, 0)
+
+    def rootSum(self, root, preSum):
+        if not root:
+            return 0
+        preSum = 10 * preSum + root.val
+        if root.left == None and root.right == None:
+            return preSum
+        left = self.rootSum(root.left, preSum)
+        right = self.rootSum(root.right, preSum)
+        return left + right
+
+
+
+@Iterative
+class Solution(object):
+    def sumNumbers(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+        """
+        if not root:
+            return 0
+        paths = []
+        stack = [(root, str(root.val))]
+        while stack:
+            node, path = stack.pop()
+            if not node.left and not node.right:
+                paths.append(path)
+            if node.left:
+                stack.append((node.left, path + str(node.left.val)))
+            if node.right:
+                stack.append((node.right, path + str(node.right.val)))
+        res = sum([int(path) for path in paths])
+        return res
+
+# 255 verify preorer sequence in binary search tree
+'''
+Kinda simulate the traversal, keeping a stack of nodes (just their values) of
+ which we're still in the left subtree. If the next number is smaller than the
+ last stack value, then we're still in the left subtree of all stack nodes, so
+ just push the new one onto the stack. But before that, pop all smaller ancestor
+  values, as we must now be in their right subtrees (or even further, in the right
+   subtree of an ancestor). Also, use the popped values as a lower bound, since
+   being in their right subtree means we must never come across a smaller number anymore.
+'''
+
+{10, 5, 1, 7, 40, 50}
+@O(n) and O(n)
+class Solution(object):
+    def verifyPreorder(self, preorder):
+        """
+        :type preorder: List[int]
+        :rtype: bool
+        """
+        low = -1
+        stack = []
+        for val in preorder:
+            if val < low:
+                return False
+            while stack and val > stack[-1]:
+                low = stack.pop()
+            stack.append(val)
+        return True
+
+'''
+we realize that the preorder array can be reused as the stack thus achieve O(1)
+ extra space, since the scanned items of preorder array is always more than or equal to the length of the stack.
+'''
+@ O(n) an O(1)
+    # stack = preorder[:i], reuse preorder as stack
+class Solution(object):
+    def verifyPreorder(self, preorder):
+        i = -1 # 保持一个降序数列
+        low = float('-inf')
+        for p in preorder:
+            if p < low: # 如果后面进来的小于左面最大的，则不成立。
+                return False
+            while i >= 0 and p > preorder[i]:
+                low = preorder[i]
+                i -= 1
+            i += 1
+            preorder[i] = p
+        return True
+# 536 construct binary tree from string
+
+# 606 construct string from binary tree
+
+class Solution:
+    def tree2str(self, t):
+        if t is None:
+            return ''
+        currVal = str(t.val)
+
+        # case 1
+        if t.left == None an t.right == None:
+            return currVal
+        #******* case 2: CANNOT omit
+        if t.left == None and t.right != None:
+            return currVal + '()' + '(' + self.tree2str(t.right) + ')'
+
+        if t.right == None and t.left == None:
+            return currVal + '(' + self.tree2str(t.left) + ')'
+
+        return currVal + '(' + self.tree2str(t.left) + ')' + '(' + self.tree2str(t.right) + ')'
 ###############################################################################
                                 '''Array Questions '''
 ###############################################################################
