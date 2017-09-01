@@ -2268,46 +2268,7 @@ class Codec:
         return root
 
 
-class Codec:
 
-    def serialize(self, root):
-        """Encodes a tree to a single string.
-
-        :type root: TreeNode
-        :rtype: str
-        """
-
-        queue, res = [root], []
-        while queue:
-            curr = queue.pop()
-            if not curr:
-                res += ['x']
-            else:
-                res += [str(curr.val)]
-                queue += [curr.right, curr.left]
-
-        return ' '.join(res)
-
-    def deserialize(self, data):
-        """Decodes your encoded data to tree.
-
-        :type data: str
-        :rtype: TreeNode
-        """
-
-        vals = data.split()
-        return self.helper(vals)
-
-    def helper(self, vals):
-        if not vals:
-            return None
-        val = vals.pop(0)
-        if val == 'x':
-            return None
-        root = TreeNode(int(val))
-        root.left = self.helper(vals)
-        root.right = self.helper(vals)
-        return root
 
 
 
@@ -2352,6 +2313,59 @@ class Codec:
             if r != 'x':
                 node.right = TreeNode(int(r))
                 queue.append(node.right)
+        return root
+
+
+class Codec:
+    # BFS
+    def serialize(self, root):
+        """Encodes a tree to a single string.
+
+        :type root: TreeNode
+        :rtype: str
+        """
+        if root is None:
+            return '[]'
+        res = [root.val]
+        q = [root]
+        while q:
+            node = q.pop(0)
+            if node.left:
+                q.append(node.left)
+            if node.right:
+                q.append(node.right)
+            res.append(node.left.val if node.left else '#')
+            res.append(node.right.val if node.right else '#')
+        while res and res[-1] == '#':
+            res.pop()
+        return '[' + ','.join(map(str, res)) + ']'
+
+
+
+    def deserialize(self, data):
+        """Decodes your encoded data to tree.
+
+        :type data: str
+        :rtype: TreeNode
+        """
+        if data == '[]':
+            return None
+        # make new TreeNode for each item in data
+        nodes = [TreeNode(o) if o !='#' else None for o in data[1:-1].split(',')] # data[1:-1], '[]' are excluded
+        #nodes=[[TreeNode(o), None][o == '#'] for o in data[1:-1].split(',')]
+        q = [nodes.pop(0)]
+        root = q[0] if q else None # return this in the end
+
+        while q:
+            parent = q.pop(0)
+            left = nodes.pop(0) if nodes else None
+            right = nodes.pop(0) if nodes else None
+            parent.left, parent.right = left, right
+
+            if left:
+                q.append(left)
+            if right:
+                q.append(right)
         return root
 
 
@@ -2638,6 +2652,67 @@ class Solution(object):
             output.insert(0,tmp.val)
 
         return output
+
+@similar : two stacks
+class Solution:
+    def postorderTraversal(self, root):
+        if not root:
+            return []
+        stack = [root]
+        ans = []
+        while stack:
+            top = stack.pop()
+            ans.append(top.val)
+
+            if top.left:
+                stack.append(top.left)
+            if top.right:
+                stack.appen(top.right)
+
+        return ans[::-1]
+
+
+
+# keep visited flags while traversing, can be solved more directly.
+
+
+class Solution(object):
+    def postorderTraversal(self, root):
+        """
+        :type root: TreeNode
+        :rtype: List[int]
+        """
+        self.stack, result = [], []
+        rightchildVisited = set()
+        self.gotoLeaf(root) # visit the root's left children
+        while self.stack:
+            root = self.stack[-1]
+            if root in rightchildVisited: # the right children are visited, we can return the root
+                result.append(root.val)
+                self.stack.pop()
+            else:
+                rightchildVisited.add(root) # the right children are not visited
+                self.gotoLeaf(root.right)
+        return result
+    def gotoLeaf(self, node):
+        while node:
+            self.stack.append(node)
+            node = node.left
+
+
+
+use a prev variable to keep track of the trevisouly-traverse node. Curr is the current node that
+is on top of the stack. When prev is curr's parent, we travseing down the Tree
+. In this case, we try to traverse to curr's left child if avaible(put left chil to stack)
+
+if not available, look at curr's right chil. If both not exists(curr is leaf), we print curr's value
+and pop it off the stack
+
+If prev is curr's left, we are traversing up the tree from left. We look at the right fchild,
+if it is available, traverse down the right child(push to stack).
+
+If prev is curr's right chil, traverseing up the tree from the right, in this case,
+we print curr's value and pop it off the stack
 
 # Binary Tree level Order Traversal II
 
@@ -3155,11 +3230,41 @@ public class Solution {
 
 
 # Populating next Right Pointers in Each Node
-??????????????
-'''
 
-'''
+        1 -> Null
+    2   ->   3 -> Null
+ 3  -> 4 ->  5 ->  6 -> NULL
 
+class Solution:
+    # @param root, a tree link node
+    # @return nothing
+    def connect(self, root):
+
+        if not root:
+            return None
+        queue = collections.deque()
+        queue.append(root)
+        while queue:
+
+            currLevel = []
+            for i in range(len(queue)):
+                node = queue.popleft()
+                currLevel.append(node)
+                if node.left:
+                    queue.append(node.left)
+                if node.right:
+                    queue.append(node.right)
+            for i in range(len(currLevel)-1):
+                currLevel[i].next  = currLevel[i+1]
+
+            currLevel[len(currLevel) - 1].next = None
+
+
+
+
+# Populating Next Right Pointers In Each Node II
+I is perfect binary tree, will that solution work
+for any binary tree?
 
 
 # Delete node in a BSET
