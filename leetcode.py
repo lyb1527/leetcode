@@ -12064,7 +12064,48 @@ class Solution(object):
         return []                     # not equal
 
 # alien dictionary
+from collections import defaultdict, deque
+class Solution(object):
+    def alienOrder(self, words):
 
+        # Both first go through the word list to find letter pairs (a, b)
+        #where a must come before b in the alien alphabet
+        graph = defaultdict(set)
+        indegrees = {}
+        for w in words:
+            for c in w:
+                indegrees[c] = 0
+
+        # find (a, b) pairs where a comes before b
+        for i in xrange(1, len(words)):
+            word1 = words[i-1]
+            word2 = words[i]
+            for c1, c2 in zip(word1, word2):
+                if c1 == c2:
+                    continue
+
+                if c2 not in graph[c1]:
+                    graph[c1].add(c2)
+                    indegrees[c2] += 1
+                break
+
+       #queue = deque(k for k in indegrees if indegrees[k] == 0)
+       #OR
+        queue = deque()
+        for char in indegrees:
+            if indegrees[char] == 0:
+                queue.append(char)
+
+        ans = ''
+        while queue:
+            char = queue.popleft()
+            ans += char
+            for neighbor in graph[char]:
+                indegrees[neighbor] -= 1
+                if indegrees[neighbor] == 0:
+                    queue.append(neighbor)
+
+        return ans if len(ans) == len(indegrees) else ''
 
 # Sequence Reconstruction
 
@@ -12100,3 +12141,40 @@ class MinHeap():
         self.heapList.append(k)
         self.currentSize += 1
         self.bubbleUp(self.currentSize)
+
+
+    '''
+    Delete done in two steps:
+    1. move last item to root
+    2. bubble down new root to its proper location, swap with smaller child
+       continue swapping until it is at a position where it is less than both children
+    '''
+    def bubbleDown(self, i):
+        while (i * 2) <= self.currentSize:
+            mc = self.minChild(i)
+            if self.heapList[i] > self.heapList[mc]:
+                tmp = self.heapList[i]
+                self.heapList[i] = self.heapList[mc]
+                self.heapList[mc] = tmp
+            i = mc
+
+    def minChild(self, i):
+        if i * 2 + 1 > self.currentSize:
+            return i * 2
+        else:
+            if self.heapList[i*2] < self.heapList[i*2+1]:
+                return i * 2:
+            else:
+                return i * 2 + 1
+
+
+    def deleteMin(self):
+        retVal = self.heapList[1]
+        self.heapList[1] = self.heapList[self.currentSize]
+        self.currentSize = self.currentSize - 1
+        self.heapList.pop()
+        self.bubbleDown(1)
+        return retVal
+
+
+    
