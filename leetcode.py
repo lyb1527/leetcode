@@ -12356,3 +12356,38 @@ class Trie(object):
             if p not in cur.child: return False
             cur = cur.child[p]
         return True
+
+
+
+
+                        """queue linked list implementaion"""
+
+
+
+                        """Stack Implementation"""
+
+
+                        """Tree"""
+
+                        """ash Table """
+
+
+                        """Graph"""
+
+http://blog.gainlo.co/index.php/2015/10/22/how-to-ace-your-code-interview-in-one-month/
+
+
+CS resources
+https://adicu.com/resources
+
+Data Structure
+http://www.columbia.edu/~jxz2101/#5
+
+PEP8:
+https://www.python.org/dev/peps/pep-0008/
+http://python.net/~goodger/projects/pycon/2007/idiomatic/handout.html
+https://vevurka.github.io/dsp17/python/graphs_in_python/
+http://bookshadow.com/leetcode/
+https://www.brown.edu/campus-life/support/careerlab/developing-skills
+https://www.brown.edu/campus-life/support/careerlab/undergraduate-0/interviewing-networking
+https://www.hackerrank.com/challenges/30-data-types/tutorial
