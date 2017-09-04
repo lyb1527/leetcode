@@ -12116,7 +12116,24 @@ class Solution(object):
 #----------------------------------------------------------------------------
 
 
-                            """Heap"""
+import heapq
+
+'''
+dir(heapq)
+
+'heapify', 'heappop', 'heappush', 'heappushpop', 'heapreplace',
+'merge', 'nlargest', 'nsmallest'
+
+'''
+# http://pages.cs.wisc.edu/~vernon/cs367/notes/11.PRIORITY-Q.html
+Heap implementation of priority queue allows enqueue and dequeue in O(logn) time
+binary heap has structure and order property.
+
+
+
+
+                            """Priority Queue with heap implementation"""
+
 
 class MinHeap():
     def __init__(self):
@@ -12177,4 +12194,76 @@ class MinHeap():
         return retVal
 
 
-    
+    '''
+    buil heap from list of Keys
+    to insert n keys, insert 1 by 1,  into keys require nlogn time, since each insertion is
+    like a binary search in the list to find position, costs logn time.
+    Insert n keys, so O(nlogn) operations
+
+    If start with an entire list, we can build the heap in O(n) time
+    We could construct a sorting algorithm that uses a heap and sorts a list in
+    O(nlogn)
+    '''
+    def buildHeap(self, alist):
+        i = len(alist) // 2
+        self.currentSize = len(alist)
+        self.heapList = [0] + alist[:]
+        while i > 0:
+            self.bubbleDown(i)
+            i = i - 1
+
+
+
+                                '''Trie'''
+# implement insert, search, startswith methods
+
+
+
+class TrieNode(object):
+    def __init__(self, char):
+        """
+        Initialize your data structure here.
+        """
+        self.char = char
+        self.children = [None] * 26
+        self.leaf = False
+
+class Trie(object):
+
+    def __init__(self):
+        self.root = TrieNode(None)
+
+    def insert(self, word):
+        """
+        Inserts a word into the trie.
+        """
+        curr = self.root
+        for char in word:
+            if curr.children[ord(char) - 97] == None:
+                curr.children[ord(char) - 97] = TrieNode(char)
+            curr = curr.children[ord(char) - 97]
+        curr.leaf = True
+
+    def search(self, word):
+        """
+        Returns if the word is in the trie.
+        """
+        curr = self.root
+        for char in word:
+            if curr.children[ord(char) - 97] == None:
+                return False
+            curr = curr.children[ord(char) - 97]
+        return curr.leaf
+
+
+    def startsWith(self, prefix):
+        """
+        Returns if there is any word in the trie
+        that starts with the given prefix.
+        """
+        curr = self.root
+        for char in prefix:
+            if curr.children[ord(char) - 97] == None:
+                return False
+            curr = curr.children[ord(char) - 97]
+        return True
