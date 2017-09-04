@@ -12218,7 +12218,7 @@ class MinHeap():
 # implement insert, search, startswith methods
 
 
-
+# only with LOWER case letters
 class TrieNode(object):
     def __init__(self, char):
         """
@@ -12266,4 +12266,93 @@ class Trie(object):
             if curr.children[ord(char) - 97] == None:
                 return False
             curr = curr.children[ord(char) - 97]
+        return True
+
+
+
+# General using hashmap
+
+class TrieNode:
+# Initialize your data structure here.
+    def __init__(self):
+        self.children = collections.defaultdict(TrieNode)
+        self.is_word = False
+
+class Trie:
+
+    def __init__(self):
+        self.root = TrieNode()
+
+    def insert(self, word):
+        current = self.root
+        for letter in word:
+            current = current.children[letter]
+        current.is_word = True
+
+    def search(self, word):
+        current = self.root
+        for letter in word:
+            current = current.children.get(letter)
+            if current is None:
+                return False
+        return current.is_word
+
+    def startsWith(self, prefix):
+        current = self.root
+        for letter in prefix:
+            current = current.children.get(letter)
+            if current is None:
+                return False
+        return True
+
+
+
+class TrieNode(object):
+    def __init__(self):
+        self.child = {}
+        self.isWord = False
+
+class Trie(object):
+
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.root = TrieNode()
+
+    def insert(self, word):
+        """
+        Inserts a word into the trie.
+        :type word: str
+        :rtype: void
+        """
+        cur = self.root
+        for w in word:
+            if w not in cur.child:
+                cur.child[w] = TrieNode()
+            cur = cur.child[w]
+        cur.isWord = True
+
+    def search(self, word):
+        """
+        Returns if the word is in the trie.
+        :type word: str
+        :rtype: bool
+        """
+        cur = self.root
+        for w in word:
+            if w not in cur.child: return False
+            cur = cur.child[w]
+        return cur.isWord
+
+    def startsWith(self, prefix):
+        """
+        Returns if there is any word in the trie that starts with the given prefix.
+        :type prefix: str
+        :rtype: bool
+        """
+        cur = self.root
+        for p in prefix:
+            if p not in cur.child: return False
+            cur = cur.child[p]
         return True
