@@ -6115,6 +6115,11 @@ def hIndex(self, citations):
 548	Split Array with Equal Sum 	34.0%	Medium
 1	Two Sum	34.0%	Easy
 120	Triangle	33.6%	Medium
+"""find min path sum from top to bottom
+Each step, move to ajacent numbers in the row below
+ """
+
+
 40	Combination Sum II	33.4%	Medium
 624	Maximum Distance in Arrays 	33.0%	Easy
 81	Search in Rotated Sorted Array II	32.8%	Medium
@@ -12110,6 +12115,378 @@ class Solution(object):
 # Sequence Reconstruction
 
 
+#-----------------------------------------------------------------------------
+                        '''Heap Questions'''
+#----------------------------------------------------------------------------
+
+23 	Merge k Sorted Lists 	27.3% 	Hard
+""" merge k sorted linked lists and return as one sorted list, analyze its complexity """
+
+
+
+218 	The Skyline Problem 	27.4% 	Hard
+
+import heapq
+
+class Solution(object):
+    def getSkyline(self, buildings):
+        """
+        :type buildings: List[List[int]]
+        :rtype: List[List[int]]
+        """
+        if len(buildings) == 0:
+            return []
+        crit_pts = sorted([a for b in buildings for a in (b[0],b[1])])
+        heap = []
+        skyline = []
+        i = 0
+        for j in crit_pts:
+            while len(heap) > 0 and heap[0][1] <= j:
+                heapq.heappop(heap)
+            while i < len(buildings) and j == buildings[i][0]:
+                heapq.heappush(heap,(-buildings[i][2],buildings[i][1]))
+                i += 1
+            if len(heap) == 0:
+                h = 0
+            else:
+                h = -heap[0][0]
+            if len(skyline) == 0 or skyline[-1][1] != h:
+                skyline.append([j,h])
+        return skyline
+
+
+
+from heapq import *
+
+class Solution(object):
+    def getSkyline(self, buildings):
+        """
+        :type buildings: List[List[int]]
+        :rtype: List[List[int]]
+        """
+        # kind of like LIS
+        # sort first by left, then by right, then by height
+        p = sorted(x for L, R, H in buildings for x in ((L, -H, R), (R, 0, 0)))
+
+        # heap: only store alive buildings
+        heap, res = [], []
+        for L, negH, R in p:
+            # the highest building is done
+            while heap and L >= heap[0][1]:
+                heappop(heap)
+            # to ensure that the first building in heap is the highest
+            # because python suppuorts smallest heap
+            heappush(heap, (negH, R))
+            if not res or res[-1][1] != -heap[0][0]:
+                res.append([L, -heap[0][0]])
+        return res
+
+347 	Top K Frequent Elements 	48.2% 	Medium
+
+from collections import defaultdict
+import heapq
+
+class Solution(object):
+    def topKFrequent(self, nums, k):
+        q_map = defaultdict(int)
+        for n in nums:
+            freq_map[n] += 1
+        items = [(-freq, num) for num, freq in freq_map.items()]
+        heapq.heapify(items)
+        return [heapq.heappop(items)[1] for _ in range(k)]
+
+
+@M1: heap
+class Solution(object):
+    def topKFrequent(self, nums, k):
+        """
+        :type nums: List[int]
+        :type k: int
+        :rtype: List[int]
+        """
+        # return zip(*collections.Counter(nums).most_common(k))[0]
+        dic = collections.defaultdict(int)
+        for num in nums:
+            dic[num] += 1
+
+        heap = []
+        for key, value in dic.items():
+            heapq.heappush(heap, (value, key))
+            while len(heap) > k:  # pop out lease frequent elements
+                heapq.heappop(heap)
+
+        res = []
+        while heap:
+            res.append(heapq.heappop(heap)[1])
+        return res[::-1]
+
+
+@M2: bucket sort
+O(n)
+def topKFrequent(self,nums, k):
+        bucket = [[] for _ in range(len(nums) + 1)]
+        freq_map = defaultdict(int)
+        for n in nums:
+            freq_map[n] += 1
+        for num, freq in freq_map.items():
+            bucket[freq].append(num)
+        res = []
+        for i in range(len(bucket) - 1, 0, -1):
+            if len(res) < k:
+                if bucket[i]:
+                    res.extend(bucket[i])
+        return res
+
+
+
+
+215 	Kth Largest Element in an Array 	39.3% 	Medium
+@Brute-force: sort O(nlogn)
+
+@M1: minHeap
+
+@M2: Quickselect
+
+
+
+
+
+
+295 	Find Median from Data Stream 	26.9% 	Hard
+264 	Ugly Number II 	32.6% 	Medium
+239 	Sliding Window Maximum 	33.1% 	Hard
+"""
+Given nums = [1,3,-1,-3,5,3,6,7], and k = 3.
+
+Therefore, return the max sliding window as [3,3,5,5,6,7].
+"""
+
+
+import heapq
+class Solution(object):
+    def maxSlidingWindow(self, nums, k):
+        """
+        :type nums: List[int]
+        :type k: int
+        :rtype: List[int]
+        """
+        q = []
+        for i in range(k):
+            heapq.heappush(q, (-nums[i], i))
+        if not q:
+            return []
+        ans = [-q[0][0]]
+        for i in range(k, len(nums)):
+            heapq.heappush(q, (-nums[i], i))
+            while q[0][1] <= i-k:
+                heapq.heappop(q)
+            ans.append(-q[0][0])
+        return ans
+
+
+
+
+
+class Solution(object):
+    def maxSlidingWindow(self, nums, k):
+        """
+        :type nums: List[int]
+        :type k: int
+        :rtype: List[int]
+        """
+        ans = []
+        queue = []
+        for i, v in enumerate(nums):
+            if queue and queue[0] <= i - k:
+                queue = queue[1:]
+            while queue and nums[queue[-1]] < v:
+                queue.pop()
+            queue.append(i)
+            if i + 1 >= k:
+                ans.append(nums[queue[0]])
+        return ans
+
+
+
+
+
+from collections import deque
+class Solution(object):
+    def maxSlidingWindow(self, nums, k):
+        if not nums: return []
+        res = []
+        dq = deque()  # store index
+        for i in xrange(len(nums)):
+            if dq and dq[0]<i-k+1:  # out of the window
+                dq.popleft()
+            while dq and nums[dq[-1]]<nums[i]:  # remove impossible candidate
+                dq.pop()
+            dq.append(i)
+            if i>k-2:
+                res.append(nums[dq[0]])
+        return res
+
+
+
+class Solution(object):
+    def maxSlidingWindow(self, nums, k):
+        """
+        :type nums: List[int]
+        :type k: int
+        :rtype: List[int]
+        """
+        ans=[]
+        deque = collections.deque() # dq[0] is peek leftmost
+        for i in xrange(len(nums)):
+            while deque and nums[deque[-1]] < nums[i]: # remove impossible candidate based on value
+                deque.pop()
+            if deque and (i - deque[0] + 1) > k: # make leftpart out of the window
+                deque.popleft()
+            deque.append(i)
+            if i + 1>=k: #unless you go through an entire window, then you can start to add
+                ans.append(nums[deque[0]]) #因为维持了一个递减的window
+        return ans
+
+
+
+class Solution(object):
+    def maxSlidingWindow(self, nums, k):
+        """
+        :type nums: List[int]
+        :type k: int
+        :rtype: List[int]
+        """
+        result = []
+        deque = collections.deque()
+        for i, v in enumerate(nums):
+            if deque and (i - deque[0] + 1) > k: # remove leftmost
+                deque.popleft()
+            while deque and nums[deque[-1]] < v: # remove impossible values
+                deque.pop()
+            deque.append(i)
+            if i + 1 >= k:
+                result.append(nums[deque[0]])
+
+        return result
+
+
+
+253 	Meeting Rooms II 	38.9% 	Medium
+
+
+import heapq
+class Solution(object):
+    def minMeetingRooms(self, intervals):
+        """
+        :type intervals: List[Interval]
+        :rtype: int
+        """
+        if not intervals:
+            return 0
+
+        intervals.sort(cmp=lambda a,b: a.start - b.start)
+        heap = []
+        heapq.heappush(heap, (intervals[0].end, intervals[0]))
+        for i in xrange(1, len(intervals)):
+            interval = intervals[i]
+            end, earliest = heapq.heappop(heap)
+            if interval.start >= end:
+                heapq.heappush(heap, (interval.end, interval))
+            else:
+                heapq.heappush(heap, (interval.end, interval))
+                heapq.heappush(heap, (earliest.end, earliest))
+
+        print heap
+        return len(heap)
+
+
+class Solution(object):
+    def minMeetingRooms(self, intervals):
+        """
+        :type intervals: List[Interval]
+        :rtype: int
+        """
+        '''
+        Best solution!!!  Smart use of hash! If we have start and end changes @ same time, hash handles naturally.
+        Everytime we see a change, if it's a start point, we need a room, if it's a end point, we don't need that room anymore.
+        For the whole time period, the max # of rooms that are in use simutanously is the answer.
+        '''
+        changes = collections.defaultdict(int)
+        for i in intervals:
+            changes[i.start] += 1
+            changes[i.end] += -1
+
+        rooms = rmax = 0
+        sorted_changes = sorted(changes)
+
+        for c in sorted_changes:
+            rooms += changes[c]
+            rmax = max(rmax, rooms)
+
+        return rmax
+
+
+class Solution(object):
+    def minMeetingRooms(self, intervals):
+        """
+        :type intervals: List[Interval]
+        :rtype: int
+        """
+        if not intervals: return 0
+
+        starts=sorted([i.start for i in intervals])
+        ends=sorted([i.end for i in intervals])
+
+        numRooms=available=0
+        s,e=0,0
+        while s<len(starts):
+            if starts[s]<ends[e]:
+                if not available:
+                    numRooms+=1
+                else:
+                    available-=1
+                s+=1
+            else:
+                available+=1
+                e+=1
+        return numRooms
+
+class Solution(object):
+    def minMeetingRooms(self, intervals):
+        """
+        :type intervals: List[Interval]
+        :rtype: int
+        """
+        if not intervals:
+            return 0
+
+        start = sorted([interval.start for interval in intervals])
+        end = sorted([interval.end for interval in intervals])
+
+        k = 0
+        count = 0
+        for i in range(len(start)):
+            if start[i] < end[k]:
+                count += 1
+            else:
+                k += 1
+
+        return count
+
+
+378 	Kth Smallest Element in a Sorted Matrix 	44.8% 	Medium
+313 	Super Ugly Number 	37.7% 	Medium
+451 	Sort Characters By Frequency 	50.8% 	Medium
+373 	Find K Pairs with Smallest Sums 	30.7% 	Medium
+355 	Design Twitter 	25.5% 	Medium
+407 	Trapping Rain Water II 	37.1% 	Hard
+358 	Rearrange String k Distance Apart 	31.8% 	Hard
+502 	IPO 	36.5% 	Hard
+659 	Split Array into Consecutive Subsequences 	34.6% 	Medium
+
+
+
+
 
 #-----------------------------------------------------------------------------
             '''Basic Data Structure Implementations'''
@@ -12369,7 +12746,7 @@ class Trie(object):
 
                         """Tree"""
 
-                        """ash Table """
+                        """Hash Table """
 
 
                         """Graph"""
