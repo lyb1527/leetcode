@@ -12254,6 +12254,53 @@ def topKFrequent(self,nums, k):
 
 295 	Find Median from Data Stream 	26.9% 	Hard
 264 	Ugly Number II 	32.6% 	Medium
+
+@heap
+#https://discuss.leetcode.com/topic/45952/sharing-very-simple-and-elegant-python-solution-using-heap-with-explanation
+def nthUglyNumber(self, n):
+    h = [(1, 1)]
+    for _ in range(n):
+        val, fact = heapq.heappop(h)
+        heapq.heappush(h, (val * 5, 5))
+        if fact <= 3:
+            heapq.heappush(h, (val * 3, 3))
+        if fact <= 2:
+            heapq.heappush(h, (val * 2, 2))
+    return val
+
+
+def nthUglyNumber(self, n):
+    h = [(1, 1)]
+    for _ in range(n):
+        val, fact = heapq.heappop(h)
+        for x in 2, 3, 5:
+            if fact <= x:
+                heapq.heappush(h, (val * x, x))
+    return val
+
+
+@ 3 DP
+O(n) & O(n)
+class Solution(object):
+    def nthUglyNumber(self, n):
+        """
+        :type n: int
+        :rtype: int
+        """
+        q = [1]
+        i2 = i3 = i5 = 0
+        while len(q) < n:
+            m2, m3, m5 = q[i2] * 2, q[i3] * 3, q[i5] * 5
+            m = min(m2, m3, m5)
+            if m == m2:
+                i2 += 1
+            if m == m3:
+                i3 += 1
+            if m == m5:
+                i5 += 1
+            q.append(m)
+        return q[-1]
+
 239 	Sliding Window Maximum 	33.1% 	Hard
 """
 Given nums = [1,3,-1,-3,5,3,6,7], and k = 3.
@@ -12476,10 +12523,120 @@ class Solution(object):
 
 378 	Kth Smallest Element in a Sorted Matrix 	44.8% 	Medium
 313 	Super Ugly Number 	37.7% 	Medium
+
+@ Heap
+import heapq
+
+class Solution(object):
+    def nthSuperUglyNumber(self, n, primes):
+        """
+        :type n: int
+        :type primes: List[int]
+        :rtype: int
+        """
+        arr = [1]
+        size = len(primes)
+        can_list = [(primes[i], i, 1) for i in range(0, size)]
+        heapq.heapify(can_list)
+        while len(arr) < n:
+            p, i, idx = heapq.heappop(can_list)
+            if arr[-1] != p:
+                arr.append(p)
+            heapq.heappush(can_list, (arr[idx] * primes[i], i, idx + 1))
+
+
+        return arr[-1]
+        
+
+
+
 451 	Sort Characters By Frequency 	50.8% 	Medium
+from collections import defaultdict
+from heapq import heappop, heappush
+class Solution(object):
+    def frequencySort(self, s):
+        """
+        :type s: str
+        :rtype: str
+        """
+        d = collections.defaultdict(int)
+        for letter in s:
+            d[letter] += 1
+
+
+        h = []
+
+        for k in d:
+            heappush(h, (d[k]*-1, d[k]*k))
+        # h => [(-2, 'ee'), (-1, 't'), (-1, 'r')]
+
+
+        l = []
+        while len(h) > 0:
+            v = heappop(h)
+            l.append(v[1])
+
+        return ''.join(l)
+
 373 	Find K Pairs with Smallest Sums 	30.7% 	Medium
+class Solution(object):
+    def kSmallestPairs(self, nums1, nums2, k):
+        """
+        :type nums1: List[int]
+        :type nums2: List[int]
+        :type k: int
+        :rtype: List[List[int]]
+        """
+        ans = []
+        size1, size2 = len(nums1), len(nums2)
+        if size1 * size2 == 0:
+            return ans
+        heap = []
+        for x in range(size1):
+            heapq.heappush(heap, (nums1[x] + nums2[0], x, 0))
+        while len(ans) < min(k, size1 * size2):
+            sum, i, j = heapq.heappop(heap)
+            ans.append((nums1[i], nums2[j]))
+            if j + 1 < size2:
+                heapq.heappush(heap, (nums1[i] + nums2[j + 1], i, j + 1))
+        return ans
+
+
 355 	Design Twitter 	25.5% 	Medium
 407 	Trapping Rain Water II 	37.1% 	Hard
+
+class Solution(object):
+    def trapRainWater(self, heightMap):
+        """
+        :type heightMap: List[List[int]]
+        :rtype: int
+        """
+        m = len(heightMap)
+        n = len(heightMap[0]) if m else 0
+
+        peakMap = [[0x7FFFFFFF] * n for _ in range(m)]
+
+        q = []
+
+        for x in range(m):
+            for y in range(n):
+                if x in (0, m - 1) or y in (0, n - 1):
+                    peakMap[x][y] = heightMap[x][y]
+                    q.append((x, y))
+
+        while q:
+            x, y = q.pop(0)
+            for dx, dy in zip((1, 0, -1, 0), (0, 1, 0, -1)):
+                nx, ny = x + dx, y + dy
+                if nx <= 0 or nx >= m - 1 or ny <= 0 or ny >= n - 1:
+                    continue
+                limit = max(peakMap[x][y], heightMap[nx][ny])
+                if peakMap[nx][ny] > limit:
+                    peakMap[nx][ny] = limit
+                    q.append((nx, ny))
+
+        return sum(peakMap[x][y] - heightMap[x][y] for x in range(m) for y in range(n))
+
 358 	Rearrange String k Distance Apart 	31.8% 	Hard
 502 	IPO 	36.5% 	Hard
 659 	Split Array into Consecutive Subsequences 	34.6% 	Medium
