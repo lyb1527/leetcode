@@ -9384,12 +9384,9 @@ class Solution(object):
                     return i
         return -1
 
-def strStr(self, haystack, needle):
 
-    for i in range(len(haystack) - len(needle)+1):
-        if haystack[i:i+len(needle)] == needle:
-            return i
-    return -1
+
+
 
 
 # ddouble array, two pointers
@@ -9410,6 +9407,15 @@ def strStr(self, haystack, needle):
                 break
 
 
+# Naive Approach: O(M*N)
+def strStr(self, haystack, needle):
+
+    for i in range(len(haystack) - len(needle)+1):
+        if haystack[i:i+len(needle)] == needle:
+            return i
+    return -1
+
+
 # KMP
 def strStr(self, s, t):
     if len(t) > len(s): return -1
@@ -9428,6 +9434,55 @@ def strStr(self, s, t):
             i2 += 1
         else:
             i2 = kmp[i2]
+
+
+
+
+# Rabin Karp substring search algorithm
+@ Average and best case : O(m+n)
+@ O(m*n) worst case, if every substring's hash is the same as the pattern's hash
+'''
+text: 'abdabc'
+pattern: 'abc'
+h('abc') = x
+
+compare every len(pattern) substring's hash with h('abc0')
+if hash the same, then compare the two substrings to see they are the samne
+
+
+
+rolling hash function, prime 3,
+
+a, b, c, d, e ....z:
+1, 2, 3, 4, 5, ...26
+abeda:
+a  b e
+1 + 2 * 3^1 + 5 * 3 ^ 2 = 52
+
+52 - 1 = 51 / 3
+17 + new char d: 4 * 3^2 (2 = len(d)-1) = 53 new hash for bed
+
+b  e  d:
+2 + 5 * 3^1 + 4 * 3^2
+
+
+Rolling Hasaing: can be calculated in O(1) operation
+1). x = old hash - val(old-char)
+2). x = x/prime
+3). new hash = x + nextInt * prime^(m-1)
+
+once have the same hash value, compare the two substrings
+
+'''
+
+
+
+# KMP O(n)
+'''
+requires computation of lps array for the pattern which needs to be searched.
+
+'''
+
 
 
 '''
@@ -12546,7 +12601,7 @@ class Solution(object):
 
 
         return arr[-1]
-        
+
 
 
 
@@ -12917,11 +12972,8 @@ https://adicu.com/resources
 Data Structure
 http://www.columbia.edu/~jxz2101/#5
 
-PEP8:
-https://www.python.org/dev/peps/pep-0008/
 http://python.net/~goodger/projects/pycon/2007/idiomatic/handout.html
 https://vevurka.github.io/dsp17/python/graphs_in_python/
-http://bookshadow.com/leetcode/
 https://www.brown.edu/campus-life/support/careerlab/developing-skills
 https://www.brown.edu/campus-life/support/careerlab/undergraduate-0/interviewing-networking
 https://www.hackerrank.com/challenges/30-data-types/tutorial
