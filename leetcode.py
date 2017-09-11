@@ -9438,6 +9438,55 @@ def strStr(self, s, t):
 
 
 
+# Rabin Karp
+
+class Solution(object):
+    def strStr(self, source, target):
+        """
+        :type haystack: str
+        :type needle: str
+        :rtype: int
+        """
+        if source is None or target is None:
+            return -1
+
+        if len(target) == 0:
+            return 0
+
+        m = len(target)
+
+        #31^m
+        power = 1
+        base = 10^6
+        for i in range(m):
+            power = (power * 31) % base
+
+        # target stirng hash code
+        targetCode = 0
+        for i in range(m):
+            targetCode = (targetCode * 31 + ord(target[i])) % base
+
+        hashCode = 0
+        # ''
+        for i in range(len(source)):
+            # abc + d
+            hashCode = (hashCode * 31 + ord(source[i])) % base
+            if i < m - 1:
+                continue
+            # abcd - a 
+            if i >= m:
+                hashCode = hashCode - (ord(source[i-m]) * power) % base
+                if hashCode < 0:
+                    hashCode += base
+            # double check the string
+            if hashCode == targetCode:
+                if source[i-m+1:i+1] == target:
+                    return i - m + 1
+
+        return -1
+
+
+
 # Rabin Karp substring search algorithm
 @ Average and best case : O(m+n)
 @ O(m*n) worst case, if every substring's hash is the same as the pattern's hash
@@ -12697,6 +12746,277 @@ class Solution(object):
 659 	Split Array into Consecutive Subsequences 	34.6% 	Medium
 
 
+#-----------------------------------------------------------------------------
+            '''Two Pointers Questions'''
+#----------------------------------------------------------------------------
+
+	344 	Reverse String 	59.3% 	Easy
+3 	Longest Substring Without Repeating Characters 	24.4% 	Medium
+283 	Move Zeroes 	50.1% 	Easy
+11 	Container With Most Water 	36.7% 	Medium
+141 	Linked List Cycle 	35.3% 	Easy
+42 	Trapping Rain Water 	36.8% 	Hard
+15 	3Sum 	21.7% 	Medium
+27 	Remove Element 	39.2% 	Easy
+88 	Merge Sorted Array 	32.0% 	Easy
+234 	Palindrome Linked List 	32.8% 	Easy
+26 	Remove Duplicates from Sorted Array 	35.4% 	Easy
+142 	Linked List Cycle II 	31.0% 	Medium
+287 	Find the Duplicate Number 	43.5% 	Medium
+345 	Reverse Vowels of a String 	38.6% 	Easy
+28 	Implement strStr() 	28.2% 	Easy
+19 	Remove Nth Node From End of List 	33.6% 	Medium
+349 	Intersection of Two Arrays 	47.3% 	Easy
+125 	Valid Palindrome 	26.3% 	Easy
+16 	3Sum Closest 	31.2% 	Medium
+76 	Minimum Window Substring 	25.5% 	Hard
+class Solution(object):
+    def minWindow(self, s, t):
+        """
+        :type s: str
+        :type t: str
+        :rtype: str
+        """
+        cnt, start, end = 0, 0, 0
+        out = ''
+        minLen, minStr = float('inf'), ''
+        hashTable = collections.defaultdict(int)
+        for c in t:
+            hashTable[c] += 1
+        for end in xrange(len(s)):
+            if s[end] in hashTable:
+                if hashTable[s[end]] > 0:
+                    cnt += 1
+                hashTable[s[end]] -= 1
+                while cnt == len(t):
+                    if end-start+1 <= minLen:
+                        minLen = min(minLen, end-start+1)
+                        out = s[start:end+1]
+                    if s[start] in hashTable:
+                        if hashTable[s[start]] == 0:
+                            cnt -= 1
+                        hashTable[s[start]] += 1
+                    start += 1
+        return out
+
+
+
+350 	Intersection of Two Arrays II 	44.7% 	Easy
+75 	Sort Colors 	38.1% 	Medium
+18 	4Sum 	26.8% 	Medium
+30 	Substring with Concatenation of All Words 	22.0% 	Hard
+86 	Partition List 	32.8% 	Medium
+80 	Remove Duplicates from Sorted Array II 	36.1% 	Medium
+61 	Rotate List 	24.3% 	Medium
+209 	Minimum Size Subarray Sum 	30.8% 	Medium
+167 	Two Sum II - Input array is sorted 	47.1% 	Easy
+159 	Longest Substring with At Most Two Distinct Characters 	41.3% 	Hard
+259 	3Sum Smaller 	41.4% 	Medium
+
+360 Sort Transformed Array 	44.1% 	Medium
+
+class Solution(object):
+    def sortTransformedArray(self, nums, a, b, c):
+
+        nums = [a * x * x + b * x + c for x in nums]
+        l, h = 0, len(nums) - 1
+        ind = len(nums) - 1 if a >= 0 else 0
+        res = [None] * len(nums)
+
+        while l <= h:
+            if a >= 0:
+                if nums[l] > nums[h]:
+                    res[ind] = nums[l]
+                    l += 1
+                else:
+                    res[ind] = nums[h]
+                    h -= 1
+                ind -= 1
+            else:
+                if nums[l] < nums[h]:
+                    res[ind] = nums[l]
+                    l += 1
+                else:
+                    res[ind] = nums[h]
+                    h -= 1
+                ind += 1
+
+        return res
+
+
+class Solution(object):
+    def sortTransformedArray(self, nums, a, b, c):
+        """
+        :type nums: List[int]
+        :type a: int
+        :type b: int
+        :type c: int
+        :rtype: List[int]
+        """
+        l, r = 0, len(nums) - 1
+        res = []
+        while l <= r:
+            left = a*nums[l]**2 + nums[l]*b + c
+            right = a*nums[r]**2 + nums[r]*b + c
+            if a >= 0:
+                if left > right:
+                    res.append(left)
+                    l += 1
+                else:
+                    res.append(right)
+                    r -= 1
+            else:
+                if left < right:
+                    res.append(left)
+                    l += 1
+                else:
+                    res.append(right)
+                    r -= 1
+        if a >= 0:
+            return res[::-1]
+        return res
+
+
+
+487 Max Consecutive Ones II 	45.3% 	Medium
+
+
+class Solution(object):
+    def findMaxConsecutiveOnes(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        fir=sec=res=0
+        for i,x in enumerate(nums):
+            if x==0:
+                res=max(res,i-fir)
+                fir=sec
+                sec=i+1
+        res=max(res,len(nums)-fir)
+        return res
+
+class Solution(object):
+    def findMaxConsecutiveOnes(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        p1, p2 = 0, 0
+        res = 0
+
+        for num in nums:
+            if num == 0:
+                res = max(res, p1 + p2)
+                p1, p2 = 0, p1 + 1
+            else:
+                p1 += 1
+
+        res = max(res, p1 + p2)
+
+        return res
+
+
+
+632 Smallest Range 	42.9% 	Hard
+567 Permutation in String 	36.6% 	Medium
+class Solution(object):
+	def checkInclusion(self, s1, s2):
+		"""
+		:type s1: str
+		:type s2: str
+		:rtype: bool
+		"""
+		if len(s1) > len(s2):
+			return False
+
+		s1Count, s2Count = [0] * 26, [0] * 26
+		for i in range(len(s1)):
+			s1Count[ord(s1[i]) - ord('a')] += 1
+			s2Count[ord(s2[i]) - ord('a')] += 1
+
+		if s1Count == s2Count:
+			return True
+
+		for i in range(len(s1), len(s2)):
+			s2Count[ord(s2[i - len(s1)]) - ord('a')] -= 1
+			s2Count[ord(s2[i]) - ord('a')] += 1
+			if s1Count == s2Count:
+				return True
+
+		return False
+
+
+
+
+class Solution(object):
+    def checkInclusion(self, s1, s2):
+        """
+        :type s1: str
+        :type s2: str
+        :rtype: bool
+        """
+        n1 = len(s1)
+        n2 = len(s2)
+        if n1 > n2:
+            return False
+
+        cnt = [0] * 26
+        cnt2 = [0] * 26
+        for ch in s1:
+            cnt[ord(ch) - ord('a')] += 1
+
+        for i, ch in enumerate(s2):
+            cnt2[ord(ch) - ord('a')] += 1
+            if i >= n1:
+                cnt2[ord(s2[i - n1]) - ord('a')] -= 1
+            if cnt2 == cnt:
+                return True
+
+        return False
+
+class Solution(object):
+    def checkInclusion(self, s1, s2):
+        """
+        :type s1: str
+        :type s2: str
+        :rtype: bool
+        """
+        if len(s1) > len(s2): return False
+
+        dic1 = [0]*26
+        dic2 = [0]*26
+
+        for i in range(len(s1)):
+            dic1[ord(s1[i])-ord("a")] += 1
+
+        for i in range(len(s2)):
+            dic2[ord(s2[i])-ord("a")] += 1
+
+            if i >= len(s1):
+                dic2[ord(s2[i-len(s1)])-ord("a")] -= 1
+
+            if dic1 == dic2: return True
+
+        return False
+
+532 K-diff Pairs in an Array 	28.1% 	Easy
+524 Longest Word in Dictionary through Deleting 	42.6% 	Medium
+
+@Sorting and checking Subsequence 2p
+
+def findLongestWord(self, S, D):
+    #['monkey', 'apple', 'plea', 'ale']
+    # first larget size, then lexicographically  (-len(x), x)
+    D.sort(key = lambda x: (-len(x), x))
+    for word in D:
+        i = 0
+        for c in S:
+            if i < len(word) and word[i] == c:
+                i += 1
+        if i == len(word):
+            return word
+    return ""
 
 
 
@@ -12957,6 +13277,8 @@ class Trie(object):
 
 
                         """Tree"""
+
+
 
                         """Hash Table """
 
