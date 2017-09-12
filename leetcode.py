@@ -1011,6 +1011,30 @@ alternating position an negative
 
 # Sort Letters by Case(lower to left, upper to right)
 
+class Solution:
+    """
+    @param chars: The letters array you should sort.
+    """
+    def sortLetters(self, chars):
+        # write your code here
+        if not chars:
+            return None
+
+        left, right = 0, len(chars) - 1
+        while left <= right:
+            while left <= right and chars[left].islower() == True:
+                left += 1
+
+            while left <= right and chars[right].isupper() == True:
+                right -= 1
+
+            if left <= right:
+                chars[left], chars[right] = chars[right], chars[left]
+
+                left += 1
+                right -= 1
+
+
 
 ############Partition to 3 parts ###########
 
