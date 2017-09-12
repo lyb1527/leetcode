@@ -974,6 +974,31 @@ class Solution:
 ''' divie into left and right'''
 # Partition Array By Odd and Even
 
+class Solution:
+    """
+    @param: nums: an array of integers
+    @return: nothing
+    """
+    def partitionArray(self, nums):
+        # write your code here
+        if nums == None:
+            return None
+
+        left = 0
+        right = len(nums) - 1
+
+        while left < right:
+            while left < right and nums[left] % 2 ==1 :
+                left += 1
+            while left < right and nums[right] % 2 == 0:
+                right -= 1
+
+
+            if left < right:
+                nums[left], nums[right] = nums[right], nums[left]
+
+                left += 1
+                right -= 1
 
 # Interleaving Positive and negative numbers()
 '''
@@ -9473,7 +9498,7 @@ class Solution(object):
             hashCode = (hashCode * 31 + ord(source[i])) % base
             if i < m - 1:
                 continue
-            # abcd - a 
+            # abcd - a
             if i >= m:
                 hashCode = hashCode - (ord(source[i-m]) * power) % base
                 if hashCode < 0:
