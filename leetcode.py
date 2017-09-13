@@ -12801,6 +12801,29 @@ class Solution(object):
 
 	344 	Reverse String 	59.3% 	Easy
 3 	Longest Substring Without Repeating Characters 	24.4% 	Medium
+class Solution(object):
+    def lengthOfLongestSubstring(self, s):
+        """
+        :type s: str
+        :rtype: int
+        """
+        mapp = [0] * 256 # map from ascii to index
+
+        j = 0
+        ans  = 0
+        for i in range(len(s)):
+            # stop until there is a duplicate
+            while j < len(s) and mapp[ord(s[j])] == 0:
+                mapp[ord(s[j])] = 1
+                ans = max(ans, j - i + 1)
+                j += 1
+
+            mapp[ord(s[i])] = 0
+
+
+        return ans
+
+
 283 	Move Zeroes 	50.1% 	Easy
 11 	Container With Most Water 	36.7% 	Medium
 141 	Linked List Cycle 	35.3% 	Easy
@@ -12857,7 +12880,32 @@ class Solution(object):
 86 	Partition List 	32.8% 	Medium
 80 	Remove Duplicates from Sorted Array II 	36.1% 	Medium
 61 	Rotate List 	24.3% 	Medium
-209 	Minimum Size Subarray Sum 	30.8% 	Medium
+209 	Minimum Size Subarray Sum
+class Solution(object):
+    def minSubArrayLen(self, s, nums):
+        """
+        :type s: int
+        :type nums: List[int]
+        :rtype: int
+        """
+        if not nums or len(nums) == 0:
+            return 0
+        i, j = 0, 0
+        summ = 0
+        ans = float('inf')
+        for i in range(len(nums)):
+            while j < len(nums) and summ < s:  #first summ >= 3
+                summ += nums[j]
+                j += 1
+
+            if summ >= s:
+                ans = min(ans, j - i)
+
+            summ -= nums[i]
+
+        return ans if ans != float('inf') else 0
+
+
 167 	Two Sum II - Input array is sorted 	47.1% 	Easy
 159 	Longest Substring with At Most Two Distinct Characters 	41.3% 	Hard
 259 	3Sum Smaller 	41.4% 	Medium
