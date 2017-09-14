@@ -3198,31 +3198,29 @@ class Solution(object):
                 stack.append([node.right, lstr + str(node.val) + "->"])
         return res
 
-class Solution(object):
+class Solution:
+    # @param {TreeNode} root the root of the binary tree
+    # @return {List[str]} all root-to-leaf paths
     def binaryTreePaths(self, root):
-        """
-        :type root: TreeNode
-        :rtype: List[str]
-        """
+        # Write your code here
         if not root:
             return []
 
-        self.result = []
-        self.helper(root, '')
 
-        return self.result
+        ans = []
+        self.dfs(root, ans, str(root.val))
+        return ans
 
-    def helper(self, root, cur):
-        cur += str(root.val)
+
+    def dfs(self, root, ans, cur):
         if not root.left and not root.right:
-            self.result.append(cur)
-            return
+            ans.append(cur)
 
         if root.left:
-            self.helper(root.left, cur + '->')
+            self.dfs(root.left, ans, cur + '->' + str(root.left.val))
 
         if root.right:
-            self.helper(root.right, cur + '->')
+            self.dfs(root.right, ans, cur + '->' + str(root.right.val))
 
 
 # Balanced Binary Tree
@@ -3255,25 +3253,21 @@ class Solution:
         return abs(leftHeight - rightHeight) <= 1, max(leftHeight, rightHeight) + 1
 
 
-public class Solution {
-    public boolean isBalanced(TreeNode root) {
-        return maxDepth(root) != -1;
-    }
+class Solution(object):
+    def isBalanced(self, root):
 
-    private int maxDepth(TreeNode root) {
-        if (root == null) {
-            return 0;
-        }
+        return self.maxDepth(root) != -1
 
-        int left = maxDepth(root.left);
-        int right = maxDepth(root.right);
-        if (left == -1 || right == -1 || Math.abs(left-right) > 1) {
-            return -1;
-        }
-        return Math.max(left, right) + 1;
-    }
-}
+    def maxDepth(self, root):
+        if root == None:
+            return 0
+        left = self.maxDepth(root.left)
+        right = self.maxDepth(root.right)
 
+        if left == -1 or right == -1 or abs(left - right) > 1:
+            return -1
+
+        return max(left, right) + 1
 
 
 
