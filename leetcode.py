@@ -13110,6 +13110,116 @@ def findLongestWord(self, S, D):
     return ""
 
 
+#-----------------------------------------------------------------------------
+            '''Math Questins'''
+#----------------------------------------------------------------------------
+
+2 	Add Two Numbers 	27.8% 	Medium
+13 	Roman to Integer 	46.1% 	Easy
+12 	Integer to Roman 	45.0% 	Medium
+9 	Palindrome Number 	35.4% 	Easy
+7 	Reverse Integer 	24.4% 	Easy
+66 	Plus One 	38.8% 	Easy
+258 	Add Digits 	51.2% 	Easy
+535 	Encode and Decode TinyURL 	74.3% 	Medium
+171 	Excel Sheet Column Number 	47.3% 	Easy
+202 	Happy Number 	40.8% 	Easy
+172 	Factorial Trailing Zeroes 	36.1% 	Easy
+149 	Max Points on a Line 	15.3% 	Hard
+50 	Pow(x, n) 	26.2% 	Medium
+319 	Bulb Switcher 	42.6% 	Medium
+67 	Add Binary 	32.7% 	Easy
+326 	Power of Three 	40.3% 	Easy
+8 	String to Integer (atoi) 	14.0% 	Medium
+223 	Rectangle Area 	33.0% 	Medium
+233 	Number of Digit One 	28.5% 	Hard
+335 	Self Crossing 	25.4% 	Hard
+268 	Missing Number 	44.3% 	Easy
+273 	Integer to English Words 	22.1% 	Hard
+29 	Divide Two Integers 	15.9% 	Medium
+69 	Sqrt(x) 	27.9% 	Easy
+43 	Multiply Strings 	27.3% 	Medium
+279 	Perfect Squares 	37.0% 	Medium
+231 	Power of Two 	40.2% 	Easy
+263 	Ugly Number 	39.3% 	Easy
+204 	Count Primes 	26.6% 	Easy
+168 	Excel Sheet Column Title 	26.2% 	Easy
+65 	Valid Number 	12.7% 	Hard
+224 	Basic Calculator 	27.3% 	Hard
+166 	Fraction to Recurring Decimal 	17.6% 	Medium
+453 	Minimum Moves to Equal Array Elements 	47.5% 	Easy
+343 	Integer Break 	46.1% 	Medium
+296 	Best Meeting Point 	51.9% 	Hard
+264 	Ugly Number II 	32.7% 	Medium
+357 	Count Numbers with Unique Digits 	46.1% 	Medium
+60 	Permutation Sequence 	28.7% 	Medium
+372 	Super Pow 	34.5% 	Medium
+628 	Maximum Product of Three Numbers 	45.2% 	Easy
+396 	Rotate Function 	33.0% 	Medium
+313 	Super Ugly Number 	37.8% 	Medium
+415 	Add Strings 	41.5% 	Easy
+
+class Solution(object):
+    def addStrings(self, num1, num2):
+        """
+        :type num1: str
+        :type num2: str
+        :rtype: str
+        """
+        res = []
+        i, j, carry = len(num1) - 1, len(num2) - 1, 0
+        while i >= 0 or j >= 0 or carry:
+            if i >= 0:
+                carry += ord(num1[i]) - ord('0')
+                i -= 1
+            if j >= 0:
+                carry += ord(num2[j]) - ord('0')
+                j -= 1
+            res.append(str(carry % 10))
+            carry /= 10
+        return ''.join(res[::-1])
+
+
+413 	Arithmetic Slices 	54.7% 	Medium
+368 	Largest Divisible Subset 	33.7% 	Medium
+400 	Nth Digit 	30.1% 	Easy
+367 	Valid Perfect Square 	38.3% 	Easy
+670 	Maximum Swap 	37.6% 	Medium
+248 	Strobogrammatic Number III 	32.1% 	Hard
+633 	Sum of Square Numbers 	31.9% 	Easy
+441 	Arranging Coins 	36.2% 	Easy
+423 	Reconstruct Original Digits from English 	44.3% 	Medium
+246 	Strobogrammatic Number 	39.9% 	Easy
+365 	Water and Jug Problem 	27.6% 	Medium
+247 	Strobogrammatic Number II 	40.1% 	Medium
+553 	Optimal Division 	55.3% 	Medium
+517 	Super Washing Machines 	36.7% 	Hard
+507 	Perfect Number 	33.8% 	Easy
+537 	Complex Number Multiplication 	64.0% 	Medium
+360 	Sort Transformed Array 	44.2% 	Medium
+598 	Range Addition II 	48.2% 	Easy
+462 	Minimum Moves to Equal Array Elements II 	51.5% 	Medium
+397 	Integer Replacement 	30.2% 	Medium
+660 	Remove 9 	46.1% 	Hard
+645 	Set Mismatch 	40.3% 	Easy
+634 	Find the Derangement of An Array 	33.1% 	Medium
+523 	Continuous Subarray Sum 	22.8% 	Medium
+483 	Smallest Good Base 	33.2% 	Hard
+593 	Valid Square 	39.9% 	Medium
+592 	Fraction Addition and Subtraction 	46.6% 	Medium
+469 	Convex Polygon 	32.6% 	Medium
+625 	Minimum Factorization 	30.3% 	Medium
+640 	Solve the Equation 	38.6% 	Medium
+356 	Line Reflection 	30.1% 	Medium
+651 	4 Keys Keyboard 	47.2% 	Medium
+672 	Bulb Switcher II 	45.1% 	Medium
+573 	Squirrel Simulation 	52.0% 	Medium
+
+
+
+
+
+
 
 #-----------------------------------------------------------------------------
             '''Basic Data Structure Implementations'''
