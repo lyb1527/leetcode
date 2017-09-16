@@ -13202,7 +13202,96 @@ class Solution(object):
 397 	Integer Replacement 	30.2% 	Medium
 660 	Remove 9 	46.1% 	Hard
 645 	Set Mismatch 	40.3% 	Easy
+
+
+@Map O(n) & O(n)
+class Solution(object):
+    def findErrorNums(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: List[int]
+        """
+        # use map
+        mapp = collections.defaultdict(int)
+        dup, missing = -1, 1
+        for num in nums:
+            mapp[num] += 1
+
+        # check every number from 1 to n
+        for i in range(1, len(nums)+1):
+            if i in mapp:
+                if mapp.get(i) == 2:
+                    dup = i
+            else:
+                missing = i
+
+        return [dup, missing]
+
+@ extra array : O(n) & O(n)
+public class Solution {
+    public int[] findErrorNums(int[] nums) {
+        int[] arr = new int[nums.length + 1];
+        int dup = -1, missing = 1;
+        for (int i = 0; i < nums.length; i++) {
+            arr[nums[i]] += 1;
+        }
+        for (int i = 1; i < arr.length; i++) {
+            if (arr[i] == 0)
+                missing = i;
+            else if (arr[i] == 2)
+                dup = i;
+        }
+        return new int[]{dup, missing};
+    }
+}
+
+
+@ O(n) and O(1)
+class Solution(object):
+    def findErrorNums(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: List[int]
+        """
+        dup = -1
+        missing = 1
+
+        for n in nums:
+            if nums[abs(n) - 1] < 0:
+                dup = abs(n)
+
+            else:
+                nums[abs(n) - 1] *= -1
+
+        for i in range(1, len(nums)):
+            if nums[i] > 0:
+                missing = i + 1
+
+        return [dup, missing]
+
+
+
 634 	Find the Derangement of An Array 	33.1% 	Medium
+class Solution(object):
+    def findDerangement(self, n):
+        """
+
+
+        """
+        # DP: O(n) and O(n)
+        if n == 0:
+            return 1
+        if n == 1:
+            return 0
+        dp = [0] * (n + 1)
+        dp[0] = 1
+        dp[1] = 0
+        for i in range(2, n+1):
+            dp[i] = int((((i - 1L) * (dp[i - 1] + dp[i - 2])) % 1000000007))
+
+        return dp[n]
+
+
 523 	Continuous Subarray Sum 	22.8% 	Medium
 483 	Smallest Good Base 	33.2% 	Hard
 593 	Valid Square 	39.9% 	Medium
