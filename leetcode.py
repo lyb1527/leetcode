@@ -13115,8 +13115,70 @@ def findLongestWord(self, S, D):
 #----------------------------------------------------------------------------
 
 2 	Add Two Numbers 	27.8% 	Medium
+
+def addTwoNumbers(self, l1, l2):
+    dummy = ListNode(0)
+    curr = curr
+    carry = 0
+    while l1 or l2 or carry != 0:
+        val = carry
+        if l1:
+            val += l1.val
+            l1 = l1.next
+        if l2:
+            val += l2.val
+            l2 = l2.next
+
+        curr.next = ListNode(val % 10)
+        curr = curr.next
+        carry = val // 10
+    return dummy.next
+
+
+
 13 	Roman to Integer 	46.1% 	Easy
 12 	Integer to Roman 	45.0% 	Medium
+class Solution(object):
+    def intToRoman(self, num):
+        """
+        :type num: int
+        :rtype: str
+        """
+        a = [1000,900,500,400,100,90,50,40,10,9,5,4,1]
+        b = ['M','CM','D','CD','C','XC','L','XL','X','IX','V','IV','I']
+        ans = ''
+        i = 0
+        count = 0
+        while num > 0:
+            count = num // a[i]
+            num %= a[i]
+            while count > 0:
+                ans += b[i]
+                count -= 1
+            i += 1
+        return ans
+
+
+
+class Solution(object):
+    def intToRoman(self, num):
+        """
+        :type num: int
+        :rtype: str
+        """
+        strs = ['M', 'CM', 'D', 'CD', 'C', 'XC', 'L', 'XL', 'X', 'IX', 'V', 'IV', 'I']
+        nums = [1000, 900, 500, 400, 100, 90, 50, 40, 10, 9, 5, 4, 1]
+        ret = ""
+        for i, j in enumerate(nums):
+            while num >= j:
+                ret += strs[i]
+                num -= j
+            if num == 0:
+                return ret
+
+
+
+
 9 	Palindrome Number 	35.4% 	Easy
 7 	Reverse Integer 	24.4% 	Easy
 66 	Plus One 	38.8% 	Easy
@@ -13299,6 +13361,51 @@ class Solution(object):
 469 	Convex Polygon 	32.6% 	Medium
 625 	Minimum Factorization 	30.3% 	Medium
 640 	Solve the Equation 	38.6% 	Medium
+
+用'='将等式分为左右两半
+
+分别求左右两侧x的系数和常数值，记为lx, lc, rx, rc
+
+令x, c = lx - rx, rc - lc
+
+若x != 0，则x = c / x
+
+否则，若c != 0，说明方程无解
+
+否则，说明有无数组解
+class Solution(object):
+    def solveEquation(self, equation):
+        """
+        :type equation: str
+        :rtype: str
+        """
+        left, right = equation.split('=')
+        lx, lc = self.solve(left)
+        rx, rc = self.solve(right)
+        x, c = lx - rx, rc - lc
+        if x:
+            return 'x=%d' % (c / x)
+        elif c:
+            return 'No solution'
+
+        return 'Infinite solutions'
+
+    def solve(self, expr):
+        x = c = 0
+        num, sig = '', 1
+        for ch in expr + '#':
+            if '0' <= ch <= '9':
+                num += ch
+            elif ch == 'x':
+                x += int(num or '1') * sig
+                num, sig = '', 1
+            else:
+                c += int(num or '0') * sig
+                num, sig = '', 1
+                if ch == '-': sig = -1
+        return x, c
+
+
 356 	Line Reflection 	30.1% 	Medium
 651 	4 Keys Keyboard 	47.2% 	Medium
 672 	Bulb Switcher II 	45.1% 	Medium
