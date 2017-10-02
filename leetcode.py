@@ -11931,6 +11931,50 @@ class Solution(object):
                 if ii >= 0 and ii < n and jj >= 0 and jj < m and grid[ii][jj] == "1":
                     stack.append([ii, jj])
 
+
+@BFS
+class Solution:
+    # @param {boolean[][]} grid a boolean 2D matrix
+    # @return {int} an integer
+    def numIslands(self, grid):
+        # Write your code here
+        m = len(grid)
+        if m == 0:
+            return 0
+        n = len(grid[0])
+        visit = [[False for i in range(n)]for j in range(m)] # create a True/False Grid
+        def check(x, y):
+            if x >= 0 and x<m and y>= 0 and y< n and grid[x][y] and visit[x][y] == False:
+                return True
+        def bfs(x,y):
+            nbrow = [1,0,-1,0]
+            nbcol = [0,1,0,-1]
+            q=[(x,y)]
+            while len(q) > 0:
+                x = q[0][0]
+                y = q[0][1]
+                q.pop(0)
+                for k in range(4):
+                    newx = x + nbrow[k]
+                    newy = y + nbcol[k]
+                    if check(newx, newy):
+                        visit[newx][newy] = True
+                        q.append((newx,newy))
+
+        count = 0
+        for row in range(m):
+            for col in range(n):
+                if check(row,col):
+                    visit[row][col] = True
+                    bfs(row,col)
+                    count+=1
+        return count
+
+
+
+
+
+
 # Surrounded Region
 class Solution(object):
     def solve(self, board):
@@ -13412,7 +13456,1127 @@ class Solution(object):
 573 	Squirrel Simulation 	52.0% 	Medium
 
 
+Judge Route Circle
 
+class Solution(object):
+    def judgeCircle(self, moves):
+        """
+        :type moves: str
+        :rtype: bool
+        """
+        v = 0
+        h = 0
+
+        for element in moves:
+            if element == "U":
+                v = v+1
+            elif element == "D":
+                v = v - 1
+            elif element == "R":
+                h = h+1
+            else:
+                h = h -1
+
+        if v==0 and h ==0:
+            return True
+        else:
+            return False
+
+
+class Solution(object):
+    def judgeCircle(self, moves):
+        """
+        :type moves: str
+        :rtype: bool
+        """
+        return moves.count("R") == moves.count("L") and moves.count("U") == moves.count("D")
+
+
+
+# Different ways to generate parentheses
+class Solution(object):
+    def diffWaysToCompute(self, input):
+        """
+        :type input: str
+        :rtype: List[int]
+        """
+        if input.isdigit():
+            return [int(input)]
+
+        res = []
+        for i, c in enumerate(input):
+            if c in '+-*':
+                left = self.diffWaysToCompute(input[:i])
+                right = self.diffWaysToCompute(input[i+1:])
+                for l in left:
+                    for r in right:
+                        if c == '+':
+                            res.append(l + r)
+                        elif c == '-':
+                            res.append(l - r)
+                        else:
+                            res.append(l * r)
+        return res
+
+
+
+class Solution(object):
+    def diffWaysToCompute(self, input):
+        """
+        :type input: str
+        :rtype: List[int]
+        """
+        if input.isdigit():
+            return [int(input)]
+        res = []
+        for i in xrange(len(input)):
+            if input[i] in "-+*":
+                res1 = self.diffWaysToCompute(input[:i])
+                res2 = self.diffWaysToCompute(input[i+1:])
+                for j in res1:
+                    for k in res2:
+                        res.append(self.helper(j, k, input[i]))
+        return res
+
+    def helper(self, m, n, op):
+        if op == "+":
+            return m+n
+        elif op == "-":
+            return m-n
+        else:
+            return m*n
+
+
+
+
+
+First bad version
+class Solution(object):
+    def firstBadVersion(self, n):
+        """
+        :type n: int
+        :rtype: int
+        """
+        start, end = 1, n
+        while start + 1 < end:
+            mid = (start + end) // 2
+            if isBadVersion(mid):
+                end = mid
+            else:
+                start = mid
+        return start if isBadVersion(start) else end
+
+
+# word pattern
+class Solution(object):
+    def wordPattern(self, pattern, str):
+        """
+        :type pattern: str
+        :type str: str
+        :rtype: bool
+        """
+        words = str.split()
+        if len(pattern) != len(words):
+            return False
+
+        patternDict, wordDict = {}, {}
+        for pattern, word in zip(pattern, words):
+
+            # pattern to word mapping
+            if pattern not in patternDict:
+                patternDict[pattern] = word
+
+            #word to pattern mapping
+            if word not in wordDict:
+                wordDict[word] = pattern
+
+            if wordDict[word] != pattern or patternDict[pattern] != word:
+                return False
+        return True
+
+ 453. Minimum Moves to Equal Array Elements
+class Solution(object):
+    def minMoves(self, nums):
+        """
+        """
+        count = 0
+        nums.sort()
+        for i in reversed(range(len(nums))):
+            count += nums[i] - nums[0]
+        return count
+
+# trim a Binary search tree
+class Solution(object):
+    def trimBST(self, root, L, R):
+        """
+        :type root: TreeNode
+        :type L: int
+        :type R: int
+        :rtype: TreeNode
+        """
+        def trim(node):
+            if not node:
+                return None
+            elif node.val > R:
+                return trim(node.left)
+            elif node.val < L:
+                return trim(node.right)
+            else:
+                node.left = trim(node.left)
+                node.right = trim(node.right)
+                return node
+
+        return trim(root)
+
+
+# Meeting Rooms
+
+
+class Solution(object):
+    def canAttendMeetings(self, intervals):
+        """
+        :type intervals: List[Interval]
+        :rtype: bool
+        """
+        intervals.sort(key=lambda x: x.start)
+        for i in range(len(intervals) - 1):
+            if intervals[i].end > intervals[i+1].start:
+                return False
+        return True
+
+# Pascal's Triangle
+class Solution(object):
+    def generate(self, numRows):
+        """
+        :type numRows: int
+        :rtype: List[List[int]]
+        """
+        if numRows == 0:
+            return []
+
+        row = [1]
+        rtn = [row]
+        for _ in range(numRows-1):
+            row = [x+y for x,y in zip([0]+row, row+[0])]
+            rtn.append(row)
+        return rtn
+
+
+
+
+# Pascal's Triangle II
+
+def getRow(self, rowIndex):
+    row = [1]
+    for _ in range(rowIndex):
+        row = [x+y for x, y in zip([0]+row, row+[0])]
+    return row
+
+@ Neseted List weight Sum
+#class NestedInteger(object):
+#    def isInteger(self):
+#        """
+#        @return True if this NestedInteger holds a single integer, rather than a nested list.
+#        :rtype bool
+#        """
+#
+#    def getInteger(self):
+#        """
+#        @return the single integer that this NestedInteger holds, if it holds a single integer
+#        Return None if this NestedInteger holds a nested list
+#        :rtype int
+#        """
+#
+#    def getList(self):
+#        """
+#        @return the nested list that this NestedInteger holds, if it holds a nested list
+#        Return None if this NestedInteger holds a single integer
+#        :rtype List[NestedInteger]
+#        """
+
+class Solution(object):
+    def depthSum(self, nestedList):
+
+        return self.calculateSum(nestedList, 1)
+
+    def calculateSum(self, nestedList, depth):
+        summ = 0
+        for n in nestedList:
+            if n.isInteger():
+                summ += n.getInteger() * depth
+            else:
+                summ += self.calculateSum(n.getList(), depth + 1)
+
+        return summ
+
+
+
+# lexicographical Numbers
+
+class Solution(object):
+    def lexicalOrder(self, n):
+        """
+        :type n: int
+        :rtype: List[int]
+        """
+
+        res, cur = [1], 1
+        while len(res) < n:
+            if cur * 10 <= n:
+                cur *= 10
+            elif cur % 10 != 9 and cur + 1 <= n:
+                cur += 1
+            else:
+                while cur / 10 % 10 == 9:
+                    cur /= 10
+                cur = cur/10 + 1
+            res.append(cur)
+        return res
+
+
+# Distribute candies
+
+@sorting
+class Solution(object):
+    def distributeCandies(self, candies):
+        """
+        :type candies: List[int]
+        :rtype: int
+        """
+        candies.sort()
+        count = 1
+        idx = 1
+        while idx < len(candies) and count < len(candies) / 2:
+            if candies[idx] > candies[idx - 1]:
+                count += 1
+            idx += 1
+        return count
+
+@Set
+
+
+
+# Bulls and cows
+class Solution(object):
+    def getHint(self, secret, guess):
+        """
+        :type secret: str
+        :type guess: str
+        :rtype: str
+        """
+        bulls = cows = 0
+        dic1 = [0]*10
+        dic2 = [0]*10
+
+        for i in range(len(secret)):
+            if secret[i] == guess[i]:
+                bulls += 1
+            else:
+                dic1[int(secret[i])] += 1
+                dic2[int(guess[i])] += 1
+
+        for i in range(10):
+            cows += min(dic1[i],dic2[i])
+
+        return "%dA%dB"%(bulls,cows)
+
+
+from collections import Counter
+class Solution(object):
+    def getHint(self, secret, guess):
+        """
+        :type secret: str
+        :type guess: str
+        :rtype: str
+        """
+        s, g = Counter(secret), Counter(guess)
+        a = sum(i == j for i, j in zip(secret, guess))
+        return "%sA%sB" % (a, sum((s & g).values()) - a)
+
+
+ # Diagonal Traverse
+
+ class Solution(object):
+    def findDiagonalOrder(self, matrix):
+        m, n  = len(matrix), len(matrix[0]) if matrix else 0
+        i, j, up = 0, 0, True
+        res = []
+        while i < m and j < n:
+            res += matrix[i][j],
+            if up:
+                if j == n - 1:
+                    i += 1
+                    up = not up
+                elif i == 0:
+                    j += 1
+                    up = not up
+                else: i, j = i - 1, j + 1
+            else:
+                if i == m - 1:
+                    j += 1
+                    up = not up
+                elif j == 0:
+                    i += 1
+                    up = not up
+                else: i, j = i + 1, j - 1
+        return res
+
+
+@ Log rate Limiter
+
+class Logger(object):
+
+    def __init__(self):
+
+        self.record = {}
+
+
+    def shouldPrintMessage(self, timestamp, message):
+
+        if message in self.record and timestamp - self.record[message] < 10:
+            return False
+        self.record[message] = timestamp
+        return True
+
+
+# Maximum XOR of two numbers in an array
+class Solution(object):
+    def findMaximumXOR(self, nums):
+        ans = 0
+        for i in range(32)[::-1]:
+            ans <<= 1
+            prefixes = {n >> i for n in nums}
+            ans += any(ans ^ 1 ^ p in prefixes for p in prefixes)
+        return ans
+
+
+# Evaluate Reverse Polish Notation
+"""
+
+"""
+
+
+
+# Permutations
+class Solution(object):
+    def permute(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: List[List[int]]
+        """
+        nums.sort()
+        result = []
+        self.dfs(nums, result, [])
+        return result
+
+
+    def dfs(self, nums, result, temp):
+        if len(temp) == len(nums):
+            result.append(temp[:])
+            return
+
+        for i in range(len(nums)):
+            if nums[i] in temp:
+                continue
+            temp.append(nums[i])
+            self.dfs(nums, result, temp)
+            temp.pop()
+
+# Divide two integers
+class Solution(object):
+    def divide(self, dividend, divisor):
+        """
+        :type dividend: int
+        :type divisor: int
+        :rtype: int
+        """
+        INT_MAX = 2147483647
+        if divisor == 0:
+            return INT_MAX
+        neg = dividend > 0 and divisor < 0 or dividend < 0 and divisor > 0
+        a, b = abs(dividend), abs(divisor)
+        ans, shift = 0, 31
+        while shift >= 0:
+            if a >= b << shift:
+                a -= b << shift
+                ans += 1 << shift
+            shift -= 1
+        if neg:
+            ans = - ans
+        if ans > INT_MAX:
+            return INT_MAX
+        return ans
+
+
+# Ransom Note
+class Solution(object):
+    def canConstruct(self, ransomNote, magazine):
+        """
+        :type ransomNote: str
+        :type magazine: str
+        :rtype: bool
+        """
+        for i in set(ransomNote):
+            if ransomNote.count(i) > magazine.count(i):
+                return False
+        return True
+
+
+
+import collections
+
+class Solution(object):
+    def canConstruct(self, ransomNote, magazine):
+        """
+        :type ransomNote: str
+        :type magazine: str
+        :rtype: bool
+        """
+        dmap = collections.defaultdict(int)
+        for l in magazine:
+            dmap[l] += 1
+        for l in ransomNote:
+            dmap[l] -= 1
+        return all(c >= 0 for c in dmap.values())
+
+# Word Break
+
+@ Stack O(n^2) and O(N)
+
+
+class Solution(object):
+    def wordBreak(self, s, wordDict):
+        """
+        :type s: str
+        :type wordDict: List[str]
+        :rtype: bool
+        """
+        # Breath first search.
+        from collections import deque
+        starting_index = 0
+        queue = deque()
+        queue.append(starting_index)
+        visited = set()
+        while queue:
+            current_starting = queue.popleft()
+            if current_starting in visited:
+                continue
+            visited.add(current_starting)
+            '''if current_starting == len(s):
+                return True'''
+            for index in range(current_starting+1, len(s)+1):
+                if s[current_starting: index] in wordDict:
+                    if index == len(s):
+                        return True
+                    queue.append(index)
+        return False
+
+
+# Rectangle Area
+class Solution(object):
+    def computeArea(self, A, B, C, D, E, F, G, H):
+        """
+        :type A: int
+        :type B: int
+        :type C: int
+        :type D: int
+        :type E: int
+        :type F: int
+        :type G: int
+        :type H: int
+        :rtype: int
+        """
+        x = 0
+        x_left = max(A, E)
+        x_right = min(C, G)
+
+        if x_right > x_left:
+            x = x_right - x_left
+
+        y = 0
+        y_lower = max(B, F)
+        y_upper = min(D, H)
+        if y_upper > y_lower:
+            y = y_upper - y_lower
+
+        return (C-A)*(D-B) + (G-E)*(H-F)-x*y
+
+
+
+
+
+class Solution(object):
+    def computeArea(self, A, B, C, D, E, F, G, H):
+        """
+        :type A: int
+        :type B: int
+        :type C: int
+        :type D: int
+        :type E: int
+        :type F: int
+        :type G: int
+        :type H: int
+        :rtype: int
+        """
+        overlapX = max(min(C, G) - max(A, E), 0)
+        overlapY = max(min(D, H) - max(B, F), 0)
+        overlap = overlapX * overlapY
+        return (C - A) * (D - B) + (G - E) * (H - F) - overlap
+
+
+# Battleship in a board
+class Solution(object):
+    def countBattleships(self, board):
+        """
+        :type board: List[List[str]]
+        :rtype: int
+        """
+        h = len(board)
+        w = len(board[0])
+        ans = 0
+        for i in range(h):
+            for j in range(w):
+                if (board[i][j] == 'X'):
+                    if (i > 0 and board[i-1][j] == 'X'): continue
+                    if (j > 0 and board[i][j-1] == 'X'): continue
+                    ans += 1
+        return ans
+
+# Game of Life
+位运算（bit manipulation）
+
+由于细胞只有两种状态0和1，因此可以使用二进制来表示细胞的生存状态
+
+更新细胞状态时，将细胞的下一个状态用高位进行存储
+
+全部更新完毕后，将细胞的状态右移一位
+
+
+class Solution(object):
+    def gameOfLife(self, board):
+        """
+        :type board: List[List[int]]
+        :rtype: void Do not return anything, modify board in-place instead.
+        """
+        # input: live = 1, dead = 0
+        # update at the same time + inplace: state 0: dead. 0, 1: live. 1, 2: live->dead,10, 3: dead->live,01
+        # meaning: this state -> next state
+        m = len(board)
+        if m == 0 or len(board[0]) == 0:
+            return
+        n = len(board[0])
+        dx = [-1, -1, -1, 0, 1, 1, 1, 0] # mark 8 directions
+        dy = [-1, 0, 1, 1, 1, 0, -1, -1]
+        for i in xrange(m):
+            for j in xrange(n):
+                cnt = 0
+                for k in xrange(8):
+                    x = i+dx[k]
+                    y = j+dy[k]
+                    if x>=0 and x<m and y>=0 and y<n and (board[x][y]==1 or board[x][y]==2): # count neighboring live cells
+                        cnt += 1 # when either not updated or live->dead
+                if board[i][j]==1 and (cnt<2 or cnt>3): # if not updated live or updated dead to live
+                    board[i][j] = 2
+                elif not board[i][j] and cnt==3: # if not updated dead and 3 live, put to live
+                    board[i][j] = 3
+        for i in xrange(m):
+            for j in xrange(n):
+                board[i][j] %= 2 # updated state is dead -> dead
+
+
+
+# REpeated DNA Sequence
+
+
+
+
+@ 字典+位运算，或者进制转换。
+
+由于直接将字符串存入字典会导致Memory Limit Exceeded，采用位操作将字符串转化为整数可以减少内存开销。
+
+class Solution:
+    # @param s, a string
+    # @return a list of strings
+    def findRepeatedDnaSequences(self, s):
+        ans = []
+        valCnt = dict()
+        map = {'A' : 0, 'C' : 1, 'G': 2, 'T' : 3}
+        sum = 0
+        for x in range(len(s)):
+            sum = (sum * 4 + map[s[x]]) & 0xFFFFF
+            if x < 9:
+                continue
+            valCnt[sum] = valCnt.get(sum, 0) + 1
+            if valCnt[sum] == 2:
+                ans.append(s[x - 9 : x + 1])
+        return ans
+
+
+
+
+@Brute Force
+
+class Solution(object):
+    def findRepeatedDnaSequences(self, s):
+        """
+        :type s: str
+        :rtype: List[str]
+        """
+        temp = set()
+        ans =set()
+        if len(s) < 10:
+            return []
+        # last i  + 9 to cover the last sequence
+        # sequence length 10, index for the last sequence + 9
+        for i in range(len(s) - 9):
+            curr = s[i:i+10]
+            if curr not in temp:
+                temp.add(curr)
+            else:
+                ans.add(curr)
+        return list(ans)
+
+
+
+class Solution(object):
+    def findRepeatedDnaSequences(self, s):
+        """
+        :type s: str
+        :rtype: List[str]
+        """
+        sequences = collections.defaultdict(int) #set '0' as the default value for non-existing keys
+        for i in range(len(s)):
+            sequences[s[i:i+10]] += 1#add 1 to the count
+        return [key for key, value in sequences.iteritems() if value > 1] #extract the relevant keys
+
+
+
+
+
+
+# Additive Number
+Just trying all possibilities for the first two numbers and checking whether the rest fits.
+枚举前两个数，然后循环判断剩余的数是否满足累加序列。
+
+使用itertools.combinations可以生成前两个数起始位置的组合。
+def isAdditiveNumber(self, num):
+    n = len(num)
+    for i, j in itertools.combinations(range(1, n), 2):
+        a, b = num[:i], num[i:j]
+        if b != str(int(b)):
+            continue
+        while j < n:
+            c = str(int(a) + int(b))
+            if not num.startswith(c, j):
+                break
+            j += len(c)
+            a, b = b, c
+        if j == n:
+            return True
+    return False
+
+
+class Solution(object):
+    def isAdditiveNumber(self, num):
+        """
+        :type num: str
+        :rtype: bool
+        """
+        if len(num) < 3:
+            return False
+
+        #print num
+        if int(num) == 0:
+            return True
+
+        #if num.startswith('0'):
+        #    while
+        for i in range(1,len(num)+1):
+            #print i                                # 2
+            #print '---- %s ------' % i
+            first = num[:i]                         # 21
+            if first.startswith('0') and first != '0':
+                continue
+            #print first
+            other = num[i:]                         # 1738
+            #print other
+            for j in range(1,len(other)+1):         # 2
+                second = other[:j]                  # 17
+                if second.startswith('0') and second != '0':
+                    break                        #
+                rest = other[j:]                    # 38
+                if not rest or \
+                    len(first) > len(rest)  or \
+                    len(second) > len(rest)  :      # or int(first) + int(second) > int(rest):
+                    break                           #
+
+                if self.addCheck(first, second, rest):
+                    #print first,second, rest
+                    return True
+        return False
+
+    def addCheck(self, first, second, rest):
+        while(rest):
+            #print first, second, rest
+            next = str(int(first)+int(second))
+            if rest.startswith(next):
+                first = second
+                second = next
+                rest = rest.replace(next,'',1)
+            else:
+                return False
+        return True
+
+
+
+# Gas Stations
+
+class Solution(object):
+    def canCompleteCircuit(self, gas, cost):
+        """
+        :type gas: List[int]
+        :type cost: List[int]
+        :rtype: int
+        """
+        total, sum, start = 0, 0, 0
+
+        for i in xrange(len(gas)):
+            total = total + gas[i] - cost[i]
+            if sum >= 0:
+                sum = sum + gas[i] - cost[i]
+            else:
+                start = i
+                sum = gas[i] -cost[i]
+
+        return start if total>=0 else -1
+
+
+# Reorder list
+Given a singly linked list L: L0?L1?…?Ln-1?Ln,
+reorder it to: L0?Ln?L1?Ln-1?L2?Ln-2?…
+
+Given {1,2,3,4}, reorder it to {1,4,2,3}.
+
+
+1. 利用快慢指针找到链表中点mid，将链表分为左右两半
+2. 将链表的右半部分就地逆置
+3. 合并链表的左右两部分
+
+
+class Solution(object):
+    def reorderList(self, head):
+        """
+        :type head: ListNode
+        :rtype: void Do not return anything, modify head in-place instead.
+        """
+        if not head or not head.next :
+            return
+        mid = self.get_mid(head)
+        prev = self.rev(mid)
+        mid.next = None
+
+        self.merge(head,prev)
+
+    def get_mid(self,head):
+        slow = head
+        fast = head.next
+
+        while(fast and fast.next):
+            slow = slow.next
+            fast = fast.next.next
+        print " The mid value is ",slow.val
+        return slow
+
+    def rev(self,mid):
+        prev = None
+        curr = mid
+
+        while(curr):
+            tmp = curr.next
+            curr.next = prev
+            prev = curr
+            curr = tmp
+        print "The prev value is ",prev
+        return prev
+
+    def merge(self,l,r):
+
+        while(l and r):
+            next1 = l.next
+            next2 = r.next
+
+            l.next = r
+            r.next = next1
+
+            l = next1
+            r = next2
+
+
+# Factor Combinations
+
+@Iterative:
+class Solution(object):
+    def getFactors(self, n):
+        """
+        :type n: int
+        :rtype: List[List[int]]
+        """
+        res = []
+        factor = [(n, 2, [])]
+        while factor:
+            n, i, curr = factor.pop()
+            while i*i <= n:
+                if n%i == 0:
+                    res += curr + [i, n/i],
+                    factor += (n/i, i, curr + [i]),
+                i += 1
+        return res
+
+@Recursive
+class Solution(object):
+    def getFactors(self, n):
+        """
+        :type n: int
+        :rtype: List[List[int]]
+        """
+        res=[]
+        path=[]
+        self.dfs(n,res,path,2)
+        return res
+    def dfs(self,n,res,path,i):
+        # print(path,n,i)
+        # if n==1:
+        #     res.append(path[:])
+        if path and i<path[-1]:
+            return
+        while i**2<=n:
+            if n%i==0:
+                res.append(path+[i,n//i])
+                self.dfs(n//i,res,path+[i],i)
+            i=i+1
+
+# Non-overlapping Intervals
+
+@Using Greedy Approach based on end points
+O(nlogn) and O(1)
+class Solution(object):
+    def eraseOverlapIntervals(self, intervals):
+        """
+        :type intervals: List[Interval]
+        :rtype: int
+        """
+        if not intervals: return 0
+
+        intervals = sorted(intervals,key=lambda x:x.end)
+
+        end = intervals[0].end
+        count = 1
+        for i in range(1,len(intervals)):
+            if intervals[i].start >= end:
+                count += 1
+                end = intervals[i].end
+
+        return len(intervals)-count
+
+
+# Longest REpeating Character Replacement
+
+import collections
+class Solution(object):
+    def characterReplacement(self, s, k):
+        """
+        :type s: str
+        :type k: int
+        :rtype: int
+        """
+        # sliding window
+        # each time calculate the maxCount
+        maxCount, maxLength, start = 0, 0, 0
+        count = collections.defaultdict(int)
+        for end in range(len(s)):
+            count[s[end]] += 1
+            maxCount = max(maxCount, count[s[end]])
+            while end - start + 1 - maxCount > k:
+                count[s[start]] -= 1
+                start += 1
+            maxLength = max(maxLength, end-start+1)
+        return maxLength
+
+
+
+class Solution(object):
+    def characterReplacement(self, s, k):
+        """
+        :type s: str
+        :type k: int
+        :rtype: int
+        """
+        maxCnts = [0] * 26
+        maxCnt = 0
+        start = 0
+        maxLen = 0
+        for i in xrange(len(s)):
+            maxCnts[ord(s[i])-ord('A')] += 1
+            maxCnt = max(maxCnt, maxCnts[ord(s[i])-ord('A')])
+            while i-start-maxCnt+1 > k:
+                maxCnts[ord(s[start])-ord('A')] -= 1
+                start += 1
+            maxLen = max(maxLen, i-start+1)
+        return maxLen
+
+class Solution(object):
+    def characterReplacement(self, s, k):
+        """
+        :type s: str
+        :type k: int
+        :rtype: int
+        """
+        n = len(s)
+        left = 0
+        cnt = [0]*26
+        res = 0
+        max_cnt = 0
+        for i in range(n):
+            idx = ord(s[i]) - ord('A')
+            cnt[idx] += 1
+            max_cnt = max(max_cnt, cnt[idx])
+            if i - left + 1 - max_cnt > k:
+                cnt[ord(s[left]) - ord('A')] -= 1
+                left += 1
+            else:
+                res = max(res, i - left + 1)
+        return res
+
+
+# Complex Number Multiplicaiton
+
+class Solution(object):
+    def complexNumberMultiply(self, a, b):
+        parts=a.split("+")
+        realA=int(parts[0])
+        complexA=int((parts[1].split("i"))[0])
+
+        parts=b.split("+")
+        realB=int(parts[0])
+        complexB=int((parts[1].split("i"))[0])
+
+        realRes=realA*realB-complexA*complexB
+        complexRes=realA*complexB+realB*complexA
+
+        return str(realRes)+"+"+str(complexRes)+"i"
+
+
+
+
+#Convert a Number Into a hexadecimal
+class Solution(object):
+    def toHex(self, num):
+        """
+        :type num: int
+        :rtype: str
+        """
+        ans = []
+        hexs = '0123456789abcdef'
+        if num < 0:
+            num += 2**32
+        while num:
+            ans.append(hexs[num % 16])
+            num /= 16
+        return ''.join(ans[::-1]) if ans else '0'
+
+
+
+
+# Minesweeper
+from collections import deque
+class Solution(object):
+    def updateBoard(self, board, click):
+        numbers = "B123456789"
+        queue = deque([click])
+        directions = [(-1, 0), (1, 0), (0, -1), (0, 1), (1, 1), (-1, -1), (1, -1), (-1, 1)]
+        while queue:
+            i, j = queue.popleft()
+            if board[i][j] == "B":
+                continue
+            if board[i][j] == "M":
+                board[i][j] = "X"
+                break
+            mineCnt = 0
+            nbrs = []
+            for di, dj in directions:
+                ni, nj = i + di, j + dj
+                if 0 <= ni < len(board) and 0 <= nj < len(board[0]) and board[ni][nj] in ["M", "E"]:
+                    if board[ni][nj] == "M":
+                        mineCnt += 1
+                    else:
+                        nbrs.append((ni, nj))
+            if mineCnt == 0:
+                queue.extend(nbrs)
+            board[i][j] = numbers[mineCnt]
+        return board
+
+
+# Random pick Index
+class Solution(object):
+
+    def __init__(self, nums):
+        """
+
+        :type nums: List[int]
+        :type numsSize: int
+        """
+        self.nums=nums
+
+    def pick(self, target):
+        """
+        :type target: int
+        :rtype: int
+        """
+        cnt=0 # cnt starts from 0
+        idx=-1
+        for i,num in enumerate(self.nums):
+            if num==target:
+                cnt+=1
+#                if random.randrange(0,cnt)==0: # random.randrange(a, b) randomly selected element from range(start, stop)
+                if random.choice(range(0,cnt))==0: #cnt starts from 1,  random.randrange(a, b) randomly selected element from range(start, stop)
+                    idx=i
+        return idx
+
+
+import random
+class Solution(object):
+
+    def __init__(self, nums):
+
+        self.nums = nums
+
+    def pick(self, target):
+
+        count = 0
+        ret = 0
+        for i in range(len(self.nums)):
+            if self.nums[i] == target:
+                count += 1
+                if random.randrange(count) == 0:
+                    ret = i
+        return ret
+
+# FLip game
+class Solution(object):
+    def generatePossibleNextMoves(self, s):
+        """
+        :type s: str
+        :rtype: List[str]
+        """
+        res = []
+        for i in xrange(len(s)-1):
+            if s[i:i+2] == '++':
+                res.append(s[:i] + '--' + s[i+2:])
+        return res
+
+
+
+    
 #-----------------------------------------------------------------------------
             '''Design Problems'''
 #----------------------------------------------------------------------------
@@ -13724,3 +14888,26 @@ https://vevurka.github.io/dsp17/python/graphs_in_python/
 https://www.brown.edu/campus-life/support/careerlab/developing-skills
 https://www.brown.edu/campus-life/support/careerlab/undergraduate-0/interviewing-networking
 https://www.hackerrank.com/challenges/30-data-types/tutorial
+
+
+
+'''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+                        Summary notes
+
+''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''
+def reverseNumber(n):
+    result = 0
+    while n > 0:
+        digit = n % 10
+        result = result * 10 + digit
+        n /= 10
+    return result
+
+
+@ prefix Sum
+def prefix_sums(A):
+  n = len(A)
+  P = [0] * (n + 1)
+  for k in xrange(1, n + 1):
+      P[k] = P[k - 1] + A[k - 1]
+  return P
