@@ -15225,6 +15225,255 @@ class RandomizedSet(object):
         return random.choice(self.dataList)
 
 
+# Longest Line Of Consecutive One In Matrix
+class Solution(object):
+    def longestLine(self, M):
+        """
+        :type M: List[List[int]]
+        :rtype: int
+        """
+        h, w = len(M), len(M) and len(M[0]) or 0
+        ans = 0
+
+        #horizontal & diagonal
+        diag = [[0] * w for r in range(h)]
+        for x in range(h):
+            cnt = 0
+            for y in range(w):
+                cnt = M[x][y] * (cnt + 1)
+                diag[x][y] = M[x][y]
+                if x > 0 and y > 0 and M[x][y] and diag[x - 1][y - 1]:
+                    diag[x][y] += diag[x - 1][y - 1]
+                ans = max(ans, cnt, diag[x][y])
+
+        #vertical & anti-diagonal
+        adiag = [[0] * w for r in range(h)]
+        for x in range(w):
+            cnt = 0
+            for y in range(h):
+                cnt = M[y][x] * (cnt + 1)
+                adiag[y][x] = M[y][x]
+                if y < h - 1 and x > 0 and M[y][x] and adiag[y + 1][x - 1]:
+                    adiag[y][x] += adiag[y + 1][x - 1]
+                ans = max(ans, cnt, adiag[y][x])
+
+        return ans
+
+
+
+# Range Addition
+
+@ Brute Force O(N*k) + O(1)
+
+
+@ Range Caching
+
+
+class Solution(object):
+    def getModifiedArray(self, length, updates):
+        """
+        :type length: int
+        :type updates: List[List[int]]
+        :rtype: List[int]
+        """
+        res = [0] * (1 + length)
+
+        if not updates:
+            return res[:length]
+
+
+        for s,e,inc in updates:
+            res[s] += inc
+            res[e + 1] += (-inc)
+
+        for i in range(1,len(res)):
+            res[i] +=res[i-1]
+
+        return res[:length]
+
+
+
+
+class Solution(object):
+    def getModifiedArray(self, length, updates):
+        """
+        :type length: int
+        :type updates: List[List[int]]
+        :rtype: List[int]
+        """
+        res = [0] * length
+        for start, end, inc in updates:
+            res[start] += inc
+            if end + 1 < length:
+                res[end+1] -= inc
+        for i in range(1, length):
+            res[i] += res[i-1]
+        return res
+
+
+
+# Split Array With Equal Sum
+
+
+
+
+# Shortest Word Distance
+class Solution(object):
+    def shortestDistance(self, words, word1, word2):
+        """
+        :type words: List[str]
+        :type word1: str
+        :type word2: str
+        :rtype: int
+        """
+        i1, i2 = -1, -1
+        minDistance = len(words)
+        for i in range(len(words)):
+            if words[i] == word1:
+                i1 = i
+            elif words[i] == word2:
+                i2 = i
+
+            if i1 != -1 and i2 != -1:
+                minDistance = min(minDistance, abs(i1 - i2))
+
+        return minDistance
+
+# Shortest Word Distance III
+This is a follow up of Shortest Word Distance. The only difference is now word1 could be the same as word2.
+
+class Solution(object):
+    def shortestWordDistance(self, words, word1, word2):
+        p1, p2  = -1, -1
+        minDistance = len(words)
+        for i in range(len(words)):
+            if words[i] == word1:
+                p1 = i
+            if words[i] == word2:
+
+                # added for II
+                if word1 == word2:
+                    p1 = p2
+                p2 = i
+
+            if p1 != -1 and p2 != -1:
+                minDistance = min(minDistance, abs(p1 - p2))
+
+        return minDistance
+
+
+
+
+
+# non-decreasing Array
+
+https://leetcode.com/articles/non-decreasing-array/
+
+change at most 1 element to make it non-drecreasing
+@ Brute
+
+
+@ reduce to Smaller problem
+
+
+
+@ Locate and analyze problem index
+class Solution(object):
+    def checkPossibility(self, A):
+        """
+        :type nums: List[int]
+        :rtype: bool
+        """
+        p = None
+        for i in xrange(len(A) - 1):
+            if A[i] > A[i+1]:
+                if p is not None:
+                    return False
+                p = i
+
+        return (p is None or p == 0 or p == len(A)-2 or
+                A[p-1] <= A[p+1] or A[p] <= A[p+2])
+
+
+# Insert Interval
+
+
+class Solution(object):
+    def insert(self, intervals, newInterval):
+        """
+        :type intervals: List[Interval]
+        :type newInterval: Interval
+        :rtype: List[Interval]
+        """
+        if intervals is None or len(intervals) == 0:
+            return [newInterval]
+
+        result = []
+        tmp = newInterval
+
+        for current in intervals:
+            if tmp.end < current.start:
+                result.append(tmp)
+                tmp = current
+            elif tmp.start > current.end:
+                result.append(current)
+            else:
+                tmp.start = min(current.start, tmp.start)
+                tmp.end = max(current.end, tmp.end)
+
+        result.append(tmp)
+        return result
+
+
+
+@sort and merge intervas
+class Solution(object):
+    def insert(self, intervals, newInterval):
+        """
+        :type intervals: List[Interval]
+        :type newInterval: Interval
+        :rtype: List[Interval]
+        """
+        intervals = intervals + [newInterval]
+        intervals = sorted(intervals, key=lambda x: x.start)
+        res = []
+        for interval in intervals:
+            if not res:
+                res.append(interval)
+            elif res[-1].end >= interval.start:
+                res[-1].end = max(interval.end, res[-1].end)
+            else:
+                res.append(interval)
+        return res
+
+
+
+# Next Permutation
+
+class Solution(object):
+    def nextPermutation(self, nums):
+
+        i = len(nums) - 2
+        while i >= 0 and nums[i + 1] <= nums[i]:
+            i -= 1
+        if i >= 0:
+            j = len(nums) - 1
+            while j >= 0 and nums[j] <= nums[i]:
+                j -= 1
+            nums[i], nums[j] = nums[j], nums[i]
+
+        self.reverse(nums, i + 1, len(nums) - 1)
+
+
+
+    def reverse(self, nums, l, r):
+        while l < r:
+            nums[l], nums[r] = nums[r], nums[l]
+            l += 1
+            r -= 1 
+
+
+
 #-----------------------------------------------------------------------------
             '''Design Problems'''
 #----------------------------------------------------------------------------
