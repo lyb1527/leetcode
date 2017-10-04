@@ -14576,7 +14576,655 @@ class Solution(object):
 
 
 
-    
+# Optimal Division
+
+
+class Solution(object):
+    def optimalDivision(self, nums):
+        '''
+        Answer is always X1/(X2/X3/...Xn) as we want to maximize the value
+        that means, minimize the denominator
+        '''
+        n = len(nums)
+        if n == 0:
+            return  ""
+        ans = str(nums[0])
+        if n == 1:
+            return ans
+        if n == 2:
+            return ans + "/" + str(nums[1])
+        ans += "/(" + str(nums[1])
+        for i in range(2, n):
+            ans += "/" + str(nums[i])
+        ans += ")"
+        return ans
+
+
+# Single NUmer III
+class Solution(object):
+    def singleNumber(self, nums):
+
+        diff = 0
+        for num in nums:
+            diff ^= num
+
+        diff &= -diff
+
+        ret = [0, 0]
+        for num in nums:
+            if num & diff == 0:
+                ret[0] ^= num
+            else:
+                ret[1] ^= num
+
+        return ret
+
+
+
+
+# A + B
+        // 主要利用异或运算来完成
+        // 异或运算有一个别名叫做：不进位加法
+        // 那么a ^ b就是a和b相加之后，该进位的地方不进位的结果
+        // 然后下面考虑哪些地方要进位，自然是a和b里都是1的地方
+        // a & b就是a和b里都是1的那些位置，a & b << 1 就是进位
+        // 之后的结果。所以：a + b = (a ^ b) + (a & b << 1)
+        // 令a' = a ^ b, b' = (a & b) << 1
+        // 可以知道，这个过程是在模拟加法的运算过程，进位不可能
+        // 一直持续，所以b最终会变为0。因此重复做上述操作就可以
+        // 求得a + b的值。
+
+class Solution:
+    """
+    @param: : An integer
+    @param: : An integer
+    @return: The sum of a and b
+    """
+
+    def aplusb(self, a, b):
+        # write your code here
+
+        while b != 0:
+            _a = a ^ b
+            _b = (a & b) << 1
+            a = _a
+            b = _b
+        return a
+
+
+
+class Solution(object):
+    def getSum(self, a, b):
+        """
+        :type a: int
+        :type b: int
+        :rtype: int
+        """
+        mask = 0xFFFFFFFF
+        Max = 0x7FFFFFFF
+        while b != 0:
+            a, b = (a ^ b) & mask , (( a & b ) << 1) &mask
+
+        return a if a <= Max else ~ (a^mask)
+
+
+# 547 Friend Circles
+class Solution(object):
+    def findCircleNum(self, M):
+        """
+        :type M: List[List[int]]
+        :rtype: int
+        """
+        n = len(M)
+        visited = [False for _ in range(n)]
+        queue = collections.deque()
+        cnt = 0
+        for i in range(n):
+            if not visited[i]:
+                visited[i] = True
+                cnt += 1
+                queue.append(i)
+                while queue:
+                    node = queue.popleft()
+                    for j in range(len(M[node])):
+                        status = M[node][j]
+                        if not visited[j] and status == 1:
+                            visited[j] = True
+                            queue.append(j)
+        return cnt
+
+# Find all anagrams in a string
+
+
+
+class Solution(object):
+    def findAnagrams(self, s, p):
+        """
+        :type s: str
+        :type p: str
+        :rtype: List[int]
+        """
+        if not s or not p:
+            return []
+        ret = []
+        dictp = collections.defaultdict(int)
+        for ch in p:
+            dictp[ch] += 1
+        dicts = collections.defaultdict(int)
+        for ch in s[:len(p)]:
+            dicts[ch] += 1
+        for i in range(len(s)-len(p)):
+                if dicts == dictp:
+                    ret.append(i)
+                dicts[s[i]] -= 1
+                if dicts[s[i]] == 0:
+                    del dicts[s[i]]
+                dicts[s[i+len(p)]] += 1
+        if dicts == dictp:
+            ret.append(len(s) - len(p))
+        return ret
+
+
+
+class Solution(object):
+    def findAnagrams(self, s, p):
+        """
+        :type s: str
+        :type p: str
+        :rtype: List[int]
+        """
+        n = len(s)
+        m = len(p)
+        if n==0 or m == 0 or n < m : return []
+
+        re = []
+
+        pa = [0 for _ in range(26)]
+        ta = [0 for _ in range(26)]
+
+        for i in range(m):
+            pa[ord(p[i]) - ord('a')] += 1
+            ta[ord(s[i]) - ord('a')] += 1
+
+        i = 0
+        while i <= n-m:
+            if ta == pa:
+                re.append(i)
+            ta[ord(s[i]) - ord('a')] -= 1
+            i += 1
+            if i <= n - m :
+                ta[ord(s[i+m-1]) - ord('a')] += 1
+        return re
+
+class Solution(object):
+    def findAnagrams(self, s, p):
+        """
+        :type s: str
+        :type p: str
+        :rtype: List[int]
+        """
+        result = []
+        cnts = [0] * 26
+        for c in p:
+            index = ord(c) - ord('a')
+            cnts[index] += 1
+        '''
+        在解题的时候，首先尝试扩展窗口right，看看什么时候包含了一个结果，记录结果。然后缩小左边界left，直到窗口不在包含一个可能解！接着就可以继续扩展窗口了，以此类推。
+        '''
+        left, right = 0, 0
+        while right < len(s):
+            cnts[ord(s[right]) - ord('a')] -= 1
+            while left <= right and cnts[ord(s[right]) - ord('a')] < 0:
+                cnts[ord(s[left]) - ord('a')] += 1
+                left += 1
+            if right - left + 1 == len(p):
+                result.append(left)
+            right += 1
+        return result
+
+
+
+# Generate abbreviation
+
+
+class Solution(object):
+    def generateAbbreviations(self, word):
+        """
+        :type word: str
+        :rtype: List[str]
+        for every character, we can choose to abbreviate it or keep it
+        """
+        res = []
+        self.helper(word, res, 0, "", 0)
+        return res
+
+    def helper(self, word, res, cur_ind, cur_word, count):
+        if cur_ind > len(word) - 1:
+            if count:
+                res.append(cur_word + str(count))
+            else:
+                res.append(cur_word)
+        else:
+            # abbreviate it
+            self.helper(word, res, cur_ind + 1, cur_word, count + 1)
+            # keep it
+            next_word = cur_word + str(count) + word[cur_ind] if count else cur_word + word[cur_ind]
+            self.helper(word, res, cur_ind + 1, next_word, 0)
+        return
+
+
+
+
+class Solution(object):
+    def generateAbbreviations(self, word):
+        """
+        :type word: str
+        :rtype: List[str]
+        """
+        if not word or len(word) == 0:
+            return [""]
+
+        res = []
+        self.helper(word, 0, 0, "", res)
+        return res
+
+
+    def helper(self, word, pos, count, cur, res):
+        if pos == len(word):
+            if count > 0:
+                cur += str(count)
+            res.append(cur)
+        else:
+            # keep adding to count
+            self.helper(word, pos + 1, count + 1, cur, res)
+            # count becomes a str
+            if count > 0:
+                self.helper(word, pos + 1, 0, cur + str(count) + word[pos], res)
+            else:
+                self.helper(word, pos + 1, 0, cur + word[pos], res)
+
+
+
+# Reverse nodes in k-group
+
+class Solution(object):
+    def reverseKGroup(self, head, k):
+        """
+        :type head: ListNode
+        :type k: int
+        :rtype: ListNode
+        """
+        if not head:
+            return head
+        reverse_node_list = []
+        dummy = node = ListNode(0)
+        dummy.next = head
+        last_tail = None
+        while node and node.next:
+            h = node
+            reverse_node_list.append(node.next)
+            count = 0
+            while node and count < k:
+                node = node.next
+                count += 1
+
+            if not node:
+                last_tail = reverse_node_list.pop()
+            h.next = None
+
+        tail = dummy
+        for node in reverse_node_list:
+            tail.next, tail = self.reverse_list(node)
+        if last_tail:
+            tail.next = last_tail
+        return dummy.next
+
+    def get_length(self, node):
+        count = 0
+        while node:
+            count += 1
+            node = node.next
+        return count
+
+    def reverse_list(self, node):
+        prev = None
+        tail = node
+        while node:
+            next = node.next
+            node.next = prev
+            prev = node
+            node = next
+        return (prev, tail)
+
+    def print_list(self, node):
+        res = []
+        while node:
+            res.append(str(node.val))
+            node = node.next
+        print "->".join(res)
+
+
+class Solution(object):
+    def reverseKGroup(self, head, k):
+        """
+        :type head: ListNode
+        :type k: int
+        :rtype: ListNode
+        """
+        if head == None: return head
+        dummy = ListNode(0)
+        dummy.next = head
+        start = dummy
+        while start.next:
+            end = start                                # end = 0
+            for i in range(k-1):
+                end = end.next                         # end = 1
+                if end.next == None: return dummy.next
+            (start.next, start)=self.reverse(start.next, end.next)
+        return dummy.next
+
+    def reverse(self, start, end):
+        dummy = ListNode(0)
+        dummy.next = start
+        while dummy.next != end:
+            tmp = start.next
+            start.next = tmp.next
+            tmp.next = dummy.next
+            dummy.next = tmp
+        return (end, start)
+
+
+
+# Total Hamming Distance
+@TLE
+class Solution(object):
+    def totalHammingDistance(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        total = 0
+        for i in range(len(nums)):
+            for j in range(i+1, len(nums)):
+                total +=self.getHD(nums[i], nums[j])
+        return total
+
+    def getHD(self, num1, num2):
+        num1 = num1 ^ num2
+
+        dist = 0
+        while num1 != 0:
+            dist += 1
+            num1 = num1 & (num1 - 1)
+        return dist
+
+
+@
+Notice the total hamming distance is the sum of the total hamming distance for each of the i-th bits separately.
+
+So, let's consider the i-th column, which consists of numbers chosen from {0, 1}. The total hamming distance would be the number of pairs of numbers that are different. That is,
+
+Total hamming distance for the i-th bit =
+(the number of zeros in the i-th position) *
+(the number of ones in the i-th position).
+
+We then add all of these together to get our answer.
+class Solution(object):
+    def totalHammingDistance(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        bits = [ [0,0] for _ in xrange(32) ]
+        for x in nums:
+            for bit in bits:
+                bit[x%2] += 1
+                x /= 2
+        return sum( x*y for x,y in bits )
+
+
+
+# Binary Watch
+
+
+枚举小时h和分钟m，然后判断二进制1的个数是否等于num
+class Solution(object):
+    def readBinaryWatch(self, num):
+        times = []
+
+        for h in range(12):
+            for m in range(60):
+                if (bin(h) + bin(m)).count('1') == num:
+                    times.append("%d:%02d" % (h,m))
+
+        return times
+
+@10/3 Array
+
+#Lognest COnsecutive Sequence
+length of the longest consecutive element sequence
+[100, 4, 200, 1, 3, 2] ==> return [1, 2, 3, 4]
+
+
+@set
+class Solution(object):
+    def longestConsecutive(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        nums = set(nums)
+
+        maxlen = 0
+        for x in nums:
+            if x-1 not in nums:
+                y = x
+                while y in nums:
+                    y += 1
+                    maxlen = max(maxlen,y-x)
+
+        return maxlen
+
+
+# 54 . Spiral Matrix
+
+@ O(n) and O(N)
+class Solution(object):
+    def spiralOrder(self, matrix):
+        """
+        :type matrix: List[List[int]]
+        :rtype: List[int]
+        """
+        if not matrix: return []
+        R, C = len(matrix), len(matrix[0])
+        seen = [[False] * C for _ in matrix]
+        ans = []
+        dr = [0, 1, 0, -1]
+        dc = [1, 0, -1, 0]
+        r = c = di = 0
+        for _ in range(R * C):
+            ans.append(matrix[r][c])
+            seen[r][c] = True
+            cr, cc = r + dr[di], c + dc[di]
+            if 0 <= cr < R and 0 <= cc < C and not seen[cr][cc]:
+                r, c = cr, cc
+            else:
+                di = (di + 1) % 4
+                r, c = r + dr[di], c + dc[di]
+        return ans
+
+# SUbarray SUm Equals K
+class Solution(object):
+    def subarraySum(self, nums, k):
+        """
+        :type nums: List[int]
+        :type k: int
+        :rtype: int
+        """
+
+        sums = {0:1} # prefix sum array
+        res = summ = 0
+        for num in nums:
+            summ += num # increment current sum
+            res += sums.get(summ - k, 0) # check if there is a prefix subarray we can take out to reach k
+            sums[summ] = sums.get(summ, 0) + 1 # add current sum to sum count
+        return res
+
+
+
+
+# Find Lonely Pixel I
+class Solution(object):
+    def findLonelyPixel(self, picture):
+        """
+        :type picture: List[List[str]]
+        :rtype: int
+        """
+        if not picture:
+            return 0
+
+        m, n = len(picture), len(picture[0])
+        row, col = collections.defaultdict(int), collections.defaultdict(int)
+        cands = []
+        for i in range(m):
+            for j in range(n):
+                if picture[i][j] == 'B':
+                    row[i] += 1
+                    col[j] += 1
+                    cands.append([i, j])
+        ans = 0
+        for i, j in cands:
+            if col[j] == 1 and row[i] == 1:
+                ans += 1
+        return ans
+
+
+@ Picture
+利用数组rows，cols分别记录某行、某列'B'像素的个数。
+
+然后遍历一次picture即可。
+
+
+class Solution(object):
+    def findLonelyPixel(self, picture):
+        """
+        :type picture: List[List[str]]
+        :rtype: int
+        """
+        w, h = len(picture), len(picture[0])
+        rows, cols = [0] * w, [0] * h
+        for x in range(w):
+            for y in range(h):
+                if picture[x][y] == 'B':
+                    rows[x] += 1
+                    cols[y] += 1
+        ans = 0
+        for x in range(w):
+            for y in range(h):
+                if picture[x][y] == 'B':
+                    if rows[x] == 1:
+                        if cols[y] == 1:
+                            ans += 1
+        return ans
+
+
+
+# Teemo Attacking
+
+
+
+
+
+
+# Longest continuous Increasing Subsequence
+class Solution(object):
+    def findLengthOfLCIS(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        ans = count = 0
+        prev = 0
+        for n in nums:
+            if n > prev:
+                count += 1
+            else: # increasing sequence stops, get curr longest, restart count counter
+                ans = max(ans, count)
+                count = 1
+            prev = n
+        return max(ans, count)
+
+
+
+# First Missing Positive
+
+class Solution(object):
+    def firstMissingPositive(self, nums):
+        if not nums:
+            return 1
+        n = len(nums)
+        for i in range(n):
+            while nums[i] <= n and nums[i] > 0 and nums[i] != nums[nums[i]-1]:
+                a = nums[i]
+                nums[i], nums[a-1] = nums[a-1], nums[i]
+        for i in range(n):
+            if nums[i] != i+1:
+                return i+1
+        return n+1
+
+# Insert Delete GetRandom O(1)
+
+哈希表 + 数组 （HashMap + Array）
+
+利用数组存储元素，利用哈希表维护元素在数组中的下标
+
+由于哈希表的新增/删除操作是O(1)，而数组的随机访问操作开销也是O(1)，因此满足题设要求
+
+记数组为dataList，哈希表为dataMap
+
+insert(val): 将val添至dataList末尾，并在dataMap中保存val的下标idx
+
+remove(val): 记val的下标为idx，dataList末尾元素为tail，弹出tail并将其替换至idx处，在dataMap中更新tail的下标为idx，最后从dataMap中移除val
+
+getRandom: 从dataList中随机选取元素返回
+
+class RandomizedSet(object):
+
+    def __init__(self):
+        """
+        Initialize your data structure here.
+        """
+        self.dataMap = {}
+        self.dataList = []
+
+    def insert(self, val):
+
+        if val in self.dataMap:
+            return False
+        self.dataMap[val] = len(self.dataList)
+        self.dataList.append(val)
+        return True
+
+    def remove(self, val):
+
+        if val not in self.dataMap:
+            return False
+        idx = self.dataMap[val]
+        tail = self.dataList.pop()
+        if idx < len(self.dataList):
+            self.dataList[idx] = tail
+            self.dataMap[tail] = idx
+        del self.dataMap[val]
+        return True
+
+    def getRandom(self):
+        """
+        Get a random element from the set.
+        :rtype: int
+        """
+        return random.choice(self.dataList)
+
+
 #-----------------------------------------------------------------------------
             '''Design Problems'''
 #----------------------------------------------------------------------------
