@@ -15449,15 +15449,18 @@ class Solution(object):
 
 
 # Next Permutation
-
+https://leetcode.com/articles/next-permutation/#approach-1-brute-force-time-limit-exceeded
 class Solution(object):
     def nextPermutation(self, nums):
 
         i = len(nums) - 2
-        while i >= 0 and nums[i + 1] <= nums[i]:
+        # find the longest decreasing suffix
+        while i >= 0 and nums[i] >= nums[i + 1]:
             i -= 1
+
         if i >= 0:
             j = len(nums) - 1
+            # find first elment greater than nums[i]
             while j >= 0 and nums[j] <= nums[i]:
                 j -= 1
             nums[i], nums[j] = nums[j], nums[i]
@@ -15470,7 +15473,330 @@ class Solution(object):
         while l < r:
             nums[l], nums[r] = nums[r], nums[l]
             l += 1
-            r -= 1 
+            r -= 1
+
+# Beautiful Arrangement
+
+
+
+# Beautiful Arrangement II
+https://leetcode.com/problems/beautiful-arrangement-ii/solution/
+
+
+
+@ construction O(n) & O(n)
+class Solution(object):
+    def constructArray(self, n, k):
+        ans = list(range(1, n - k))
+        for i in range(k+1):
+            if i % 2 == 0:
+                ans.append(n-k + i//2)
+            else:
+                ans.append(n - i//2)
+
+        return ans
+
+
+# Insert, Delete GetRandom O(1)
+class RandomizedSet(object):
+
+    def __init__(self):
+
+        self.dataMap = collections.defaultdict(int)
+        self.dataList = []
+
+    def insert(self, val):
+
+        if val in self.dataMap:
+            return False
+        self.dataMap[val] = len(self.dataList)
+        self.dataList.append(val)
+        return True
+
+    def remove(self, val):
+
+        if val not in self.dataMap:
+            return False
+        idx = self.dataMap[val]
+        tail = self.dataList.pop()
+        if idx < len(self.dataList):
+            self.dataList[idx] = tail
+            self.dataMap[tail] = idx
+        del self.dataMap[val]
+        return True
+
+    def getRandom(self):
+
+        return random.choice(self.dataList)
+
+
+
+
+# Insert, Delte GetRandom O(1) - Duplicate Allowed
+只需将上述题目的解法稍作改动，依然使用哈希表+数组的组合，只不过哈希表中的值保存数组下标的Set即可。
+
+class RandomizedCollection(object):
+
+
+    def __init__(self):
+        self.vals = []
+        self.idxs = collections.defaultdict(set)
+
+
+    def insert(self, val):
+        self.vals.append(val)
+        self.idxs[val].add(len(self.vals) - 1)
+        return len(self.idxs[val]) == 1
+
+
+    def remove(self, val):
+        if self.idxs[val]:
+            out, ins = self.idxs[val].pop(), self.vals[-1]
+            self.vals[out] = ins
+            if self.idxs[ins]:
+                self.idxs[ins].add(out)
+                self.idxs[ins].discard(len(self.vals) - 1)
+            self.vals.pop()
+            return True
+        return False
+
+    def getRandom(self):
+        return random.choice(self.vals)
+
+
+# Jump Game
+
+
+https://leetcode.com/articles/jump-game/
+@Greedy O(n) + O(1)
+class Solution(object):
+    def canJump(self, nums):
+        """
+
+        """
+        lastPos = len(nums) - 1
+        for i in range(lastPos, -1, -1):
+            if i + nums[i] >= lastPos:
+                lastPos = i
+
+        return lastPos == 0
+
+
+# Spiral Matrix II
+1-N^2
+
+class Solution(object):
+    def generateMatrix(self, n):
+        """
+        :type n: int
+        :rtype: List[List[int]]
+        """
+        ans = [[0] * n for _ in range(n)]
+
+        i, j = 0, 0
+        di, dj = 0, 1
+
+        for k in range(1, n*n+1):
+            ans[i][j] = k
+            if ans[(i + di) % n][(j + dj) % n]:
+                # turn right
+                di, dj = dj, -di
+            i += di
+            j += dj
+        return ans
+
+
+
+class Solution(object):
+    def generateMatrix(self, n):
+        """
+        :type n: int
+        :rtype: List[List[int]]
+        """
+        matrix = [[0] * n for i in range(n)]
+        dr = [0, 1, 0, -1]
+        dc = [1, 0, -1, 0]
+        num = 1
+        r = c = di = 0
+        for k in range(n*n):
+            matrix[r][c] = num
+            num += 1
+            cr, cc = r + dr[di], c + dc[di]
+            if 0 <= cr < n and 0 <= cc < n and matrix[cr][cc] == 0:
+                r, c = cr, cc
+            else:
+                di = (di + 1) % 4
+                r, c = r + dr[di], c + dc[di]
+        return matrix
+
+
+
+
+
+
+
+
+########String Questions########
+
+#String to Integer(atoi)
+
+class Solution(object):
+    def myAtoi(self, s):
+        """
+        :type str: str
+        :rtype: int
+        """
+        if len(s) == 0 :
+            return 0
+        ls = list(s.strip())
+
+        sign = -1 if ls[0] == '-' else 1
+        if ls[0] in ['-','+'] :
+            del ls[0]
+        ret, i = 0, 0
+        while i < len(ls) and ls[i].isdigit() :
+            ret = ret*10 + ord(ls[i]) - ord('0')
+            i += 1
+        return max(-2**31, min(sign * ret,2**31-1))
+
+
+# Regular Expression Matching
+
+https://leetcode.com/articles/regular-expression-matching/
+
+. matches any single char
+* matches zero or more of the preceding element
+
+REcursion VS DP
+
+
+
+# Edit Distance
+Given two words, find the min steps  to convert word1 to word2
+three ops allowed: insert, delete, replace
+
+
+
+
+# Decode Ways
+'A' -> 1
+'B' -> 2
+...
+'Z' -> 26
+Given an encoded message containing digits, determine the total number of ways to decode it.
+
+
+# Palindromic Substring
+
+
+
+# Substring With Concatenation of all words
+
+class Solution(object):
+    def findSubstring(self, s, words):
+        """
+        :type s: str
+        :type words: List[str]
+        :rtype: List[int]
+        """
+        from collections import Counter
+        from collections import defaultdict
+        c = Counter(words)
+        m = len(words)
+        n = len(words[0])
+        ret = []
+        total_length = m * n
+
+        #Loop over word length
+        for k in xrange(n):
+            left = k
+            subd = defaultdict(int)
+            count = 0
+            #Loop over the string
+            for j in xrange(k, len(s) - n + 1, n):
+                #Get a word from observed substring
+                word = s[j:j+n]
+                #check if it is a valid word
+                if word in c:
+                    subd[word] += 1
+                    count += 1
+                    ##Shift the window as long as we have encountered more number of a word than is needed
+                    ##Note that we can shift the window by word length directly as the outer loop is there to
+                    ##make sure that anything is not missed out
+                    ##This solution will give indices out of order by OJ accepts it.
+                    while subd[word] > c[word]:
+                        subd[s[left:left+n]] -= 1
+                        left += n
+                        count -= 1
+                    ##Count will be equal to m only when we all the words are read the exact number of times needed
+                    if count == m:
+                        ret.append(left)
+                #If is not a valid word then just skip over the current word (Don't worry about the middle characters
+                ##outer loop will take care of it)
+                else:
+                    left = j + n
+                    subd = defaultdict(int)
+                    count = 0
+
+
+        return ret
+
+
+
+# 165 Compare Version Numbers
+if v1 > v2 return 1
+if v1 < v2: return -1
+
+
+
+class Solution(object):
+    def compareVersion(self, version1, version2):
+        """
+        :type version1: str
+        :type version2: str
+        :rtype: int
+        """
+
+        v1Split = version1.split(".")
+        v2Split = version2.split(".")
+
+        maxLen = max(len(v1Split), len(v2Split))
+
+        for i in range(maxLen):
+
+            v1Num = 0 if (i >= len(v1Split)) else int(v1Split[i])
+            v2Num = 0 if (i >= len(v2Split)) else int(v2Split[i])
+
+            if (v1Num > v2Num):
+                return 1
+            elif (v2Num > v1Num):
+                return -1
+        return 0
+
+# One Edit Distance
+
+class Solution(object):
+    def isOneEditDistance(self, s, t):
+        """
+        :type s: str
+        :type t: str
+        :rtype: bool
+        """
+        if s == t:
+            return False
+        l1,l2 = len(s),len(t)
+        if l2 - l1 > 1 or l1 - l2 >1:
+            return False
+        for i in range(min(len(s),len(t))):
+            if s[i] != t[i]:
+                if l1 == l2:
+                    s = s[:i] + t[i] + s[i+1:] # subsitution
+                elif l2 > l1:
+                    s = s[:i] + t[i] + s[i:]   # insertion
+                else:
+                    s = s[:i] + s[i+1:]        # deletion
+                break
+        return s == t or s == t[:-1] or s[:-1] == t # checking edge case for s ="a", t = ""
 
 
 
