@@ -15909,6 +15909,136 @@ class Solution(object):
         return res
 
 
+# Combinations
+two integers, n and k, return all length k numbers from 1...n
+
+if n = 4, k = 2,
+[
+  [2,4],
+  [3,4],
+  [2,3],
+  [1,2],
+  [1,3],
+  [1,4],
+]
+
+
+
+class Solution(object):
+    def combine(self, n, k):
+        """
+        :type n: int
+        :type k: int
+        :rtype: List[List[int]]
+        """
+        res = []
+        self.comb(res, [], n, k, 1)
+        return res
+    def comb(self, res, temp, n, k, start):
+    	if k == 0:
+    		res.append(temp[:])
+    		return
+    	for i in xrange(start, n - k + 2): # +2 to include the last element in n, n = 4, index 3
+    		temp.append(i)
+    		self.comb(res, temp, n, k - 1, i + 1)
+    		temp.pop()
+
+
+
+# Restore IP Address
+
+
+
+class Solution(object):
+    def restoreIpAddresses(self, s):
+        res = []
+        self.dfs(s, 0, "", res)
+        return res
+
+    def dfs(self, s, index, path, res):
+        if index == 4:
+            if not s:
+                res.append(path[:-1])
+            return # backtracking
+        for i in xrange(1, 4):
+            # the digits we choose should no more than the length of s
+            if i <= len(s):
+                #choose one digit
+                if i == 1:
+                    self.dfs(s[i:], index+1, path+s[:i]+".", res)
+                #choose two digits, the first one should not be "0"
+                elif i == 2 and s[0] != "0":
+                    self.dfs(s[i:], index+1, path+s[:i]+".", res)
+                #choose three digits, the first one should not be "0", and should less than 256
+                elif i == 3 and s[0] != "0" and int(s[:3]) <= 255:
+                    self.dfs(s[i:], index+1, path+s[:i]+".", res)
+
+
+class Solution(object):
+    def restoreIpAddresses(self, s):
+        """
+        :type s: str
+        :rtype: List[str]
+        """
+        ans = []
+        self.helper(ans, s, 4, [])
+        #print(ans)
+        return ['.'.join(x) for x in ans]
+
+    def helper(self, ans, s, k, temp):
+        if len(s) > k*3:
+            return
+        if k == 0:
+            ans.append(temp[:])
+        else:
+            for i in range(min(3,len(s)-k+1)):
+                if i==2 and int(s[:3]) > 255 or i > 0 and s[0] == '0':
+                    continue
+                self.helper(ans, s[i+1:], k-1, temp+[s[:i+1]])
+
+
+
+# Triangle
+
+@ TOP-DOWN
+
+class Solution(object):
+    def minimumTotal(self, triangle):
+
+        if not triangle:
+            return
+        for i in xrange(1, len(triangle)):
+            for j in xrange(len(triangle[i])):
+                if j == 0:
+                    triangle[i][j] += triangle[i-1][j]
+                elif j == len(triangle[i])-1:
+                    triangle[i][j] += triangle[i-1][j-1]
+                else:
+                    triangle[i][j] += min(triangle[i-1][j-1], triangle[i-1][j])
+        return min(triangle[-1])
+
+
+
+# Longest Increasing Subsequence
+run in O(n^2)
+
+class Solution(object):
+    def lengthOfLIS(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        if nums == None or len(nums) == 0:
+            return 0
+        dp = [1] * len(nums)
+        for curr, val in enumerate(nums):
+            for prev in range(curr):
+                if nums[prev] < val:
+                    dp[curr] = max(dp[curr], dp[prev] + 1)
+        return max(dp)
+
+
+
 #-----------------------------------------------------------------------------
             '''Design Problems'''
 #----------------------------------------------------------------------------
