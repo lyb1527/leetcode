@@ -15800,6 +15800,115 @@ class Solution(object):
 
 
 
+
+
+
+---------------------10/8 -----------------------
+
+# Binary Number with alternating bits
+https://leetcode.com/problems/binary-number-with-alternating-bits/solution/
+@Conver to String
+
+
+O(w): for any input, we do O(w) work, where w is the number of bits in n . HOwever, w is always <= 32, so O1
+O(w):
+
+def hasAlternatingBits(self, num):
+    bits = bin(num)
+    for i in range(len(num) - 1):
+        if bits[i] == bits[i+1]:
+            return False
+    return True
+
+
+@M2: divide by two
+
+get last bit and rest bits via n % 2 and n // 2
+curr, the last bit of n. If the last bit equals the last bit of the
+remaining, then two adjacent bits have the same value, the answer is False. Otherwise Trueself.
+
+
+def hasAlternatingBits(self, num):
+    # curr = num % 2
+    # num /= 2
+    num, curr = divmod(num, 2)
+    while num:
+        if curr == num % 2:
+            return False
+        num, curr = divmod(num, 2)
+    return True
+
+
+
+# Implement Stack using Queues
+
+push()
+pop()
+top()
+empty():
+
+class MyStack(object):
+    def __init__(self):
+        self.queue = collections.deque()
+
+    def push(self, x):
+        q = self.queue
+        q.append(x)
+        for _ in rang(len(q) - 1):
+            q.append(q.popleft())
+
+    def pop(self):
+        return self.queue.popleft()
+
+    def top(self):
+        return self.queue[0]
+
+    def empty(self):
+        return len(self.queue) == 0
+
+
+# Minimum Index Sum of two Lists
+common interest with the least list index sum(better if sum of indicies is smaller )
+
+class Solution(object):
+    def findRestaurant(self, list1, list2):
+        """
+        :type list1: List[str]
+        :type list2: List[str]
+        :rtype: List[str]
+        """
+        d = {}
+        for i,c in enumerate(list1):
+            d[c] = i
+        minSum = 2**31 - 1
+        res = []
+        for j,x in enumerate(list2):
+            if x in d:
+                s = j + d[x]
+                if s == minSum:
+                    res += [x]
+                if s < minSum:
+                    res = [x]
+                    minSum = s
+        return res
+
+
+
+    def findRestaurant(self, list1, list2):
+
+        m =0x7FFFFFFF
+        res = []
+        first = {v:i for i, v in enumerate(list1)}
+        for i, v in enumerate(list2):
+            if v in first:
+                if first[v] + i < m:
+                    m = first[v] + i
+                    res = [v]
+                if first[v] + i == m:
+                    res.append(v)
+        return res
+
+
 #-----------------------------------------------------------------------------
             '''Design Problems'''
 #----------------------------------------------------------------------------
@@ -15829,6 +15938,12 @@ class LRUCache:
         elif len(self.cache) == self.capacity:
             self.cache.popitem(last=False)
         self.cache[key] = value
+
+
+
+
+
+
 
 
 
