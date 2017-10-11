@@ -16020,8 +16020,8 @@ class Solution(object):
 
 
 # Longest Increasing Subsequence
-run in O(n^2)
 
+@ O(n^2) & O(n)
 class Solution(object):
     def lengthOfLIS(self, nums):
         """
@@ -16036,6 +16036,277 @@ class Solution(object):
                 if nums[prev] < val:
                     dp[curr] = max(dp[curr], dp[prev] + 1)
         return max(dp)
+
+@ O(nlogn) & O(n)
+
+
+# Encode and decode TinyURL
+
+class Codec:
+
+    def __init__(self):
+        self.urls = []
+
+    def encode(self, longUrl):
+        self.urls.append(longUrl)
+        return 'http://tinyurl.com/' + str(len(self.urls) - 1)
+
+    def decode(self, shortUrl):
+        return self.urls[int(shortUrl.split('/')[-1])]
+
+
+
+@Using random six digits or letters
+
+
+
+
+class Codec:
+    alphabet = string.ascii_letters + '0123456789'
+
+    def __init__(self):
+        self.url2code = {}
+        self.code2url = {}
+
+    def encode(self, longUrl):
+        while longUrl not in self.url2code:
+            code = ''.join(random.choice(Codec.alphabet) for _ in range(6))
+            if code not in self.code2url:
+                self.code2url[code] = longUrl
+                self.url2code[longUrl] = code
+        return 'http://tinyurl.com/' + self.url2code[longUrl]
+
+    def decode(self, shortUrl):
+        return self.code2url[shortUrl[-6:]]
+
+class Codec:
+
+    alphabet = string.ascii_letters
+
+    def __init__(self):
+        self.url2code = {}
+        self.code2url = {}
+
+    def encode(self, longUrl):
+        """Encodes a URL to a shortened URL.
+
+        :type longUrl: str
+        :rtype: str
+        """
+        if longUrl not in self.url2code.keys():
+            code = ''.join(random.choice(Codec.alphabet) for _ in range(6))
+            self.code2url[code] = longUrl
+            self.url2code[longUrl] = code
+        else:
+            code = self.url2code[longUrl]
+        return 'http://tinyurl.com/'+code
+
+
+
+    def decode(self, shortUrl):
+        """Decodes a shortened URL to its original URL.
+
+        :type shortUrl: str
+        :rtype: str
+        """
+        code = shortUrl[-6:]
+        if code in self.code2url.keys():
+            longUrl = self.code2url[code]
+            return longUrl
+        else:
+            return "No result found for tinyURL"
+
+
+# Valid Sudoku
+
+'''Empty cells filled with '.' '''
+
+
+
+
+class Solution(object):
+    def isValidSudoku(self, board):
+        """
+        :type board: List[List[str]]
+        :rtype: bool
+        """
+        d = {}
+        for i, row in enumerate(board):
+            for j, value in enumerate(row):
+                if value != '.':
+                    if d.has_key(value):
+                        # print(d)
+                        for e in d[value]:
+                            if i == e[0] or j == e[1] or (i/3, j/3) == e[2]:
+                                return False
+                        d[value].append((i, j, (i/3, j/3)))
+                    else:
+                        d[value] = [(i, j, (i/3, j/3))]
+        return True
+
+
+
+
+# Output Contest Matches
+
+
+
+
+
+# Queue Reconstruction by Height
+class Solution(object):
+    def reconstructQueue(self, people):
+        """
+        :type people: List[List[int]]
+        :rtype: List[List[int]]
+        """
+        #[5,0] [7,0] [5,2] [6,1] [4,4] [7,1]
+        people.sort(key = lambda x: (-x[0],x[1]))
+        # [[7, 0], [7, 1], [6, 1], [5, 0], [5, 2], [4, 4]]
+        ret = []
+        for pair in people:
+            ret.insert(pair[1],pair)
+        return ret
+    """
+        [[7, 0]]
+        [[7, 0], [7, 1]]
+        [[7, 0], [6, 1], [7, 1]]
+        [[5, 0], [7, 0], [6, 1], [7, 1]]
+        [[5, 0], [7, 0], [5, 2], [6, 1], [7, 1]]
+        [[5, 0], [7, 0], [5, 2], [6, 1], [4, 4], [7, 1]]
+    """
+
+
+
+## Palindromic Substrings
+
+class Solution(object):
+    def countSubstrings(self, s):
+        """
+        :type s: str
+        :rtype: int
+        """
+        n = len(s)
+        ans = 0
+        for center in xrange(2*n - 1):
+            left = center / 2
+            right = left + center % 2
+            while left >= 0 and right < n and s[left] == s[right]:
+                ans += 1
+                left -= 1
+                right += 1
+        return ans
+
+
+### Find Permutation
+给定一个只包含字符'D'和'I'的字符串s。'D'表示递减，'I'表示递增。根据s构造数字1到n的一个排列
+，使得排列的字典序最小，并且相邻两数字之间的关系与s中的字符保持一致。
+
+@Stack: O(n) & O(n)
+class Solution(object):
+    def findPermutation(self, s):
+        """
+        :type s: str
+        :rtype: List[int]
+        """
+
+        l = len(s)
+        stack,res = [],[]
+        for i in range (l):
+            cur_num = i+1
+            if s[i] == 'D':
+                stack.append(cur_num)
+            if s[i] == 'I':
+                stack.append(cur_num)
+                while stack:
+                    res.append(stack.pop())
+        # last digit
+        res.append(l+1)
+        while stack:
+            res.append(stack.pop())
+
+        return res
+
+@
+
+@
+
+
+# plus one linked list
+
+@Stack
+class Solution(object):
+    def plusOne(self, head):
+        """
+        :type head: ListNode
+        :rtype: ListNode
+        """
+        stack = []
+        node = head
+        while node:
+            if node:
+                stack.append(node)
+                node = node.next
+        while stack:
+            cur = stack.pop()
+            if cur.val < 9:
+                cur.val += 1
+                return head
+            cur.val = 0
+        newhead = ListNode(1)
+        newhead.next = head
+        return newhead
+
+
+class Solution(object):
+    def plusOne(self, head):
+        """
+        :type head: ListNode
+        :rtype: ListNode
+        """
+        if not head: return head
+        stack = [head]
+
+        while stack[-1].next:
+            stack.append(stack[-1].next)
+
+        carry = 1 # we are adding one to the number
+        while stack:
+            curr = stack.pop()
+            curr.val += carry
+            carry = curr.val // 10
+            curr.val %= 10
+
+        if carry:
+            dummy = ListNode(carry)
+            dummy.next = curr
+        else:
+            dummy = curr
+
+        return dummy
+
+
+# Map Sum Pairs
+设计一个数据结构MapSum，支持insert和sum操作。
+
+insert(key, val)：向MapSum中插入一个key，对应一个val（当key存在时，替换对应的val）
+
+sum(prefix)：求MapSum中对应前缀为prefix的所有key的val之和
+
+"""
+字典树（Trie）
+
+TrieNode包含属性：sum（当前节点子树的和），val（当前节点的值）
+
+insert操作：向字典树中插入节点，并将沿途节点记录下来。更新途经节点的sum值
+
+sum操作：直接返回前缀对应节点的sum值
+
+"""
+
+
+
+
 
 
 
