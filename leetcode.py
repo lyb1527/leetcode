@@ -16287,11 +16287,58 @@ class Solution(object):
 
 
 # Map Sum Pairs
+
 设计一个数据结构MapSum，支持insert和sum操作。
 
 insert(key, val)：向MapSum中插入一个key，对应一个val（当key存在时，替换对应的val）
 
 sum(prefix)：求MapSum中对应前缀为prefix的所有key的val之和
+
+@M1: Brute Force
+class MapSum(object):
+    def __init__(self):
+        self.map = {}
+
+    def insert(self, key, val):
+        self.map[key] = val
+
+    def sum(self, prefix):
+        return sum(val for key, val in self.map.items()
+                   if key.startswith(prefix))
+
+@M2: prefix HashMap
+"""
+We can remember the answer for all possible prefixes in a HashMap score.
+When we get a new (key, val) pair, we update every prefix of key appropriately:
+ each prefix will be changed by delta = val - map[key], where map is the previous
+  associated value of key (zero if undefined.)
+"""
+
+class MapSum(object):
+    def __init__(self):
+        self.map = {}
+        self.score = collections.Counter()
+
+    def insert(self, key, val):
+        delta = val - self.map.get(key, 0)
+        self.map[key] = val
+        for i in xrange(len(key) + 1):
+            prefix = key[:i]
+            self.score[prefix] += delta
+
+    def sum(self, prefix):
+        return self.score[prefix]
+
+
+Time Complexity: Every insert operation is O(K^2), where K is th
+e length of the key, as K strings are made of an average length of K. Every
+sum operation is O(1).
+
+Space Complexity: The space used by map and score is linear in the size of all
+input key and val values combined.
+
+
+
 
 """
 字典树（Trie）
@@ -16303,11 +16350,417 @@ insert操作：向字典树中插入节点，并将沿途节点记录下来。�
 sum操作：直接返回前缀对应节点的sum值
 
 """
+class TrieNode(object):
+    def __init__(self):
+        self.children = {}
+        self.score = 0
+
+class MapSum(object):
+    def __init__(self):
+        self.map = {}
+        self.root = TrieNode()
+
+    def insert(self, key, val):
+        delta = val - self.map.get(key, 0)
+        self.map[key] = val
+        cur = self.root
+        cur.score += delta
+        for char in key:
+            cur = cur.children.setdefault(char, TrieNode())
+            cur.score += delta
+
+    def sum(self, prefix):
+        cur = self.root
+        for char in prefix:
+            if char not in cur.children:
+                return 0
+            cur = cur.children[char]
+        return cur.score
+
+
+
+Time Complexity: Every insert operation is O(K), where KKK is the length of the key.
+ Every sum operation is O(K).
+
+Space Complexity: The space used is linear in the size of the total input.
+
+
+
+
+# Minimum Moves to Equal Array Elements II
+https://leetcode.com/articles/minimum-moves-to-equal-array-elements-ii/
+'''
+ a move is incrementing a selected element by 1 or decrementing a selected element by 1.
+'''
+
+Approach #1 Brute Force [Time Limit Exceeded]
+Approach #2 Better Brute Force[Accepted]
+Approach #3 Using Sorting [Accepted]
+Approach #4 Using Median and Sorting [Accepted]
+Approach #5 Without finding Median [Accepted]
+Approach #6 Using quick-select [Accepted]
+Approach #7 Using Median of Medians [Accepted]
 
 
 
 
 
+# Zigzag Iterator
+
+
+# Ternary Expression Parser
+栈（Stack）数据结构
+
+循环直到栈中元素为1并且表达式为空：
+
+取栈顶的5个元素，判断是否为一个可以解析的表达式。若是，则解析后压栈
+
+否则从右向左将expression中的字符压入栈stack
+
+
+class Solution(object):
+    def parseTernary(self, expression):
+        """
+        :type expression: str
+        :rtype: str
+        """
+        if not expression:
+            return ""
+        stack = []
+        for char in expression[::-1]:
+            if stack and stack[-1]=='?':
+                stack.pop() # ?
+                first = stack.pop()
+                stack.pop() # :
+                second = stack.pop()
+
+                if char =='T':
+                    stack.append(first)
+                else:
+                    stack.append(second)
+            else:
+                stack.append(char)
+
+        return str(stack[-1])
+
+
+# Replace Words
+
+
+
+class Solution(object):
+    def replaceWords(self, roots, sentence):
+        """
+        :type dict: List[str]
+        :type sentence: str
+        :rtype: str
+        """
+        def replace(word):
+            best = word
+            for r in cache[word[0]]:
+                #if len(r) < len(best) and r == word[:len(r)]:
+                if len(r) < len(best) and word.startswith(r):
+                    best = r
+            return best
+
+        cache = collections.defaultdict(list)
+        for r in roots:
+            cache[r[0]] += [r]
+        words = sentence.split()
+        return ' '.join(map(replace, words))
+
+
+
+
+
+给定一组词根字典dict，一个句子sentence。将句中的单词换为字典中出现过的最短词根。
+"""
+解题思路：
+字典树（Trie）
+
+利用词根dict构建字典树trie，遍历sentence中的word，在trie中进行搜索。
+"""
+class TrieNode:
+    def __init__(self):
+        self.children = dict()
+        self.isWord = False
+
+class Trie:
+
+    def __init__(self):
+        self.root = TrieNode()
+
+    def insert(self, word):
+        node = self.root
+        for letter in word:
+            child = node.children.get(letter)
+            if child is None:
+                child = TrieNode()
+                node.children[letter] = child
+            node = child
+        node.isWord = True
+
+    def search(self, word):
+        ans = ''
+        node = self.root
+        for letter in word:
+            node = node.children.get(letter)
+            if node is None: break
+            ans += letter
+            if node.isWord: return ans
+        return word
+
+class Solution(object):
+    def replaceWords(self, dict, sentence):
+        """
+        :type dict: List[str]
+        :type sentence: str
+        :rtype: str
+        """
+        trie = Trie()
+        for word in dict: trie.insert(word)
+        ans = []
+        for word in sentence.split():
+            ans.append(trie.search(word))
+        return ' '.join(ans)
+
+
+
+
+
+
+# Find permutation
+
+class Solution(object):
+    def findPermutation(self, s):
+        """
+        :type s: str
+        :rtype: List[int]
+        """
+        return self.sol2(s)
+# Solution 1: reverse the substring i,i+1 ... j + 1 iwhere S[i],S[i+1]...j are 'D'
+    def sol1(self, s):
+        ret = range(1, len(s) + 2)
+        i, prev = 0, 0
+        while i < len(s):
+            prev = i
+            while i < len(s) and s[i] == 'D':
+                i += 1
+            self.reverse(ret, prev, i)
+            i += 1
+        return ret
+    def reverse(self, nums, lo, hi):
+        if lo >= hi:
+            return
+        while lo < hi:
+            nums[lo], nums[hi] = nums[hi], nums[lo]
+            lo += 1
+            hi -= 1
+# Solution 2: use a stack
+    def sol2(self, s):
+        ret = []
+        s += 'I'
+        stack = []
+        for i, c in enumerate(s):
+            if c == 'I':
+                stack.append(i + 1)
+                while stack:
+                    ret.append(stack.pop())
+            else:
+                stack.append(i + 1)
+        return ret
+
+
+
+
+
+# Word Break
+http://bookshadow.com/weblog/2016/04/19/leetcode-integer-break/
+
+
+class Solution(object):
+    def integerBreak(self, n):
+        """
+        :type n: int
+        :rtype: int
+        """
+        dp = [0 for _ in range(n+1)]
+        dp[2] = 1
+        for i in range(2,n+1):
+            for j in range(2,i):
+                dp[i] = max(dp[i] , max(dp[j] , j) * max(dp[i-j] , i-j))
+        #print dp
+        return dp[-1]
+
+
+
+class Solution(object):
+    def integerBreak(self, n):
+        """
+        :type n: int
+        :rtype: int
+        """
+        if n <= 3: return n - 1
+        dp = [0] * (n + 1)
+        dp[2], dp[3] = 2, 3
+        for x in range(4, n + 1):
+            dp[x] = max(3 * dp[x - 3], 2 * dp[x - 2])
+        return dp[n]
+
+
+# Minimum Time Difference
+将时间从小到大排序，然后将最小的时间小时+24后加入数组末尾。
+
+两两做差，求最小值即可。
+
+
+class Solution(object):
+    def findMinDifference(self, timePoints):
+        """
+        :type timePoints: List[str]
+        :rtype: int
+        """
+        tp = [int(s[:2]) * 60 + int(s[3:]) for s in timePoints]
+        tp.sort()
+        res = float('inf')
+        for t1, t2 in zip(tp, tp[1:] + [tp[0]]):
+            res = min(res, (t2-t1)%(24*60))
+        return res
+
+
+class Solution(object):
+    def findMinDifference(self, timePoints):
+        """
+        :type timePoints: List[str]
+        :rtype: int
+        """
+        def convert(time):
+            return int(time[:2]) * 60 + int(time[3:])
+        minutes = map(convert, timePoints);
+        minutes.sort()
+
+        return min((y-x) % (24*60) for x,y in zip(minutes, minutes[1:] + minutes[:1]))
+
+
+# Kth Smallest Element In a Sorted Matrix
+
+@ Heap
+class Solution(object):
+    def kthSmallest(self, matrix, k):
+        """
+        :type matrix: List[List[int]]
+        :type k: int
+        :rtype: int
+        """
+        m, n = len(matrix), len(matrix[0])
+        q = [(matrix[0][0], 0, 0)]
+        ans = None
+        for _ in range(k):
+            ans, i, j = heapq.heappop(q)
+            if j == 0 and i + 1 < m:
+                heapq.heappush(q, (matrix[i + 1][j], i + 1, j))
+            if j + 1 < n:
+                heapq.heappush(q, (matrix[i][j + 1], i, j + 1))
+        return ans
+
+
+@ Binary Search
+class Solution(object):
+    def kthSmallest(self, matrix, k):
+        """
+        :type matrix: List[List[int]]
+        :type k: int
+        :rtype: int
+        """
+        l = matrix[0][0]; r = matrix[-1][-1]+1
+
+        while l < r:
+            mid = (l+r)/2
+            count = 0
+            j = len(matrix[0])-1
+
+            for i in range(len(matrix)):
+                while j >= 0 and matrix[i][j] > mid:
+                    j -= 1
+                count += (j+1)
+
+            if count < k: l = mid+1
+            else: r = mid
+
+        return l
+
+
+
+# Contiguous Array
+''' max length of subarray with equal number of 0 and 1 '''
+class Solution(object):
+    def findMaxLength(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        vals = {0: -1}
+        s = max_len = 0
+        for i, n in enumerate(nums):
+            s += 1 if n else -1
+            if s in vals:
+                max_len = max(max_len, i - vals[s])
+            else:
+                vals[s] = i
+        return max_len
+
+
+
+class Solution(object):
+    def findMaxLength(self, nums):
+        """
+        :type nums: List[int]
+        :rtype: int
+        """
+        if not nums: return 0
+        hashMap = {0:0}
+        count = 0
+        max_ = 0
+
+        for i in range(len(nums)):
+            count = count + 1 if nums[i] == 1 else count - 1
+            if count not in hashMap:
+                hashMap[count] = i+1
+            else:
+                max_ = max(max_, i+1-hashMap[count])
+        return max_
+
+
+
+
+# Maximum With Of Binary Search
+
+class Solution(object):
+    def widthOfBinaryTree(self, root):
+        """
+        :type root: TreeNode
+        :rtype: int
+        """
+        if not root:
+            return 0
+        queue = [(root, 0), -1]
+        res = left = 0
+        while queue:
+            data = queue.pop(0)
+            if data == -1:
+                if queue:
+                    queue.append(-1)
+                    left = None
+            else:
+                node, count = data
+                if left is None:
+                    left = count
+                if node.left:
+                    queue.append((node.left, count*2))
+                if node.right:
+                    queue.append((node.right, count*2+1))
+                res = max(res, count - left + 1)
+        return res
 
 
 #-----------------------------------------------------------------------------
